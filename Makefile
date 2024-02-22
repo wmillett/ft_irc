@@ -1,10 +1,10 @@
 
 # Project Name
-NAME = ft_irc
+NAME = ircserv
 
 # Compiler and Flags
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 #-g -fsanitize=address
+CXXFLAGS =  -std=c++98 #-Wall -Wextra -Werror  #-g -fsanitize=address
 
 # Directories
 SRC_DIR = src
@@ -67,10 +67,6 @@ fclean: clean
 	fi
 
 re: fclean all
-
-run: all
-	@echo "$(YELLOW)Running $(GREEN)$(NAME)$(RESET)"
-	@./$(NAME)
 
 test: all
 	@echo "$(YELLOW)Running tests...$(RESET)"
