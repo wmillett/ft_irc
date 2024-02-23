@@ -10,20 +10,13 @@
 
 #include "../inc/utils.h"
 
-void error(const char *msg)
-{
-    perror(msg);
+void error(const char* mess){
+    perror(mess);
     exit(1);
 }
 
-int main(int argc, char *argv[])
-{
-    int sockfd, newsockfd, portno;
-    socklen_t clilen;
-    char buffer[256];
-    struct sockaddr_in serv_addr, cli_addr;
-    int n;
 
+void parse_args(int argc, char** argv){
     if (argc < 2){
         std::cerr << NO_PORT;
         exit(1);
@@ -32,7 +25,6 @@ int main(int argc, char *argv[])
         std::cerr << NO_PASSWORD;
         exit(1);
     }
-//    if (argv[1])
     if (std::atoi(argv[1]) > 65535){
         std::cerr << PORT_TOO_LARGE;
         exit(1);
@@ -41,12 +33,27 @@ int main(int argc, char *argv[])
         std::cerr << PORT_TOO_SMALL;
         exit(1);
     }
+    const std::string& port = argv[1];
+    const std::string& password = argv[2];
+    if (port.empty()){
+        std::cerr << NO_PORT;
+        exit(1);
+    }
+    if (password.empty()){
+        std::cerr << NO_PASSWORD;
+        exit(1);
+    }
+}
 
-
-
-
-
-
+int main(int argc, char *argv[])
+{
+    int sockfd, newsockfd, portno;
+    socklen_t clilen;
+    char buffer[256];
+    parse_args(argc, argv);
+    struct sockaddr_in serv_addr, cli_addr;
+    int n;
+    
 
     // create a socket
     // socket(int domain, int type, int protocol)
