@@ -47,10 +47,25 @@ void parse_args(int argc, char** argv){
 
 int main(int argc, char *argv[])
 {
+    parse_args(argc, argv);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //This is an exemple to help understand how IRC servers work:
+    /////////////////////////    /////////////////////////    /////////////////////////
+    
+
     int sockfd, newsockfd, portno;
     socklen_t clilen;
     char buffer[256];
-    parse_args(argc, argv);
     struct sockaddr_in serv_addr, cli_addr;
     int n;
     
@@ -118,5 +133,17 @@ int main(int argc, char *argv[])
 
     close(newsockfd);
     close(sockfd);
+
+    /////////////////////////    /////////////////////////    /////////////////////////
+
+
+
+
+
+
+
+
+
+
     return 0; 
 }
