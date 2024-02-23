@@ -14,5 +14,7 @@
 # define INVALID_INPUT  "Error: invalid input"
 # define PORT_OUT_RANGE "Error: port provided is out of the range"
 # define MISSING_ARGS "Error: missing 2 arguments"
+# define USAGE_MESS "Error: Usage: ./irc <port> <password>"
+# define NCREATE_PORT "Error: could not create port"
 
 #endif
