@@ -17,18 +17,6 @@ class Server
 	public:
         Server(const string& port_str,  const string& password);
         ~Server();
-        
-    class InvalidInputException: public std::exception
-    {
-        public:
-            virtual const char* what() const throw();
-    };
-
-    class PortOffRangeException: public std::exception
-    {
-        public:
-            virtual const char* what() const throw();
-    };
 };
 
 #endif

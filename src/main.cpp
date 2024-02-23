@@ -30,9 +30,6 @@ int main(int argc, char *argv[])
     {
         std::cout << e.what() << std::endl;
     }
-  
-    
-    
     
     
     // //This is an exemple to help understand how IRC servers work:
