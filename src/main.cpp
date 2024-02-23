@@ -15,32 +15,52 @@ void error(const char* mess){
     exit(1);
 }
 
+bool digitsCheck(const std::string &arg)
+{
+    for(size_t i = 0; i < arg.size(); i++)
+    {
+        if(!isdigit(arg[i]))
+            return false;
+    }
+    return true;
+}
 
 void parse_args(int argc, char** argv){
+    
     if (argc < 2){
-        std::cerr << NO_PORT;
+        std::cerr << NO_PORT << std::endl;
         exit(1);
     }
     if (argc < 3){
-        std::cerr << NO_PASSWORD;
+        std::cerr << NO_PASSWORD << std::endl;
         exit(1);
     }
-    if (std::atoi(argv[1]) > 65535){
-        std::cerr << PORT_TOO_LARGE;
-        exit(1);
-    }
-    if (std::atoi(argv[1]) < 0){
-        std::cerr << PORT_TOO_SMALL;
-        exit(1);
-    }
-    const std::string& port = argv[1];
+
+    const std::string& port_str = argv[1];
     const std::string& password = argv[2];
-    if (port.empty()){
-        std::cerr << NO_PORT;
+
+    if (port_str.empty()){
+        std::cerr << NO_PORT << std::endl;
         exit(1);
     }
     if (password.empty()){
-        std::cerr << NO_PASSWORD;
+        std::cerr << NO_PASSWORD << std::endl;
+        exit(1);
+    }
+
+    if(!digitsCheck(port_str)){
+        std::cerr << INVALID_INPUT << std::endl;
+        exit(1);
+    }
+
+    int port = std::atoi(port_str.c_str());
+
+    if (port > 65535){
+        std::cerr << PORT_TOO_LARGE << std::endl;
+        exit(1);
+    }
+    if (port < 0){
+        std::cerr << PORT_TOO_SMALL << std::endl;
         exit(1);
     }
 }
