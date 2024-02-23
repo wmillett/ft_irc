@@ -76,4 +76,7 @@ leaks: all
 	@echo "$(YELLOW)Running leaks...$(RESET)"
 	@leaks --atExit -- ./$(NAME)
 
+run:	all
+	@./$(NAME) 8080 ok
+	
 .PHONY: all clean fclean test run leaks re 
