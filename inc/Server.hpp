@@ -7,6 +7,10 @@
 #include <unistd.h>
 #include <sys/poll.h>
 #include "utils.h"
+#include <map>
+#include "Client.hpp"
+#include <fcntl.h>
+class Client;
 
 using std::string;
 
@@ -16,6 +20,7 @@ class Server
                 int _port;
                 int _sockfd;
                 string _password;
+                std::map<int, Client> _clients;
                 // sockaddr_in serverAddr;
 
                 bool digitsCheck(const std::string &arg) const;

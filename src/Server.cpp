@@ -37,11 +37,13 @@ void Server::SetupServer()
     if (_sockfd == - 1) 
        throw CustomException::CouldNotCreatePort();
 
+    //Sets the socket to non blocking mode
+    if (fcntl(_sockfd, F_SETFL, fcntl(_sockfd, F_GETFL, 0) | O_NONBLOCK) == -1) 
+        throw CustomException::ErrorFcntl();
+
     //Define the server's address structure
     struct sockaddr_in address;
-
     memset(&address, 0, sizeof(address)); //fill with 0s to avoid undefined behaviors
-
     address.sin_family = AF_INET; //ipv4
     address.sin_addr.s_addr = INADDR_ANY;  // Listen on all interfaces
     address.sin_port = htons(_port); // from host byte order to network byte order
