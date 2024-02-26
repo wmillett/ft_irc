@@ -14,8 +14,6 @@
 
 int main(int argc, char *argv[])
 {
-   // parse_args(argc, argv);
-
     if (argc != 3){
         std::cerr << USAGE_MESS << std::endl;
         return 1;
@@ -23,11 +21,12 @@ int main(int argc, char *argv[])
     try
     {
         Server irc(argv[1],argv[2]);
-        ///irc.run();
+        irc.Run();
     }
     catch(std::exception & e)
     {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
+        return 1;
     }
     return 0; 
 }

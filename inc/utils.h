@@ -16,6 +16,9 @@
 # define MISSING_ARGS "Error: missing 2 arguments"
 # define USAGE_MESS "Error: Usage: ./ircserv <port> <password>"
 # define NCREATE_PORT "Error: could not create port"
+# define ERROR_BIND "Error: Failed to bind socket"
+# define ERROR_LISTEN "Error: Failed to listen for connections"
+# define ERROR_BLOCK "Error setting socket to non-blocking mode"
 
 
 
