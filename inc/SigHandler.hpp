@@ -6,15 +6,11 @@
 
 using std::string;
 
-class SigHandler
-{
-	private:
-        // struct sigaction sa;
-		// void handleSignal(int signum);
-	public:
-		// int initHandler();
-		// ~SigHandler();
 
-};
+class SignalHandler {
+	public:
+    	SignalHandler();
+    	static void handleSignal(int signal);
+	};
 
 #endif

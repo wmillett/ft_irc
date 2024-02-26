@@ -28,6 +28,7 @@ int Server::Run()
 {
     SetupServer();
 
+    return 0;
 }
 
 void Server::SetupServer()
