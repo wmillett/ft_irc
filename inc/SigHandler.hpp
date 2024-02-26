@@ -1,19 +1,20 @@
 #ifndef SIGHANDLER_HPP
 # define SIGHANDLER_HPP
 
-#include "utils.h"
+# include <csignal>
+# include "utils.h"
 
 using std::string;
 
 class SigHandler
 {
 	private:
-       
-        		
+        // struct sigaction sa;
+		// void handleSignal(int signum);
 	public:
-      
+		// int initHandler();
+		// ~SigHandler();
 
-        // int launchServer();
 };
 
 #endif
