@@ -30,5 +30,4 @@ bool Server::digitsCheck(const std::string &arg) const
 }
 
 // int Server::launchServer(){
-
 // };
