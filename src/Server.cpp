@@ -9,13 +9,8 @@ Server::Server(const string& port_str,  const string& password) : _password(pass
     _port = std::atoi(port_str.c_str());
     if(_port > 65535 || _port < 0)
         throw CustomException::OutOfRangeException();
-
-    //Creating a socket
-    int sockfd;
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0) 
-       throw CustomException::CouldNotCreatePort();
 }
+  
 
 Server::~Server() {}
 
@@ -29,6 +24,36 @@ bool Server::digitsCheck(const std::string &arg) const
     return true;
 }
 
-// int Server::launchServer(){
+int Server::Run()
+{
+    SetupServer();
 
-// };
+}
+
+void Server::SetupServer()
+{
+    //Creating a socket
+    _sockfd = socket(AF_INET, SOCK_STREAM, 0); // ipv4 / TCP
+    if (_sockfd == - 1) 
+       throw CustomException::CouldNotCreatePort();
+
+    //Define the server's address structure
+    struct sockaddr_in address;
+
+    memset(&address, 0, sizeof(address)); //fill with 0s to avoid undefined behaviors
+
+    address.sin_family = AF_INET; //ipv4
+    address.sin_addr.s_addr = INADDR_ANY;  // Listen on all interfaces
+    address.sin_port = htons(_port); // from host byte order to network byte order
+
+    //Bind the socket to a port and address
+    if (bind(_sockfd, (struct sockaddr*)&address, sizeof(address)) == -1) 
+        throw CustomException::ErrorBind();
+
+    // Listen for incoming connections
+    if (listen(_sockfd, SOMAXCONN) == -1) 
+        throw CustomException::ErrorListen();
+}
+
+
+
