@@ -28,6 +28,37 @@ int Server::Run()
 {
     SetupServer();
 
+    std::vector<pollfd> fds;
+
+    //Add server socket to the pollfd struct and push it in the vector container
+    struct pollfd serverfd;
+    serverfd.fd = _sockfd;
+    serverfd.events = POLLIN; //monitor for data available for reading
+
+    fds.push_back(serverfd);
+
+    while(true)
+    {
+        if(poll(fds.data(), fds.size(), 0) == -1)
+            break; //replace with error
+          
+        //Check if the server socket has incoming connection requests
+        if(fds[0].revents & POLLIN)
+        {
+            int clientSocket = accept(_sockfd, NULL, NULL);
+            if(clientSocket == -1)
+                break; //replace with error
+            else
+            {
+                std::cout << "New client connected!" << std::endl;
+                _clients.push_back(Client(clientSocket));
+            }
+           // break ;
+        }
+    }
+    
+
+    return 0;
 }
 
 void Server::SetupServer()

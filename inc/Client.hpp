@@ -7,10 +7,9 @@ using std::string;
 class Client
 {
 	private:
-	int _socket;
-	char _buffer[1024];
-
+           int _sockfd;
+	
 	public:
-        Client(void);
+        Client(int sockfd);
         ~Client();
 };
