@@ -7,9 +7,9 @@ using std::string;
 class Client
 {
 	private:
-
+           int _sockfd;
 	
 	public:
-        Client(void);
+        Client(int sockfd);
         ~Client();
 };

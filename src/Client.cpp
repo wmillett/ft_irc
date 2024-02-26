@@ -1,11 +1,5 @@
 #include "Client.hpp"
 
-Client::Client(void)
-{
+Client::Client(int sockfd) : _sockfd(sockfd) {}
 
-}
-
-Client::~Client()
-{
-
-}
+Client::~Client() {std::cout << "deleting" << _sockfd << std::endl;}
