@@ -4,7 +4,7 @@ NAME = ircserv
 
 # Compiler and Flags
 CXX = c++
-CXXFLAGS =  -std=c++98 -Wall -Wextra -Werror  #-g -fsanitize=address
+CXXFLAGS =  -std=c++98 -Wall -Wextra #-Werror  #-g -fsanitize=address
 
 # Directories
 SRC_DIR = src
