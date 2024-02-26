@@ -29,5 +29,9 @@ bool Server::digitsCheck(const std::string &arg) const
     return true;
 }
 
-// int Server::launchServer(){
-// };
+int Server::launchServer()
+{
+	int sc = socket(AF_INET, SOCK_STREAM, 0);
+
+	
+};
