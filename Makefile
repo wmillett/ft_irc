@@ -19,8 +19,6 @@ INC_DIR = inc
 
 SRCS := $(wildcard $(SRC_DIR)/*.cpp)
 
-
-
 OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
 
 # Libraries
@@ -76,4 +74,7 @@ leaks: all
 	@echo "$(YELLOW)Running leaks...$(RESET)"
 	@leaks --atExit -- ./$(NAME)
 
+run:	all
+	@./$(NAME) 8080 ok
+	
 .PHONY: all clean fclean test run leaks re 
