@@ -34,4 +34,10 @@ class CustomException
 			public:
 				virtual const char* what() const throw() { return (ERROR_BIND); };
 		};
+
+		class ErrorFcntl: public std::exception
+		{
+			public:
+				virtual const char* what() const throw() { return (ERROR_BLOCK); };
+		};
 };
