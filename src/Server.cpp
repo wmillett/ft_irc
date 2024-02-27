@@ -26,49 +26,50 @@ bool Server::digitsCheck(const std::string &arg) const
 
 int Server::Run()
 {
-    SetupServer();
+	SetupServer();
 
-    std::vector<pollfd> fds;
+	std::vector<pollfd> fds;
 
-    //Add server socket to the pollfd struct and push it in the vector container
-    struct pollfd serverfd;
-    serverfd.fd = _sockfd;
-    serverfd.events = POLLIN; //monitor for data available for reading
+	//Add server socket to the pollfd struct and push it in the vector container
+	struct pollfd serverfd;
+	memset(&serverfd, 0 , sizeof(serverfd)); // set memory to 0
+	serverfd.fd = _sockfd;
+	serverfd.events = POLLIN; //monitor for data available for reading
 
-    fds.push_back(serverfd);
+	fds.push_back(serverfd);
 
-    while(true)
-    {
-        if(poll(fds.data(), fds.size(), 0) == -1)
-            break; //replace with error
-          
-        //Check if the server socket has incoming connection requests
-        if(fds[0].revents & POLLIN)
-        {
-            int clientSocket = accept(_sockfd, NULL, NULL);
-            if(clientSocket == -1)
-                break; //replace with error
-            else
-            {
-                std::cout << "New client connected!" << std::endl;
+	while(true)
+	{
+		if(poll(fds.data(), fds.size(), 0) == -1)
+			throw CustomException::PollFailed();
+			
+		//Check if the server socket has incoming connection requests
+		if(fds[0].revents & POLLIN)
+		{
+			int clientSocket = accept(_sockfd, NULL, NULL);
+			if(clientSocket == -1)
+				break; //replace with error
+			else
+			{
+				std::cout << "New client connected!" << std::endl;
 
-                struct pollfd clientfd;
-                clientfd.fd = clientSocket;
-                clientfd.events = POLLIN;
+				struct pollfd clientfd;
+				clientfd.fd = clientSocket;
+				clientfd.events = POLLIN;
 
-                fds.push_back(clientfd);
-                
-                Client client(clientSocket);
-                _clients.insert(std::make_pair(clientSocket, client));
-            }
-           // break ;
-        }
-    }
-		
+				fds.push_back(clientfd);
+				
+				Client client(clientSocket);
+				//_clients.insert(std::make_pair(clientSocket, client));
+			}
+			// break ;
+		}
+	}
 
-    return 0;
+	return 0;
 }
 /*
+	TODO:
 	Order of operations for connecting a host: https://modern.ircdocs.horse/#irc-concepts
 
 	The recommended order of commands during registration is as follows:
@@ -81,7 +82,7 @@ int Server::Run()
 	6. CAP END
 
 	Structure of a message:
-	1. Prefix starting with : (optional)
+	1. Prefix starting with ':', has to be followed by nick!username of said client (optional)
 	2. Command name or 3 digit number in ASCII
 	3. Parameters
 	4. /r/n (CR_LF)

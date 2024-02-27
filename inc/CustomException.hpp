@@ -40,4 +40,10 @@ class CustomException
 			public:
 				virtual const char* what() const throw() { return (ERROR_BLOCK); };
 		};
+
+		class PollFailed: public std::exception
+		{
+			public:
+				virtual const char* what() const throw() { return (""); };
+		};
 };
