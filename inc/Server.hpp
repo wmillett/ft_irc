@@ -22,8 +22,8 @@ class Server
 	int _port;
 	int _sockfd;
 	string _password;
-	std::vector<Client> _clients;
-	//std::map<int, Client> _clients;
+	//std::vector<Client> _clients;
+	std::map<int, Client*> _clients;
 	// sockaddr_in serverAddr;
 
 	bool digitsCheck(const std::string &arg) const;

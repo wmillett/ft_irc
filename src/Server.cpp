@@ -39,7 +39,7 @@ int Server::Run()
 
     while(true)
     {
-        if(poll(fds.data(), fds.size(), 0) == -1)
+        if(poll(fds.data(), fds.size(), 100) == -1)
             break; //replace with error
           
         //Check if the server socket has incoming connection requests
@@ -51,12 +51,34 @@ int Server::Run()
             else
             {
                 std::cout << "New client connected!" << std::endl;
-                _clients.push_back(Client(clientSocket));
+
+                struct pollfd clientfd; //malloc?
+                clientfd.fd = clientSocket;
+                clientfd.events = POLLIN;
+
+                fds.push_back(clientfd);
+                
+                _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
+				
             }
-           // break ;
+           
         }
-    }
-    
+
+		for (size_t i = 1; i < fds.size(); i++)
+		{
+			if(fds[i].revents & POLLIN)
+			{
+				char buffer[1024];
+				int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+				if(bytesRead > 0)
+				{
+					std::cout << string(buffer, bytesRead) << std::endl;
+				}
+			}
+		}
+
+    }	
+		
 
     return 0;
 }
@@ -87,7 +109,7 @@ void Server::SetupServer()
        throw CustomException::CouldNotCreatePort();
 
     //Sets the socket to non blocking mode
-    if (fcntl(_sockfd, F_SETFL, fcntl(_sockfd, F_GETFL, 0) | O_NONBLOCK) == -1) 
+    if (fcntl(_sockfd, F_SETFL, O_NONBLOCK) == -1) 
         throw CustomException::ErrorFcntl();
 
     //Define the server's address structure
