@@ -51,12 +51,20 @@ int Server::Run()
             else
             {
                 std::cout << "New client connected!" << std::endl;
-                _clients.push_back(Client(clientSocket));
+
+                struct pollfd clientfd;
+                clientfd.fd = clientSocket;
+                clientfd.events = POLLIN;
+
+                fds.push_back(clientfd);
+                
+                Client client(clientSocket);
+                _clients.insert(std::make_pair(clientSocket, client));
             }
            // break ;
         }
     }
-    
+		
 
     return 0;
 }
@@ -87,7 +95,7 @@ void Server::SetupServer()
        throw CustomException::CouldNotCreatePort();
 
     //Sets the socket to non blocking mode
-    if (fcntl(_sockfd, F_SETFL, fcntl(_sockfd, F_GETFL, 0) | O_NONBLOCK) == -1) 
+    if (fcntl(_sockfd, F_SETFL, O_NONBLOCK) == -1) 
         throw CustomException::ErrorFcntl();
 
     //Define the server's address structure
