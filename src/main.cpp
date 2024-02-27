@@ -1,9 +1,9 @@
-/* The port number is passed as an argument */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+// messages end with /r/n. A CR-LF pair. no null terminator
+#include <iostream>
+#include <cstring>
+#include <vector>
 #include <unistd.h>
-#include <sys/types.h> 
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>

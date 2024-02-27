@@ -28,8 +28,56 @@ int Server::Run()
 {
     SetupServer();
 
+    std::vector<pollfd> fds;
+
+    //Add server socket to the pollfd struct and push it in the vector container
+    struct pollfd serverfd;
+    serverfd.fd = _sockfd;
+    serverfd.events = POLLIN; //monitor for data available for reading
+
+    fds.push_back(serverfd);
+
+    while(true)
+    {
+        if(poll(fds.data(), fds.size(), 0) == -1)
+            break; //replace with error
+          
+        //Check if the server socket has incoming connection requests
+        if(fds[0].revents & POLLIN)
+        {
+            int clientSocket = accept(_sockfd, NULL, NULL);
+            if(clientSocket == -1)
+                break; //replace with error
+            else
+            {
+                std::cout << "New client connected!" << std::endl;
+                _clients.push_back(Client(clientSocket));
+            }
+           // break ;
+        }
+    }
+    
+
     return 0;
 }
+/*
+	Order of operations for connecting a host: https://modern.ircdocs.horse/#irc-concepts
+
+	The recommended order of commands during registration is as follows:
+	CAP stuff is NOT required
+	1. CAP LS 302
+	2. PASS
+	3. NICK and USER
+	4. Capability Negotiation
+	5. SASL (if negotiated)
+	6. CAP END
+
+	Structure of a message:
+	1. Prefix starting with : (optional)
+	2. Command name or 3 digit number in ASCII
+	3. Parameters
+	4. /r/n (CR_LF)
+*/
 
 void Server::SetupServer()
 {
