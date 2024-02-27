@@ -18,22 +18,22 @@ using std::string;
 
 class Server
 {
-        private:
-                int _port;
-                int _sockfd;
-                string _password;
-                std::vector<Client> _clients;
-                //std::map<int, Client> _clients;
-                // sockaddr_in serverAddr;
+	private:
+	int _port;
+	int _sockfd;
+	string _password;
+	std::vector<Client> _clients;
+	//std::map<int, Client> _clients;
+	// sockaddr_in serverAddr;
 
-                bool digitsCheck(const std::string &arg) const;
-                void SetupServer();
-        		
+	bool digitsCheck(const std::string &arg) const;
+	void SetupServer();
+
 	public:
-                Server(const string& port_str,  const string& password);
-                ~Server();
+	Server(const string& port_str,  const string& password);
+	~Server();
 
-                int Run();
+	int Run();
 };
 
 #endif

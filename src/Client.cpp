@@ -2,4 +2,7 @@
 
 Client::Client(int sockfd) : _sockfd(sockfd) {}
 
-Client::~Client() {std::cout << "deleting" << _sockfd << std::endl;}
+Client::~Client() 
+{
+	std::cout << "deleting" << _sockfd << std::endl;
+}

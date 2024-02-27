@@ -60,6 +60,18 @@ int Server::Run()
 
     return 0;
 }
+/*
+	Order of operaations for connecting a host: https://modern.ircdocs.horse/#irc-concepts
+
+	The recommended order of commands during registration is as follows:
+	CAP stuff is NOT required
+	1. CAP LS 302
+	2. PASS
+	3. NICK and USER
+	4. Capability Negotiation
+	5. SASL (if negotiated)
+	6. CAP END
+*/
 
 void Server::SetupServer()
 {
