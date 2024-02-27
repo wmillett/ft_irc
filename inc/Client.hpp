@@ -12,7 +12,6 @@ class Client
 		int _sockfd;
 		string _username;
 		string _nickname;
-		Channel* _channelJoined;
 	
 	public:
 		Client(int sockfd);

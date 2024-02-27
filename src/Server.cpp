@@ -1,7 +1,7 @@
 #include "Server.hpp"
 #include "CustomException.hpp"
 
-Server::Server(const string& port_str,  const string& password) : _password(password)
+Server::Server(const string& port_str,  const string& password) : _password(password), _clientCount(0)
 {
     //Parsing for empty and invalid port/password
     if (port_str.empty() || password.empty() || !digitsCheck(port_str))
@@ -97,7 +97,7 @@ int Server::Run()
 	6. CAP END
 
 	Structure of a message:
-	1. Prefix starting with ':', has to be followed by nick!username of said client (optional)
+	1. Prefix starting with ':', has to be followed by "nick!username" of said client (optional)
 	2. Command name or 3 digit number in ASCII
 	3. Parameters
 	4. /r/n (CR_LF)
@@ -105,30 +105,44 @@ int Server::Run()
 
 void Server::SetupServer()
 {
-    //Creating a socket
-    _sockfd = socket(AF_INET, SOCK_STREAM, 0); // ipv4 / TCP
-    if (_sockfd == - 1) 
-       throw CustomException::CouldNotCreatePort();
+	//Creating a socket
+	_sockfd = socket(AF_INET, SOCK_STREAM, 0); // ipv4 / TCP
+	if (_sockfd == - 1) 
+		throw CustomException::CouldNotCreatePort();
 
-    //Sets the socket to non blocking mode
-    if (fcntl(_sockfd, F_SETFL, O_NONBLOCK) == -1) 
-        throw CustomException::ErrorFcntl();
+	//Sets the socket to non blocking mode
+	if (fcntl(_sockfd, F_SETFL, O_NONBLOCK) == -1) 
+		throw CustomException::ErrorFcntl();
 
-    //Define the server's address structure
-    struct sockaddr_in address;
-    memset(&address, 0, sizeof(address)); //fill with 0s to avoid undefined behaviors
-    address.sin_family = AF_INET; //ipv4
-    address.sin_addr.s_addr = INADDR_ANY;  // Listen on all interfaces
-    address.sin_port = htons(_port); // from host byte order to network byte order
+	//Define the server's address structure
+	struct sockaddr_in address;
+	memset(&address, 0, sizeof(address)); //fill with 0s to avoid undefined behaviors
+	address.sin_family = AF_INET; //ipv4
+	address.sin_addr.s_addr = INADDR_ANY;  // Listen on all interfaces
+	address.sin_port = htons(_port); // from host byte order to network byte order
 
-    //Bind the socket to a port and address
-    if (bind(_sockfd, (struct sockaddr*)&address, sizeof(address)) == -1) 
-        throw CustomException::ErrorBind();
+	//Bind the socket to a port and address
+	if (bind(_sockfd, (struct sockaddr*)&address, sizeof(address)) == -1) 
+		throw CustomException::ErrorBind();
 
-    // Listen for incoming connections
-    if (listen(_sockfd, SOMAXCONN) == -1) 
-        throw CustomException::ErrorListen();
+	// Listen for incoming connections
+	if (listen(_sockfd, SOMAXCONN) == -1) 
+		throw CustomException::ErrorListen();
 }
 
+void Server::increaseCount(void)
+{
+	if (_clientCount < std::numeric_limits<unsigned long int>::max())
+		_clientCount++;
+}
 
+void Server::decreaseCount(void)
+{
+	if (_clientCount > std::numeric_limits<unsigned long int>::min())
+		_clientCount--;
+}
 
+size_t Server::getCount(void)
+{
+	return (_clientCount);
+}

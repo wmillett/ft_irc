@@ -5,6 +5,7 @@
 # include <iostream>
 # include <cstdbool>
 # include <cstdlib>
+# include <limits>
 
 //Defines
 # define NO_PORT "Error: no port provided"
