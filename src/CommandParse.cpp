@@ -1,6 +1,5 @@
 #include "CommandParse.hpp"
 
-
 void CommandParse::setArgs(string line, size_t startPos, std::list<string> listArgs){
     for (std::list<string>::iterator it = listArgs.begin(); it != listArgs.end(); ++it){
         string currentString = *it;
@@ -25,7 +24,7 @@ bool CommandParse::validCommand(string line){
         return 0;
     while(start_pos < lsize && isspace(line[start_pos]))
         start_pos++;
-        
+
     //Loops through available commands to identify the command called
     for(int i = 0; i < NB_CMD; i++){
         if(strncmp(line.c_str() + start_pos, cmds[i].c_str(), cmds[i].size())){
@@ -34,31 +33,40 @@ bool CommandParse::validCommand(string line){
         }
     }
     //Finds the modifiers for each command and validates if the command was called correctly
+    std::list<string> argList;
     switch(currentCommand){
         case KICK:
         {
-            setArgs(line, end_pos, KICK_ARGS);
+            argList.push_back("channel");
+            argList.push_back("user");
+            setArgs(line, end_pos, argList);
             if(_args["channel"].empty() || _args["user"].empty())
                 return 0;
             return 1;
         }
         case INVITE:
         {
-            setArgs(line, end_pos, INVITE_ARGS);
+            argList.push_back("channel");
+            argList.push_back("user");
+            setArgs(line, end_pos, argList);
             if(_args["channel"].empty() || _args["user"].empty())
                 return 0;
             return 1;
         }
         case TOPIC:
         {
-            setArgs(line, end_pos, TOPIC_ARGS);
+            argList.push_back("channel");
+            argList.push_back("topic");
+            setArgs(line, end_pos, argList);
             if(_args["channel"].empty() || _args["topic"].empty())
                 return 0;
             return 1;
         }
         case MODE:
         {
-            setArgs(line, end_pos, MODE_ARGS);
+            argList.push_back("channel");
+            argList.push_back("option");
+            setArgs(line, end_pos, argList);
             if(_args["channel"].empty() || _args["option"].empty())
                 return 0;
             return 1;
