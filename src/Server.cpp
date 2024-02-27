@@ -39,7 +39,7 @@ int Server::Run()
 
     while(true)
     {
-        if(poll(fds.data(), fds.size(), 0) == -1)
+        if(poll(fds.data(), fds.size(), 100) == -1)
             break; //replace with error
           
         //Check if the server socket has incoming connection requests
@@ -52,18 +52,32 @@ int Server::Run()
             {
                 std::cout << "New client connected!" << std::endl;
 
-                struct pollfd clientfd;
+                struct pollfd clientfd; //malloc?
                 clientfd.fd = clientSocket;
                 clientfd.events = POLLIN;
 
                 fds.push_back(clientfd);
                 
-                Client client(clientSocket);
-                _clients.insert(std::make_pair(clientSocket, client));
+                _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
+				
             }
-           // break ;
+           
         }
-    }
+
+		for (size_t i = 1; i < fds.size(); i++)
+		{
+			if(fds[i].revents & POLLIN)
+			{
+				char buffer[1024];
+				int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+				if(bytesRead > 0)
+				{
+					std::cout << string(buffer, bytesRead) << std::endl;
+				}
+			}
+		}
+
+    }	
 		
 
     return 0;
