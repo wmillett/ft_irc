@@ -57,14 +57,29 @@ int Server::Run()
 				clientfd.fd = clientSocket;
 				clientfd.events = POLLIN;
 
-				fds.push_back(clientfd);
+                fds.push_back(clientfd);
+                
+                _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
 				
-				Client client(clientSocket);
-				//_clients.insert(std::make_pair(clientSocket, client));
+            }
+           
+        }
+
+		for (size_t i = 1; i < fds.size(); i++)
+		{
+			if(fds[i].revents & POLLIN)
+			{
+				char buffer[1024];
+				int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+				if(bytesRead > 0)
+				{
+					std::cout << string(buffer, bytesRead) << std::endl;
+				}
 			}
-			// break ;
 		}
-	}
+
+    }	
+		
 
 	return 0;
 }
