@@ -23,6 +23,8 @@
 
 using std::string;
 using std::map;
+using std::endl;
+using std::cout;
 
 enum e_cmd{
 	KICK,
