@@ -11,6 +11,7 @@ void CommandParse::setArgs(string line, size_t startPos, std::list<string> listA
         while(line[startPos] && line[startPos] != ' ')
             buffer.push_back(line[startPos++]);
         this->_args[currentString] = buffer;
+        cout << buffer << endl;
         buffer.clear();
     }
 }
