@@ -61,7 +61,7 @@ int Server::Run()
     return 0;
 }
 /*
-	Order of operaations for connecting a host: https://modern.ircdocs.horse/#irc-concepts
+	Order of operations for connecting a host: https://modern.ircdocs.horse/#irc-concepts
 
 	The recommended order of commands during registration is as follows:
 	CAP stuff is NOT required
@@ -71,6 +71,12 @@ int Server::Run()
 	4. Capability Negotiation
 	5. SASL (if negotiated)
 	6. CAP END
+
+	Structure of a message:
+	1. Prefix starting with : (optional)
+	2. Command name or 3 digit number in ASCII
+	3. Parameters
+	4. /r/n (CR_LF)
 */
 
 void Server::SetupServer()
