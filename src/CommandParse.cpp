@@ -58,7 +58,7 @@ bool CommandParse::validCommand(string line){
             end_pos = cmds[i].size() + start_pos;
         }
     }
-
+    
     //Finds the modifiers for each command and validates if the command was called correctly
     std::list<string> argList;
     switch(currentCommand){
