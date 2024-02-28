@@ -1,5 +1,6 @@
 #include "Server.hpp"
 #include "CustomException.hpp"
+# include <sys/socket.h>
 
 Server::Server(const string& port_str,  const string& password) : _password(password), _clientCount(0)
 {
@@ -9,6 +10,7 @@ Server::Server(const string& port_str,  const string& password) : _password(pass
     _port = std::atoi(port_str.c_str());
     if(_port > 65535 || _port < 0)
         throw CustomException::OutOfRangeException();
+	this->_serverName = "Minou-IRC";
 }
   
 
@@ -60,6 +62,9 @@ int Server::Run()
                 fds.push_back(clientfd);
                 
                 _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
+				send(fds[1].fd, "Welcome to ", 11, 0);
+				send(fds[1].fd, &this->_serverName, this->_serverName.size() + 1, 0);
+				send(fds[1].fd, ".\n", 2, 0);
 				
             }
            

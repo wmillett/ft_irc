@@ -19,6 +19,7 @@ using std::string;
 class Server
 {
 	private:
+	string _serverName;
 	int _port;
 	int _sockfd;
 	string _password;
