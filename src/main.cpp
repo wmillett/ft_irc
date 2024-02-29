@@ -11,6 +11,7 @@
 #include "../inc/utils.h"
 #include "Server.hpp"
 
+#include "../inc/CommandParse.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +21,12 @@ int main(int argc, char *argv[])
     }
     try
     {
+        // CommandParse test;
+        // bool ok = test.validCommand(argv[1]);
+        // if (ok)
+        //     printf("oui\n");
+        // else
+        //     printf("non\n");
         Server irc(argv[1],argv[2]);
         irc.Run();
     }
