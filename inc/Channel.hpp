@@ -13,7 +13,7 @@ class Channel
 
 	private:
 	string _name;
-	//std::map<bool, Client> _connectedClients;
+	//std::map<bool, Client>* _connectedClients;
 	/* bool indicates whether the connected 
 	client is an operator or not */
 		

@@ -19,15 +19,21 @@ using std::string;
 class Server
 {
 	private:
+	string _serverName;
 	int _port;
 	int _sockfd;
 	string _password;
 	//std::vector<Client> _clients;
 	std::map<int, Client*> _clients;
+	std::vector<struct pollfd> _pollfd;
+	size_t _clientCount; // for freeing the resources properly at the end and throughout
 	// sockaddr_in serverAddr;
 
 	bool digitsCheck(const std::string &arg) const;
 	void SetupServer();
+	void increaseCount();
+	void decreaseCount();
+	size_t getCount();
 
 	public:
 	Server(const string& port_str,  const string& password);

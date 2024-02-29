@@ -5,6 +5,7 @@
 # include <iostream>
 # include <cstdbool>
 # include <cstdlib>
+# include <limits>
 
 //Defines
 # define NO_PORT "Error: no port provided"
@@ -19,6 +20,8 @@
 # define ERROR_BIND "Error: Failed to bind socket"
 # define ERROR_LISTEN "Error: Failed to listen for connections"
 # define ERROR_BLOCK "Error setting socket to non-blocking mode"
+# define ERROR_POLL "Error: poll() failed"
+# define CHARACTER_LIMIT 512
 
 
 
