@@ -6,7 +6,6 @@
 
 using std::string;
 
-
 class SignalHandler {
 	public:
     	SignalHandler();

@@ -16,6 +16,15 @@ class Client;
 
 using std::string;
 
+/*
+the server MUST keep track of the channel members, as
+	well as the channel modes.
+
+   When a client connection unexpectedly closes, a QUIT message is
+   generated on behalf of the client by the server to which the client
+   was connected.  No other message is to be generated or used.
+*/
+
 class Server
 {
 	private:
