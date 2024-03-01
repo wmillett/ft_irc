@@ -11,6 +11,9 @@
 #include <vector>
 #include "Client.hpp"
 #include <fcntl.h>
+#include <time.h>
+
+#define SERVER_NAME "Minou-IRC"
 
 class Client;
 
@@ -28,7 +31,7 @@ the server MUST keep track of the channel members, as
 class Server
 {
 	private:
-	string _serverName;
+	const string _serverName;
 	int _port;
 	int _sockfd;
 	string _password;
