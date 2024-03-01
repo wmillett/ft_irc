@@ -1,6 +1,6 @@
 #include "Server.hpp"
 #include "CustomException.hpp"
-# include <sys/socket.h>
+#include "utils.h"
 
 Server::Server(const string& port_str,  const string& password) : _password(password), _clientCount(0)
 {
@@ -104,7 +104,7 @@ int Server::Run()
 	Structure of a message:
 	1. Prefix starting with ':', has to be followed by "nick!username" of said client (optional)
 	2. Command name or 3 digit number in ASCII
-	3. Parameters
+	3. Parameters (maximum of 15 parameters) separated by one space character each
 	4. /r/n (CR_LF)
 */
 
