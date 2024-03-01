@@ -51,14 +51,18 @@ bool CommandParse::validCommand(string line){
     while(start_pos < lsize && isspace(line[start_pos]))
         start_pos++;
     currentCommand = INVALID;
+    
     //Loops through available commands to identify the command called
     for(int i = 0; i < NB_CMD; i++){
         if(!strncmp(line.c_str() + start_pos, cmds[i].c_str(), cmds[i].size())){
             currentCommand = ecmds[i];
             end_pos = cmds[i].size() + start_pos;
+            break;
         }
     }
-    
+    if(line[end_pos] && !isspace(line[end_pos]))
+        return false;
+
     //Finds the modifiers for each command and validates if the command was called correctly
     std::list<string> argList;
     switch(currentCommand){
@@ -98,6 +102,49 @@ bool CommandParse::validCommand(string line){
                 return false;
             if(!this->validOptions())
                 return false;
+            return true;
+        }
+        case NICK:
+        {
+            argList.push_back("username");
+            argList.push_back("nickname");
+            setArgs(line, end_pos, argList);
+            if(_args["username"].empty() || _args["nickname"].empty())
+                return false;
+            return true;
+        }
+        case USER:
+        {
+            argList.push_back("username");
+            setArgs(line, end_pos, argList);
+            if(_args["username"].empty())
+                return false;
+            return true;
+        }
+        case PASS:
+        {
+            argList.push_back("password");
+            setArgs(line, end_pos, argList);
+            if(_args["password"].empty())
+                return false;
+            return true;
+        }
+        case QUIT:
+        {
+            argList.push_back("Quit message");
+            setArgs(line, end_pos, argList);
+            return true;
+        }
+        case JOIN:
+        {
+             argList.push_back("channel");
+            setArgs(line, end_pos, argList);
+            if(_args["channel"].empty())
+                return false;
+            return true;
+        }
+        case NAMES:
+        {
             return true;
         }
         default:

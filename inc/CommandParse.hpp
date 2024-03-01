@@ -33,11 +33,17 @@ If a full set of parameters is presented, then each MUST be checked
 # define INVITE_USAGE "usage: INVITE <channel> <user>"
 # define TOPIC_USAGE "usage: TOPIC: <channel> [<topic>]"
 # define MODE_USAGE "usage: MODE <channel> {[+ | -] | i | t | k | o | l}"
+# define NICK_USAGE "usage: NICK <username> <nickname>"
+# define USER_USAGE "usage: USER <username>"
+# define PASS_USAGE "usage: PASS <password>"
+# define QUIT_USAGE "usage: QUIT [<Quit message>]"
+# define JOIN_USAGE "usage: JOIN <channel>"
+# define NAMES_USAGE "usage: NAMES"
 
 //Defines for the commands
-# define CMD_LIST {"KICK ", "INVITE ", "TOPIC ", "MODE "}
-# define ECMD_LIST {KICK,INVITE,TOPIC,MODE,INVALID}
-# define NB_CMD 4
+# define CMD_LIST {"KICK", "INVITE", "TOPIC", "MODE", "NICK", "USER", "PASS", "QUIT", "JOIN", "NAMES"}
+# define ECMD_LIST {KICK,INVITE,TOPIC,MODE,NICK,USER,PASS,QUIT,JOIN,NAMES,INVALID}
+# define NB_CMD 10
 
 //Defines for the options in the MODE command
 # define MODE_OPTIONS {'i', 't', 'k', 'o', 'l'}
@@ -53,6 +59,12 @@ enum e_cmd{
 	INVITE,
 	TOPIC, 
 	MODE,
+   NICK,
+   USER,
+   PASS,
+   QUIT,
+   JOIN,
+   NAMES,
 	INVALID
 };
 
