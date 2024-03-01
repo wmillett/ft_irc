@@ -11,6 +11,7 @@
 #include <vector>
 #include "Client.hpp"
 #include <fcntl.h>
+#include <sys/time.h>
 #include <time.h>
 
 #define SERVER_NAME "Minou-IRC"
@@ -45,7 +46,9 @@ class Server
 	void SetupServer();
 	void increaseCount();
 	void decreaseCount();
-	size_t getCount();
+	size_t getCount() const;
+	double getTime();
+
 
 	public:
 	Server(const string& port_str,  const string& password);

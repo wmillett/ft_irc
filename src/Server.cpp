@@ -26,7 +26,7 @@ bool Server::digitsCheck(const std::string &arg) const
 
 int Server::Run()
 {
-	time_t startTime = time(NULL);
+	time_t startTime = getTime();
 	SetupServer();
 
 	std::vector<pollfd> fds;
@@ -53,7 +53,7 @@ int Server::Run()
 			else
 			{
 				std::cout << "New client connected!" << std::endl;
-				//std::cout << "Time elapsed " << time(NULL) - startTime  << std::endl;
+				//std::cout << "Time elapsed " << getTime() - startTime  << std::endl; //to test
 
 				struct pollfd clientfd;
 				clientfd.fd = clientSocket;
@@ -82,6 +82,8 @@ int Server::Run()
 				}
 			}
 		}
+
+		//TO DO: HANDLE THE DISCONECT, CLEANING SOCKETS CAUSE THE SERVER STOPS WHEN I CONNECT AND QUIT AND CONNECT AND QUIT AND CONNECT AND QUIT
 
     }	
 		
@@ -149,7 +151,15 @@ void Server::decreaseCount(void)
 		_clientCount--;
 }
 
-size_t Server::getCount(void)
+size_t Server::getCount(void) const
 {
 	return (_clientCount);
+}
+
+double Server::getTime(void)
+{
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	
+	return tv.tv_sec + (tv.tv_usec / 1000000.0);
 }
