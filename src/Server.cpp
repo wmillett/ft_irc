@@ -2,7 +2,7 @@
 #include "CustomException.hpp"
 #include "utils.h"
 
-Server::Server(const string& port_str,  const string& password) : _password(password), _clientCount(0)
+Server::Server(const string& port_str,  const string& password) : _password(password), _clientCount(0), _serverName(SERVER_NAME)
 {
     //Parsing for empty and invalid port/password
     if (port_str.empty() || password.empty() || !digitsCheck(port_str))
@@ -10,7 +10,6 @@ Server::Server(const string& port_str,  const string& password) : _password(pass
     _port = std::atoi(port_str.c_str());
     if(_port > 65535 || _port < 0)
         throw CustomException::OutOfRangeException();
-	this->_serverName = "Minou-IRC";
 }
   
 
@@ -28,6 +27,7 @@ bool Server::digitsCheck(const std::string &arg) const
 
 int Server::Run()
 {
+	time_t startTime = time(NULL);
 	SetupServer();
 
 	std::vector<pollfd> fds;
@@ -54,6 +54,7 @@ int Server::Run()
 			else
 			{
 				std::cout << "New client connected!" << std::endl;
+				//std::cout << "Time elapsed " << time(NULL) - startTime  << std::endl;
 
 				struct pollfd clientfd;
 				clientfd.fd = clientSocket;
@@ -133,6 +134,8 @@ void Server::SetupServer()
 	// Listen for incoming connections
 	if (listen(_sockfd, SOMAXCONN) == -1) 
 		throw CustomException::ErrorListen();
+
+	std::cout << "Server listening ..." << std::endl;
 }
 
 void Server::increaseCount(void)

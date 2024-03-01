@@ -1,9 +1,10 @@
 #pragma once
-#include "utils.h"
+#include "errorMessage.h"
 #include "Client.hpp"
 #include <map>
 
 using std::string;
+class Client;
 
 /*
 	Channels names are strings (beginning with a '&', '#', '+' or '!'
