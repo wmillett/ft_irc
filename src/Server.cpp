@@ -10,7 +10,6 @@ Server::Server(const string& port_str,  const string& password) : _password(pass
     if(_port > 65535 || _port < 0)
         throw CustomException::OutOfRangeException();
 }
-  
 
 Server::~Server() {}
 
@@ -127,6 +126,3 @@ void Server::SetupServer()
     if (listen(_sockfd, SOMAXCONN) == -1) 
         throw CustomException::ErrorListen();
 }
-
-
-
