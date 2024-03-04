@@ -15,20 +15,20 @@
 
 int main(int argc, char *argv[])
 {
-    // if (argc != 3){
-    //     std::cerr << USAGE_MESS << std::endl;
-    //     return 1;
-    // }
+    if (argc != 3){
+        std::cerr << USAGE_MESS << std::endl;
+        return 1;
+    }
     try
     {
-        CommandParse test;
-        bool ok = test.validCommand(argv[1]);
-        if (ok)
-            printf("oui\n");
-        else
-            printf("non\n");
-        // Server irc(argv[1],argv[2]);
-        // irc.Run();
+        // CommandParse test;
+        // bool ok = test.validCommand(argv[1]);
+        // if (ok)
+        //     printf("oui\n");
+        // else
+        //     printf("non\n");
+        Server irc(argv[1],argv[2]);
+        irc.Run();
     }
     catch(std::exception & e)
     {

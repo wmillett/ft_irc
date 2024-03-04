@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "CommandParse.hpp"
 #include "CustomException.hpp"
 #include "utils.h"
 
@@ -70,6 +71,7 @@ int Server::Run()
            
         }
 
+		CommandParse commandCalled;
 		for (size_t i = 1; i < fds.size(); i++)
 		{
 			if(fds[i].revents & POLLIN)
@@ -78,6 +80,12 @@ int Server::Run()
 				int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
 				if(bytesRead > 0)
 				{
+					if(commandCalled.validCommand(buffer))
+						
+
+
+
+
 					std::cout << string(buffer, bytesRead) << std::endl;
 				}
 			}
