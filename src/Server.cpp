@@ -59,7 +59,7 @@ int Server::Run()
 		{
 			int clientSocket = accept(_sockfd, NULL, NULL);
 			if(clientSocket == -1)
-				break; //replace with error
+				break; //TODO: replace with error
 			else
 			{
 				std::cout << "New client connected!" << std::endl;
@@ -70,11 +70,11 @@ int Server::Run()
 				clientfd.events = POLLIN;
 
                 fds.push_back(clientfd);
-                
+				std::cout << "Client count: " << _clientCount << std::endl;
                 _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
 				send(fds[1].fd, "Welcome to ", 11, 0);
 				send(fds[1].fd, &this->_serverName, this->_serverName.size() + 1, 0);
-				send(fds[1].fd, ".\n", 2, 0);
+				send(fds[1].fd, ".\r\n", 2, 0);
 			
             }
            
@@ -97,7 +97,6 @@ int Server::Run()
 
 					close(fds[i].fd);
 					fds.erase(fds.begin() + i);
-					//  
 ;					break ;
 				}
 				else if(bytesRead > 0)
@@ -107,7 +106,7 @@ int Server::Run()
 			}
 		}
 
-		//TO DO: HANDLE THE DISCONECT, CLEANING SOCKETS CAUSE THE SERVER STOPS WHEN I CONNECT AND QUIT AND CONNECT AND QUIT AND CONNECT AND QUIT
+		//TODO: HANDLE THE DISCONECT, CLEANING SOCKETS CAUSE THE SERVER STOPS WHEN I CONNECT AND QUIT AND CONNECT AND QUIT AND CONNECT AND QUIT
 
     }	
 		

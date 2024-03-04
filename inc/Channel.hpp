@@ -42,7 +42,7 @@ class Client;
 class Channel
 {
 	public:
-	Channel(string name);
+	Channel(string name, const Client& op);
 	~Channel(void);
 
 	void printTopic(const Client& client);
@@ -51,7 +51,7 @@ class Channel
 	string _name;
 	string* _topic;
 	string* _mask;
-	//std::map<bool, Client>* _connectedClients;
+	std::map<bool, const Client&> _clients;
 	/* bool indicates whether the connected 
 	client is an operator or not */
 		

@@ -36,9 +36,9 @@ class Server
 	int _port;
 	int _sockfd;
 	string _password;
-	//std::vector<Client> _clients;
 	std::map<int, Client*> _clients;
 	std::vector<struct pollfd> _pollfd;
+	std::vector<Channel> _channels;
 	size_t _clientCount; // for freeing the resources properly at the end and throughout
 	// sockaddr_in serverAddr;
 
