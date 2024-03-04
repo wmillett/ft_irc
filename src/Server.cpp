@@ -13,7 +13,17 @@ Server::Server(const string& port_str,  const string& password) : _password(pass
         throw CustomException::OutOfRangeException();
 }
 
-Server::~Server() {}
+Server::~Server() 
+{
+	std::map<int,Client*>::iterator it;
+	for(it = _clients.begin(); it != _clients.end(); it++)
+		delete it->second; 
+
+	_clients.clear();
+
+	close(_sockfd);
+
+}
 
 bool Server::digitsCheck(const std::string &arg) const
 {
@@ -66,7 +76,7 @@ int Server::Run()
 				send(fds[1].fd, "Welcome to ", 11, 0);
 				send(fds[1].fd, &this->_serverName, this->_serverName.size() + 1, 0);
 				send(fds[1].fd, ".\n", 2, 0);
-				
+			
             }
            
         }
@@ -78,7 +88,21 @@ int Server::Run()
 			{
 				char buffer[1024];
 				int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
-				if(bytesRead > 0)
+				if(bytesRead == 0)
+				{
+					std::cout << "Client disconnected" << std::endl;
+					std::map<int,Client*>::iterator it = _clients.find(fds[i].fd);
+					if(it != _clients.end()){
+						delete it->second;
+						_clients.erase(it);
+					}
+
+					close(fds[i].fd);
+					fds.erase(fds.begin() + i);
+					//  
+;					break ;
+				}
+				else if(bytesRead > 0)
 				{
 					if(commandCalled.validCommand(buffer))
 						
