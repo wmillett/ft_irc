@@ -39,6 +39,8 @@ class Server
 	std::map<int, Client*> _clients;
 	std::vector<struct pollfd> _pollfd;
 	std::vector<Channel> _channels;
+	std::map<string, int (Server::*)(Client*, const string&)> _commandsMap;
+
 	size_t _clientCount; // for freeing the resources properly at the end and throughout
 	// sockaddr_in serverAddr;
 
@@ -49,6 +51,18 @@ class Server
 	size_t getCount() const;
 	double getTime();
 
+	int nick(Client*client, const string&arg);
+	int user(Client*client, const string&arg);
+	int pass(Client*client, const string&arg);
+	int quit(Client*client, const string&arg);
+	int join(Client*client, const string&arg);
+	int topic(Client*client, const string&arg);
+	int names(Client*client, const string&arg);
+	int invite(Client*client, const string&arg);
+	int kick(Client*client, const string&arg);
+	int mode(Client*client, const string&arg);
+
+	void init(void);
 
 	public:
 	Server(const string& port_str,  const string& password);
