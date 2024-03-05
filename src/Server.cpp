@@ -78,7 +78,7 @@ int Server::Run()
 				send(fds[1].fd, ".\n", 2, 0);
 			
             }
-           
+
         }
 
 		CommandParse commandCalled;
