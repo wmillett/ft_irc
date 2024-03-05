@@ -41,7 +41,7 @@ int Server::Run()
 	SetupServer();
 
 	std::vector<pollfd> fds;
-
+	init();
 	//Add server socket to the pollfd struct and push it in the vector container
 	struct pollfd serverfd;
 	memset(&serverfd, 0 , sizeof(serverfd)); // set memory to 0
@@ -104,13 +104,19 @@ int Server::Run()
 				}
 				else if(bytesRead > 0)
 				{
-					if(commandCalled.validCommand(buffer))
-						
+					string input = string(buffer, bytesRead - 1);
+					std::cout << input << std::endl;
 
+					std::map<string, int(Server::*)(Client*, const string&)>::iterator it;
+					for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
+					{
+						if(input == it->first)
+						{
+       						(this->*it->second)(NULL, "sdjhfkdsjfgh");
+							break;
+						}	
 
-
-
-					std::cout << string(buffer, bytesRead) << std::endl;
+					}
 				}
 			}
 		}
