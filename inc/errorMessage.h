@@ -7,7 +7,7 @@
 #define RPL_CREATED "<client> :This server was created <datetime>"
 #define RPL_MYINFO "<client> <servername> <version> <available user modes> <available channel modes> [<channel modes with a parameter>]"
 
-#define RPL_INVITING "<client> <nick> <channel>
+#define RPL_INVITING "<client> <nick> <channel>"
 
 // Errors
 #define NO_PORT "Error: no port provided"

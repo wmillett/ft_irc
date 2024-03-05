@@ -41,6 +41,7 @@ class Client
 	private:
 		int _sockfd;
 		string _username;
+		char _ip[INET_ADDRSTRLEN];
 		string _nickname;
 		string *oldNickname; // array of old nicknames
 

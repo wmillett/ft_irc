@@ -57,9 +57,13 @@ int Server::Run()
 		//Check if the server socket has incoming connection requests
 		if(fds[0].revents & POLLIN)
 		{
-			struct sockaddr_in clientSockInfo//
-			struct addrinfo clientAddr, *addr;
-			int clientSocket = accept(_sockfd, NULL, NULL);
+			struct sockaddr_in clientSockInfo;
+			memset(&clientSockInfo, 0, sizeof(clientSockInfo)); //fill with 0s to avoid undefined behaviors
+			socklen_t len = sizeof(clientSockInfo);
+
+
+			//struct addrinfo hint, *result, *res;
+			int clientSocket = accept(_sockfd, (struct sockaddr *)&clientSockInfo, &len);
 			if(clientSocket == -1)
 				break; //TODO: replace with error
 			else
@@ -71,14 +75,36 @@ int Server::Run()
 				clientfd.fd = clientSocket;
 				clientfd.events = POLLIN;
 
-				//araymond testing zone
-				memset(&clientAddr, 0, sizeof(clientAddr)); //fill with 0s to avoid undefined behaviors
-				clientAddr.ai_family = AF_INET; //ipv4
-				clientAddr.ai_socktype = SOCK_STREAM;  // Listen on all interfaces
-				clientAddr.ai_flags = AI_CANONNAME; // from host byte order to network byte order
-				char ip[INET_ADDRSTRLEN];
-    			inet_ntop(AF_INET, &(client_addr.sin_addr), ip, INET_ADDRSTRLEN);
-				getaddrinfo(ip, NULL, &clientAddr, &addr) //TODO: check if error
+				// //araymond testing zone
+				// char ip[INET_ADDRSTRLEN]; // initialize with INET_ADDRSTRLEN for ip address len
+    			// inet_ntop(AF_INET, &(clientSockInfo.sin_addr), ip, INET_ADDRSTRLEN);
+				// memset(&hint, 0, sizeof(hint)); //fill with 0s to avoid undefined behaviors
+				// hint.ai_family = AF_UNSPEC; //ipv4
+				// hint.ai_socktype = SOCK_STREAM;  
+				// hint.ai_flags |= AI_CANONNAME; 
+				// int status = getaddrinfo("8.8.8.8", NULL, &hint, &result); //TODO: check if error
+				// res = result;
+				// std::cout << ip << ": " << res->ai_canonname << std::endl;
+
+				//{
+				// int ret;
+				// struct addrinfo hints;
+				// struct addrinfo *res;
+				// struct addrinfo *p;
+
+				// bzero(&hints, sizeof(hints));
+				// hints.ai_family = AF_UNSPEC;            // IPV4 or IPV6
+				// hints.ai_socktype = SOCK_STREAM;        // TCP
+				// hints.ai_flags = AI_CANONNAME;
+
+				// if ((ret=getaddrinfo("127.0.0.1", NULL, &hints, &res)) != 0) 
+				// {     // here 
+				// 	exit(-1);
+				// }
+				// p = res; 
+				// printf("%s\n", p->ai_canonname);
+				// exit(1);
+				//}
 
                 fds.push_back(clientfd);
                 _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
