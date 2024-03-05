@@ -37,6 +37,9 @@ class Client;
    In recognition of this status, the channel creators are endowed with
    the ability to toggle certain modes of the channel which channel
    operators may not manipulate.
+
+   When displaying a message in the channel from a channel op, the prefix
+   '@' is added before the name, '%' for halfop(???)
 */
 
 class Channel
@@ -46,6 +49,8 @@ class Channel
 	~Channel(void);
 
 	void printTopic(const Client& client);
+	void addUser(const Client& client);
+	void removeUser(const Client& client);
 
 	private:
 	string _name;
@@ -54,5 +59,12 @@ class Channel
 	std::map<bool, const Client&> _clients;
 	/* bool indicates whether the connected 
 	client is an operator or not */
+
+	enum _eInvalid // for defining invalid characters in channel names
+	{
+		CTRLG = 7,
+		SPACE = ' ',
+		COMMA = ','
+	};
 		
 };

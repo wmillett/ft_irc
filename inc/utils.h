@@ -7,6 +7,9 @@
 # include <cstdlib>
 # include <limits>
 # include <sys/socket.h>
+# include <iterator>
+# include <netdb.h>
+# include <sys/types.h>
 
 //Defines
 # define CHARACTER_LIMIT 512

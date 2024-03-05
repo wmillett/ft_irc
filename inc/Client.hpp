@@ -6,7 +6,7 @@
 using std::string;
 class Channel;
 /*
-the characters {}|^ are
+   The characters {}|^ are
    considered to be the lower case equivalents of the characters []\~,
    respectively. This is a critical issue when determining the
    equivalence of two nicknames, or channel names.
@@ -33,8 +33,7 @@ the characters {}|^ are
      generate a lot of traffic across the network.
 
    This in essence means that the client may send one (1) message every
-   two (2) seconds without being adversely affected.  Services MAY also
-   be subject to this mechanism.
+   two (2) seconds without being adversely affected.
 */
 
 class Client
@@ -44,6 +43,22 @@ class Client
 		string _username;
 		string _nickname;
 		string *oldNickname; // array of old nicknames
+
+	enum _eInvalid // for defining invalid characters in clients, with their ascii value
+	{
+		SPACE = ' ',
+		COMMA = ',',
+		QMARK = '?',
+		EMARK = '!',
+		ATSIGN = '@',
+		DOLLAR = '$',
+		POUND = '#',
+		AMPERSAND = '&',
+		TILDE = '~',
+		PERCENT = '%',
+		PLUS = '+',
+		DOT = '.'
+	};
 	
 	public:
 		Client(int sockfd);

@@ -22,3 +22,8 @@ void Channel::printTopic(const Client& client) // send to client fd
 		send(client.getSocket(), "\r\n", 2, 0);
 	}
 }
+
+void Channel::addUser(const Client& client)
+{
+	this->_clients.insert(std::make_pair(false, client));
+}

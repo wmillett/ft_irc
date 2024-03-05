@@ -2,7 +2,7 @@
 #include "CustomException.hpp"
 #include "utils.h"
 
-Server::Server(const string& port_str,  const string& password) : _password(password), _clientCount(0), _serverName(SERVER_NAME)
+Server::Server(const string& port_str,  const string& password) : _password(password), _serverName(SERVER_NAME)
 {
     //Parsing for empty and invalid port/password
     if (port_str.empty() || password.empty() || !digitsCheck(port_str))
@@ -57,6 +57,8 @@ int Server::Run()
 		//Check if the server socket has incoming connection requests
 		if(fds[0].revents & POLLIN)
 		{
+			struct sockaddr_in clientSockInfo//
+			struct addrinfo clientAddr, *addr;
 			int clientSocket = accept(_sockfd, NULL, NULL);
 			if(clientSocket == -1)
 				break; //TODO: replace with error
@@ -69,12 +71,20 @@ int Server::Run()
 				clientfd.fd = clientSocket;
 				clientfd.events = POLLIN;
 
+				//araymond testing zone
+				memset(&clientAddr, 0, sizeof(clientAddr)); //fill with 0s to avoid undefined behaviors
+				clientAddr.ai_family = AF_INET; //ipv4
+				clientAddr.ai_socktype = SOCK_STREAM;  // Listen on all interfaces
+				clientAddr.ai_flags = AI_CANONNAME; // from host byte order to network byte order
+				char ip[INET_ADDRSTRLEN];
+    			inet_ntop(AF_INET, &(client_addr.sin_addr), ip, INET_ADDRSTRLEN);
+				getaddrinfo(ip, NULL, &clientAddr, &addr) //TODO: check if error
+
                 fds.push_back(clientfd);
-				std::cout << "Client count: " << _clientCount << std::endl;
                 _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
-				send(fds[1].fd, "Welcome to ", 11, 0);
-				send(fds[1].fd, &this->_serverName, this->_serverName.size() + 1, 0);
-				send(fds[1].fd, ".\r\n", 2, 0);
+				send(clientSocket, "Welcome to ", 11, 0);
+				send(clientSocket, &this->_serverName, this->_serverName.size() + 1, 0);
+				send(clientSocket, " .\r\n", 4, 0);
 			
             }
            
@@ -172,23 +182,6 @@ void Server::SetupServer()
 		throw CustomException::ErrorListen();
 
 	std::cout << "Server listening ..." << std::endl;
-}
-
-void Server::increaseCount(void)
-{
-	if (_clientCount < std::numeric_limits<unsigned long int>::max())
-		_clientCount++;
-}
-
-void Server::decreaseCount(void)
-{
-	if (_clientCount > std::numeric_limits<unsigned long int>::min())
-		_clientCount--;
-}
-
-size_t Server::getCount(void) const
-{
-	return (_clientCount);
 }
 
 double Server::getTime(void)

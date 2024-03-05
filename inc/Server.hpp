@@ -14,7 +14,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-#define SERVER_NAME "Minou-IRC"
+#define SERVER_NAME "Minou.IRC"
 
 class Client;
 
@@ -40,15 +40,10 @@ class Server
 	std::vector<struct pollfd> _pollfd;
 	std::vector<Channel> _channels;
 	std::map<string, int (Server::*)(Client*, const string&)> _commandsMap;
-
-	size_t _clientCount; // for freeing the resources properly at the end and throughout
 	// sockaddr_in serverAddr;
 
 	bool digitsCheck(const std::string &arg) const;
 	void SetupServer();
-	void increaseCount();
-	void decreaseCount();
-	size_t getCount() const;
 	double getTime();
 
 	int nick(Client*client, const string&arg);
