@@ -106,16 +106,18 @@ int Server::Run()
 				{
 					string input = string(buffer, bytesRead - 1);
 					std::cout << input << std::endl;
-
-					std::map<string, int(Server::*)(Client*, const string&)>::iterator it;
-					for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
-					{
-						if(input == it->first)
+					if (commandCalled.validCommand(buffer)){
+					
+						std::map<string, int(Server::*)(Client*, const string&)>::iterator it;
+						for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
 						{
-       						(this->*it->second)(NULL, "sdjhfkdsjfgh");
-							break;
-						}	
+							if(input == it->first)
+							{
+       							(this->*it->second)(NULL, "sdjhfkdsjfgh");
+								break;
+							}	
 
+						}
 					}
 				}
 			}
