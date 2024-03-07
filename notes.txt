@@ -7,13 +7,21 @@ Things that are handled already:
 
 Things to do:
 -Continue the main loop (request PASS from user, NICK and USER)
--Get information from the connecting client and use it (X)
--
+-Parsing before commands;
+-CMD PASS NICK and USER;
+-JOIN and INVITE command
 
+Auré:
+-Handle channel-related stuff:
+1. Handle operators of channels
+2. JOIN and INVITE command
 
+Will:
+-Parsing avant les commandes (Nous dire ce que tu vas nous envoyer)
+"The PASS command is not required for the connection to be registered, 
+but if included it MUST precede the latter of the NICK and USER commands." -https://modern.ircdocs.horse/
+-Signaux (gérer CTRL-Z avec nc, voir correction sur slack pour détails)
 
-int setsockopt(int sock, int level, int option_name, const void* option_value, socklen_t option_len)
--set SO_SNDBUF to set send buffer size
--set SO_SNDLOWAT for minimum number of bytes to process (set to 1 for at least 1 char)
--returns -1 upon error, 0 otherwise
+Alex:
+- PASS NICK USER command for now
 

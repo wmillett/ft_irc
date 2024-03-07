@@ -122,9 +122,6 @@ int Server::Run()
 				}
 			}
 		}
-
-		//TODO: HANDLE THE DISCONECT, CLEANING SOCKETS CAUSE THE SERVER STOPS WHEN I CONNECT AND QUIT AND CONNECT AND QUIT AND CONNECT AND QUIT
-
     }	
 		
 
@@ -135,17 +132,11 @@ int Server::Run()
 	Order of operations for connecting a host: https://modern.ircdocs.horse/#irc-concepts
 
 	The recommended order of commands during registration is as follows:
-	CAP stuff is NOT required
-	1. CAP LS 302
 	2. PASS
 	3. NICK and USER
-	4. Capability Negotiation
-	5. SASL (if negotiated)
-	6. CAP END
 
 	Structure of a message:
-	1. Prefix starting with ':', has to be followed by "nick!username" of said client (optional)
-	2. Command name or 3 digit number in ASCII
+	2. Command name
 	3. Parameters (maximum of 15 parameters) separated by one space character each
 	4. /r/n (CR_LF)
 */
