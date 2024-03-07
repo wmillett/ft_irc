@@ -75,37 +75,6 @@ int Server::Run()
 				clientfd.fd = clientSocket;
 				clientfd.events = POLLIN;
 
-				// //araymond testing zone
-				// char ip[INET_ADDRSTRLEN]; // initialize with INET_ADDRSTRLEN for ip address len
-    			// inet_ntop(AF_INET, &(clientSockInfo.sin_addr), ip, INET_ADDRSTRLEN);
-				// memset(&hint, 0, sizeof(hint)); //fill with 0s to avoid undefined behaviors
-				// hint.ai_family = AF_UNSPEC; //ipv4
-				// hint.ai_socktype = SOCK_STREAM;  
-				// hint.ai_flags |= AI_CANONNAME; 
-				// int status = getaddrinfo("8.8.8.8", NULL, &hint, &result); //TODO: check if error
-				// res = result;
-				// std::cout << ip << ": " << res->ai_canonname << std::endl;
-
-				//{
-				// int ret;
-				// struct addrinfo hints;
-				// struct addrinfo *res;
-				// struct addrinfo *p;
-
-				// bzero(&hints, sizeof(hints));
-				// hints.ai_family = AF_UNSPEC;            // IPV4 or IPV6
-				// hints.ai_socktype = SOCK_STREAM;        // TCP
-				// hints.ai_flags = AI_CANONNAME;
-
-				// if ((ret=getaddrinfo("127.0.0.1", NULL, &hints, &res)) != 0) 
-				// {     // here 
-				// 	exit(-1);
-				// }
-				// p = res; 
-				// printf("%s\n", p->ai_canonname);
-				// exit(1);
-				//}
-
                 fds.push_back(clientfd);
                 _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
 				send(clientSocket, "Welcome to ", 11, 0);

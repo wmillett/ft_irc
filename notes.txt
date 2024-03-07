@@ -2,11 +2,14 @@ Notes for Auré
 
 Things that are handled already:
 -Parsing
--Commands // figure out which one is already made
+-Commands // figure out which one is already made (none)
+
 
 Things to do:
 -Continue the main loop (request PASS from user, NICK and USER)
--Get information from the connecting client and use it
+-Get information from the connecting client and use it (X)
+-
+
 
 
 int setsockopt(int sock, int level, int option_name, const void* option_value, socklen_t option_len)
@@ -14,8 +17,3 @@ int setsockopt(int sock, int level, int option_name, const void* option_value, s
 -set SO_SNDLOWAT for minimum number of bytes to process (set to 1 for at least 1 char)
 -returns -1 upon error, 0 otherwise
 
-//TODO: set up receiving client information with the client class. 
-getaddrinfo needs to get the hostname from resolving the ip address of the client
-get IP address from the accept() call 
-(char ip[INET_ADDRSTRLEN]; 
-inet_ntop(AF_INET, &(client_addr.sin_addr), ip, INET_ADDRSTRLEN))
