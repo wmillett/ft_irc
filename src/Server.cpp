@@ -34,6 +34,17 @@ bool Server::digitsCheck(const std::string &arg) const
     return true;
 }
 
+bool Server::nicknameCheck(const std::string &arg) const
+{
+    for(size_t i = 0; i < arg.size(); i++)
+    {
+        if(!isalpha(arg[i]) && !isdigit(arg[i]) && arg[i] != '[' && arg[i] != ']' 
+			 && arg[i] != '{' && arg[i] != '}' && arg[i] != '\\' && arg[i] != '|')
+			return false;
+    }
+    return true;
+}
+
 int Server::Run()
 {
 	time_t startTime = getTime();

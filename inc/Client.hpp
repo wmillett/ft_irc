@@ -65,4 +65,6 @@ class Client
 		~Client();
 
 		int getSocket(void) const;
+		string getNickname(void) const;
+		void setNickname(string nickname);
 };

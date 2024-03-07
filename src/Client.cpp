@@ -11,3 +11,13 @@ int Client::getSocket(void) const
 {
 	return (this->_sockfd);
 }
+
+string Client::getNickname(void) const
+{
+	return _nickname;
+}
+
+void Client::setNickname(string nickname) 
+{
+ 	_nickname = nickname;
+}
