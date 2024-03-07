@@ -27,7 +27,8 @@ but if included it MUST precede the latter of the NICK and USER commands." -http
 -Signaux (gérer CTRL-Z avec nc, voir correction sur slack pour détails)
 -Implementer un 'state' de parsing: Un qui accepte seulement la commande PASS,
 un autre qui prend seulment les commandes NICK et USER, ainsi qu'un troisième state
-qui prendrait toutes les commandes (donc le USER est registered).
+qui prendrait toutes les commandes (donc le USER est registered). Voir si la commande
+PASS est toujours disponible.
 
 Alex:
 - PASS NICK USER command for now

@@ -59,11 +59,11 @@ class Channel
 	void printTopic(const Client& client);
 	void addUser(const Client& client);
 	void removeUser(const Client& client);
+	string getName(void);
 
 	private:
 	string _name;
 	string* _topic;
-	string* _mask;
 	string* _key;
 	std::map<bool, const Client&> _clients;
 	/* bool indicates whether the connected 
