@@ -1,4 +1,4 @@
-Notes for Auré
+Notes for everyone
 
 Things that are handled already:
 -Parsing
@@ -15,13 +15,26 @@ Auré:
 -Handle channel-related stuff:
 1. Handle operators of channels
 2. JOIN and INVITE command
+{
+	Join command info
+
+}
 
 Will:
 -Parsing avant les commandes (Nous dire ce que tu vas nous envoyer)
 "The PASS command is not required for the connection to be registered, 
 but if included it MUST precede the latter of the NICK and USER commands." -https://modern.ircdocs.horse/
 -Signaux (gérer CTRL-Z avec nc, voir correction sur slack pour détails)
+-Implementer un 'state' de parsing: Un qui accepte seulement la commande PASS,
+un autre qui prend seulment les commandes NICK et USER, ainsi qu'un troisième state
+qui prendrait toutes les commandes (donc le USER est registered).
 
 Alex:
 - PASS NICK USER command for now
 
+For errormsg command:
+void errormsg(int errorNumber, string params[])
+{
+	errorNumber is for the error to get and the list of strings is for
+	inputting the client, channel or command necessary for that one error.
+}

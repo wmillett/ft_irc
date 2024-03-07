@@ -41,6 +41,8 @@ int Server::join(Client*client, const string&arg)
 	(void)client;
 	(void)arg;
 
+	
+
 	std::cout << "join" << std::endl;
 	return 0;
 }
