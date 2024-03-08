@@ -21,3 +21,13 @@ void Client::setNickname(string nickname)
 {
  	_nickname = nickname;
 }
+
+string Client::getUsername(void) const
+{
+	return _username;
+}
+
+void Client::setUsername(string username) 
+{
+ 	_username = username;
+}

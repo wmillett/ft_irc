@@ -1,21 +1,52 @@
 #include "Server.hpp"
 
-int Server::user(Client*client, const string&arg)
+int Server::user(Client*client, std::vector<string>arg)
 {
+	string username;
 
-	std::cout << "user" << std::endl;
+	if(arg.size() == 0)
+	{
+		return 0;
+	}
+	
+	if(arg[0].empty())
+	{
+		//ERR_NEEDMOREPARAMS 
+		return 0;
+	}	
+
+	if(!client->getUsername().empty())
+	{
+		//ERR_ALREADYREGISTERED
+		return 0;
+	}
+
+	if(!nameCheck(arg[0]))
+	{
+		//error
+		return 0;
+	}
+
+	if(username.size() > USERLEN)
+		username = arg[0].substr(0,USERLEN);
+	else
+		username = arg[0];
+	
+	client->setUsername(username);
+	
 	return 0;
-
-
-
-
 }
 
-int Server::nick(Client*client, const string&arg)
+int Server::nick(Client*client, std::vector<string>arg)
 {
-	//return error if no argument
+
+	if(arg.size() == 0)
+	{
+		//return error if no argument
+		return 0;
+	}
 	
-	if(!nicknameCheck(arg) || arg.size() > NICKLEN)
+	if(!nameCheck(arg[0]) || arg[0].size() > NICKLEN)
 	{
 		//error
 		return 0;
@@ -24,7 +55,7 @@ int Server::nick(Client*client, const string&arg)
 	std::map<int,Client*>::iterator it;
 	for(it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if(it->second->getNickname() == arg)
+		if(it->second->getNickname() == arg[0])
 		{
 			//error
 			return 0;
@@ -32,9 +63,9 @@ int Server::nick(Client*client, const string&arg)
 	}
 	
 	if(!client->getNickname().empty())
-		std::cout << client->getNickname() << " changed his nickname to " << arg << std::endl; //send to everyone
+		std::cout << client->getNickname() << " changed his nickname to " << arg[0] << std::endl; //send to everyone
 
-	client->setNickname(arg);
+	client->setNickname(arg[0]);
 
 	return 0;
 }
@@ -43,7 +74,10 @@ int Server::pass(Client*client, std::vector<string>arg)
 {
 	(void)client;
 
-	if(arg == _password)
+	if(arg.size() == 0)
+		return 0;
+
+	if(arg[0] == _password)
 		return 1;
 	else 
 		return 0; //and throw error and then close connection for that client

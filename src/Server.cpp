@@ -34,7 +34,7 @@ bool Server::digitsCheck(const std::string &arg) const
     return true;
 }
 
-bool Server::nicknameCheck(const std::string &arg) const
+bool Server::nameCheck(const std::string &arg) const
 {
     for(size_t i = 0; i < arg.size(); i++)
     {

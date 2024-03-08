@@ -66,8 +66,10 @@ class Client
 	Client(int sockfd);
 	~Client();
 
-		int getSocket(void) const;
-		string getNickname(void) const;
-		void setNickname(string nickname);
+
+	string getNickname(void) const;
+	void setNickname(string nickname);
+	string getUsername(void) const;
+	void setUsername(string username);
 	int getSocket(void) const;
 };

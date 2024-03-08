@@ -47,7 +47,7 @@ class Server
 	// sockaddr_in serverAddr;
 
 	bool digitsCheck(const std::string &arg) const;
-	bool nicknameCheck(const std::string &arg) const;
+	bool nameCheck(const std::string &arg) const;
 	void SetupServer();
 	double getTime();
 
