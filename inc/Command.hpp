@@ -1,11 +1,10 @@
-#ifndef COMMANDPARSE_HPP
-# define COMMANDPARSE_HPP
+#ifndef COMMAND_HPP
+# define COMMAND_HPP
 
 # include <map>
 # include <list>
 # include <vector>
-# include "utils.h"
-
+# include "CustomException.hpp"
 /*
 https://www.rfc-editor.org/rfc/rfc2813#section-3.3.1 Section 3.3 Messages
 When a server receives a message, it MUST identify its source using
@@ -31,21 +30,26 @@ If a full set of parameters is presented, then each MUST be checked
 # define INVITE_USAGE "usage: INVITE <channel> <user>"
 # define TOPIC_USAGE "usage: TOPIC: <channel> [<topic>]"
 # define MODE_USAGE "usage: MODE <channel> {[+ | -] | i | t | k | o | l}"
-# define NICK_USAGE "usage: NICK <username> <nickname>"
+# define NICK_USAGE "usage: NICK <nickname>"
 # define USER_USAGE "usage: USER <username>"
 # define PASS_USAGE "usage: PASS <password>"
 # define QUIT_USAGE "usage: QUIT [<Quit message>]"
 # define JOIN_USAGE "usage: JOIN <channel>"
 # define NAMES_USAGE "usage: NAMES"
 
+//Error
+// # define TOO_MANY_ARGS "Too many parameters"
+
 //Defines for the commands
 # define CMD_LIST {"KICK", "INVITE", "TOPIC", "MODE", "NICK", "USER", "PASS", "QUIT", "JOIN", "NAMES"}
 # define ECMD_LIST {KICK,INVITE,TOPIC,MODE,NICK,USER,PASS,QUIT,JOIN,NAMES,INVALID}
 # define NB_CMD 10
+# define MAX_ARG_SIZE 15
 
 //Defines for the options in the MODE command
 # define MODE_OPTIONS {'i', 't', 'k', 'o', 'l'}
 # define NB_OPTIONS 5
+
 
 using std::string;
 using std::map;
@@ -66,12 +70,14 @@ enum e_cmd{
 	INVALID
 };
 
-class CommandParse
+class Command
 {
 	private:
 		e_cmd currentCommand;
-		map<string, string> _args;
-		void setArgs(string line, size_t start_pos, std::list<string> listArgs);
+		// map<string, string> _args;
+      std::vector<string> _args;
+		void setArgs(string line, size_t startPos);
+      // void setQuit(string line, size_t startPos);
 		bool validOptions(void);
 	public:
 		bool validCommand(string line);

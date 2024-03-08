@@ -24,6 +24,9 @@
 #define ERROR_BLOCK "Error setting socket to non-blocking mode"
 #define ERROR_POLL "Error: poll() failed"
 
+//Parsing errors
+# define TOO_MANY_ARGS "Too many parameters"
+
 // for JOIN command
 #define RPL_TOPIC "<client> <channel> :<topic>"
 #define ERR_NEEDMOREPARAMS "<client> <command> :Not enough parameters"
