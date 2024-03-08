@@ -38,32 +38,31 @@ int Server::quit(Client*client, std::vector<string>arg)
 
 int Server::join(Client*client, std::vector<string> arg)
 {
-	(void)client;
-	(void)arg;
-	// char delimiter = ',';
+	char delimiter = ',';
 
-	// std::cout << arg << std::endl;
-	// //TODO: test when what I receive is clear
-	// for (chIt it = _channels.begin(); it != _channels.end(); it++)
-	// {
-	// 	string channelName = it->getName();
-	// 	size_t last = 0, next = 0;
-	// 	while ((next = arg.find(delimiter, last)) != std::string::npos)
-	// 	{
-	// 		string name = arg.substr(last, next - last);
-	// 		if (name.compare(channelName) == 0)
-	// 		{
+	if (arg.size() < 2)
+		return (1);
 
-	// 		}
-	// 		std::cout << name << std::endl;
-	// 		last = next + 1;
-	// 		std::cout << arg.substr(last);
-	// 	}
-	// 	std::cout << arg.substr(last) << std::endl;
-	// }
+	for (chIt it = _channels.begin(); it != _channels.end(); it++)
+	{
+		string channelName = it->getName();
+		size_t last = 0, next = 0;
+		while ((next = arg[0].find(delimiter, last)) != std::string::npos)
+		{
+			string name = arg[0].substr(last, next - last);
+			if (name.compare(channelName) == 0)
+			{
+				
+			}
+			std::cout << name << std::endl;
+			last = next + 1;
+			std::cout << arg[0].substr(last);
+		}
+		std::cout << arg[0].substr(last) << std::endl;
+	}
 
-	// std::cout << "join" << std::endl;
-	// return 0;
+	std::cout << "join" << std::endl;
+	return 0;
 }
 
 int Server::topic(Client*client, std::vector<string>arg)
@@ -87,20 +86,21 @@ int Server::names(Client*client, std::vector<string>arg)
 //Errors: ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL, ERR_CHANOPRIVSNEEDED
 int Server::invite(Client*client, std::vector<string>arg)
 {
-	(void)client;
-	(void)arg;
-	// string a = arg, channel, user;
-	// char delimiter = ' ';
-	// size_t next = 0, last = 0;
+	if (arg.size() < 2)
+		return (1);
 
-	// for (chIt it = _channels.begin(); it != _channels.end(); it++)
-	// {
-	// 	string channelName = it->getName();
+	string channel = arg[1], user = arg[0];
+	char delimiter = ' ';
+	size_t next = 0, last = 0;
+
+	for (chIt it = _channels.begin(); it != _channels.end(); it++)
+	{
+		string channelName = it->getName();
 		
-	// }
+	}
 
-	// std::cout << "invite" << std::endl;
-	// return 0;
+	std::cout << "invite" << std::endl;
+	return 0;
 }
 
 int Server::kick(Client*client, std::vector<string>arg)
