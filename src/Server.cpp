@@ -110,6 +110,7 @@ int Server::Run()
 				{
 					string input = string(buffer, bytesRead - 1);
 					std::cout << input << std::endl;
+<<<<<<< HEAD
 					if (commandCalled.validCommand(buffer)){
 					
 						std::map<string, int(Server::*)(Client*, const string&)>::iterator it;
@@ -120,6 +121,17 @@ int Server::Run()
        							(this->*it->second)(NULL, "sdjhfkdsjfgh");
 								break;
 							}	
+=======
+					//TODO: change the implementation to account for std::vector
+					std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
+					for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
+					{
+						if(input == it->first)
+						{
+       						// (this->*it->second)(NULL, "sdjhfkdsjfgh");
+							break;
+						}	
+>>>>>>> 4de36340e3e0bf8c8a3cc8d7e3cea5c8d54be450
 
 						}
 					}

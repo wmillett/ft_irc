@@ -1,5 +1,5 @@
 #pragma once
-#include "errorMessage.h"
+#include "replies.h"
 #include "Client.hpp"
 #include <map>
 
@@ -39,7 +39,15 @@ class Client;
    operators may not manipulate.
 
    When displaying a message in the channel from a channel op, the prefix
-   '@' is added before the name, '%' for halfop(???)
+   '@' is added before the name.
+
+   While a client is joined to a channel, they receive all relevant information
+   about that channel including the JOIN, PART, KICK, and MODE messages
+   affecting the channel. They receive all PRIVMSG and NOTICE messages
+   sent to the channel, and they also receive QUIT messages from other
+   clients joined to the same channel (to let them know those users have
+   left the channel and the network). This allows them to keep track of other
+   channel members and channel modes.
 */
 
 class Channel
@@ -51,11 +59,12 @@ class Channel
 	void printTopic(const Client& client);
 	void addUser(const Client& client);
 	void removeUser(const Client& client);
+	string getName(void);
 
 	private:
 	string _name;
 	string* _topic;
-	string* _mask;
+	string* _key;
 	std::map<bool, const Client&> _clients;
 	/* bool indicates whether the connected 
 	client is an operator or not */
