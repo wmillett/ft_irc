@@ -89,11 +89,14 @@ int Server::invite(Client*client, const string&arg)
 {
 	(void)client;
 	(void)arg;
+	string a = arg, channel, user;
+	char delimiter = ' ';
+	size_t next = 0, last = 0;
 
 	for (chIt it = _channels.begin(); it != _channels.end(); it++)
 	{
 		string channelName = it->getName();
-
+		
 	}
 
 	std::cout << "invite" << std::endl;

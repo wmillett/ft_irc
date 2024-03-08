@@ -17,5 +17,6 @@
 class Channel;
 
 typedef std::vector<Channel>::iterator chIt;
+typedef std::vector<string>::iterator strIt;
 
 #endif
