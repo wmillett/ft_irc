@@ -43,7 +43,7 @@ class Server
 	std::map<int, Client*> _clients;
 	std::vector<struct pollfd> _pollfd;
 	std::vector<Channel> _channels;
-	std::map<string, int (Server::*)(Client*, const string&)> _commandsMap;
+	std::map<string, int (Server::*)(Client*, std::vector<string>)> _commandsMap;
 	// sockaddr_in serverAddr;
 
 	bool digitsCheck(const std::string &arg) const;
@@ -51,16 +51,16 @@ class Server
 	void SetupServer();
 	double getTime();
 
-	int nick(Client*client, const string&arg);
-	int user(Client*client, const string&arg);
-	int pass(Client*client, const string&arg);
-	int quit(Client*client, const string&arg);
-	int join(Client*client, const string&arg);
-	int topic(Client*client, const string&arg);
-	int names(Client*client, const string&arg);
-	int invite(Client*client, const string&arg);
-	int kick(Client*client, const string&arg);
-	int mode(Client*client, const string&arg);
+	int nick(Client*client, std::vector<string>);
+	int user(Client*client, std::vector<string>);
+	int pass(Client*client, std::vector<string>);
+	int quit(Client*client, std::vector<string>);
+	int join(Client*client, std::vector<string>);
+	int topic(Client*client, std::vector<string>);
+	int names(Client*client, std::vector<string>);
+	int invite(Client*client, std::vector<string>);
+	int kick(Client*client, std::vector<string>);
+	int mode(Client*client, std::vector<string>);
 
 	void init(void);
 

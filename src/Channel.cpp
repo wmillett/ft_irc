@@ -6,7 +6,6 @@ Channel::Channel(string name, const Client& op) : _name(name)
 	//this->_connectedClients = NULL;
 	this->_clients.insert(std::make_pair(true, op));
 	this->_topic = NULL;
-	this->_mask = NULL;
 }
 
 Channel::~Channel(void)
@@ -26,4 +25,14 @@ void Channel::printTopic(const Client& client) // send to client fd
 void Channel::addUser(const Client& client)
 {
 	this->_clients.insert(std::make_pair(false, client));
+}
+
+void Channel::removeUser(const Client& client)
+{
+	(void)client;
+}
+
+string Channel::getName(void)
+{
+	return (_name);
 }

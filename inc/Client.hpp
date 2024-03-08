@@ -1,6 +1,7 @@
 #pragma once
 #include "utils.h"
 #include "Channel.hpp"
+#include <vector>
 
 
 using std::string;
@@ -39,10 +40,11 @@ class Channel;
 class Client
 {
 	private:
-		int _sockfd;
-		string _username;
-		char _ip[INET_ADDRSTRLEN];
-		string _nickname;
+	int _sockfd;
+	string _username;
+	char _ip[INET_ADDRSTRLEN];
+	string _nickname;
+	std::vector<Channel> _channels;
 
 	enum _eInvalid // for defining invalid characters in clients, with their ascii value
 	{
@@ -61,10 +63,11 @@ class Client
 	};
 	
 	public:
-		Client(int sockfd);
-		~Client();
+	Client(int sockfd);
+	~Client();
 
 		int getSocket(void) const;
 		string getNickname(void) const;
 		void setNickname(string nickname);
+	int getSocket(void) const;
 };
