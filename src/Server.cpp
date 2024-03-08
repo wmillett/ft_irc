@@ -1,5 +1,5 @@
 #include "Server.hpp"
-#include "CommandParse.hpp"
+#include "Command.hpp"
 #include "CustomException.hpp"
 #include "utils.h"
 
@@ -86,7 +86,7 @@ int Server::Run()
 
         }
 
-		CommandParse commandCalled;
+		Command commandCalled;
 		for (size_t i = 1; i < fds.size(); i++)
 		{
 			if(fds[i].revents & POLLIN)
@@ -104,24 +104,12 @@ int Server::Run()
 
 					close(fds[i].fd);
 					fds.erase(fds.begin() + i);
-;					break ;
+					break ;
 				}
 				else if(bytesRead > 0)
 				{
 					string input = string(buffer, bytesRead - 1);
 					std::cout << input << std::endl;
-<<<<<<< HEAD
-					if (commandCalled.validCommand(buffer)){
-					
-						std::map<string, int(Server::*)(Client*, const string&)>::iterator it;
-						for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
-						{
-							if(input == it->first)
-							{
-       							(this->*it->second)(NULL, "sdjhfkdsjfgh");
-								break;
-							}	
-=======
 					//TODO: change the implementation to account for std::vector
 					std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
 					for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
@@ -131,14 +119,12 @@ int Server::Run()
        						// (this->*it->second)(NULL, "sdjhfkdsjfgh");
 							break;
 						}	
->>>>>>> 4de36340e3e0bf8c8a3cc8d7e3cea5c8d54be450
 
 						}
 					}
 				}
 			}
 		}
-    }	
 		
 
 	return 0;

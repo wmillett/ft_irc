@@ -11,7 +11,7 @@
 #include "../inc/utils.h"
 #include "Server.hpp"
 
-#include "../inc/CommandParse.hpp"
+#include "../inc/Command.hpp"
 
 int main(int argc, char *argv[])
 {
