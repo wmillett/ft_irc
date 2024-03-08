@@ -44,6 +44,7 @@ int Server::join(Client*client, const string&arg)
 	for (std::vector<Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
 	{
 		it->getName();
+		
 	}
 
 	std::cout << "join" << std::endl;

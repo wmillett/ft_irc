@@ -1,6 +1,7 @@
 #pragma once
 #include "utils.h"
 #include "Channel.hpp"
+#include <vector>
 
 
 using std::string;
