@@ -37,14 +37,25 @@ class Channel;
    two (2) seconds without being adversely affected.
 */
 
+
+enum ConnectionStage
+{
+	AUTHENTICATION,
+	IDENTICATION,
+	CONNECTED
+};
+
+
 class Client
 {
 	private:
-	int _sockfd;
-	string _username;
-	char _ip[INET_ADDRSTRLEN];
-	string _nickname;
-	std::vector<Channel> _channels;
+		int _sockfd;
+		string _username;
+		char _ip[INET_ADDRSTRLEN];
+		string _nickname;
+		std::vector<Channel> _channels;
+		ConnectionStage _state;
+		bool _operator;
 
 	enum _eInvalid // for defining invalid characters in clients, with their ascii value
 	{
@@ -63,8 +74,8 @@ class Client
 	};
 	
 	public:
-	Client(int sockfd);
-	~Client();
+		Client(int sockfd);
+		~Client();
 
-	int getSocket(void) const;
+		int getSocket(void) const;
 };
