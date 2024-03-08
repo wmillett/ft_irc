@@ -2,18 +2,20 @@
 
 int Server::user(Client*client, const string&arg)
 {
-	(void)client;
-	(void)arg;
 
 	std::cout << "user" << std::endl;
 	return 0;
+
+
+
+
 }
 
 int Server::nick(Client*client, const string&arg)
 {
 	//return error if no argument
 	
-	if(!nicknameCheck(arg))
+	if(!nicknameCheck(arg) || arg.size() > NICKLEN)
 	{
 		//error
 		return 0;
@@ -40,7 +42,6 @@ int Server::nick(Client*client, const string&arg)
 int Server::pass(Client*client, const string&arg)
 {
 	(void)client;
-	(void)arg;
 
 	if(arg == _password)
 		return 1;

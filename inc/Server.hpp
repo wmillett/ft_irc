@@ -16,6 +16,10 @@
 
 #define SERVER_NAME "Minou.IRC"
 
+
+#define USERLEN 31
+#define NICKLEN 10
+
 class Client;
 
 using std::string;
