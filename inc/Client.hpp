@@ -40,11 +40,11 @@ class Channel;
 class Client
 {
 	private:
-		int _sockfd;
-		string _username;
-		char _ip[INET_ADDRSTRLEN];
-		string _nickname;
-		std::vector<Channel> _channels;
+	int _sockfd;
+	string _username;
+	char _ip[INET_ADDRSTRLEN];
+	string _nickname;
+	std::vector<Channel> _channels;
 
 	enum _eInvalid // for defining invalid characters in clients, with their ascii value
 	{
@@ -63,8 +63,8 @@ class Client
 	};
 	
 	public:
-		Client(int sockfd);
-		~Client();
+	Client(int sockfd);
+	~Client();
 
-		int getSocket(void) const;
+	int getSocket(void) const;
 };

@@ -36,15 +36,30 @@ int Server::quit(Client*client, const string&arg)
 	return 0;
 }
 
-int Server::join(Client*client, const string&arg)
+int Server::join(Client*client, const string& arg)
 {
 	(void)client;
 	(void)arg;
+	char delimiter = ',';
 
-	for (std::vector<Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	std::cout << arg << std::endl;
+	//TODO: test when what I receive is clear
+	for (chIt it = _channels.begin(); it != _channels.end(); it++)
 	{
-		it->getName();
-		
+		string channelName = it->getName();
+		size_t last = 0, next = 0;
+		while ((next = arg.find(delimiter, last)) != std::string::npos)
+		{
+			string name = arg.substr(last, next - last);
+			if (name.compare(channelName) == 0)
+			{
+
+			}
+			std::cout << name << std::endl;
+			last = next + 1;
+			std::cout << arg.substr(last);
+		}
+		std::cout << arg.substr(last) << std::endl;
 	}
 
 	std::cout << "join" << std::endl;
@@ -69,10 +84,17 @@ int Server::names(Client*client, const string&arg)
 	return 0;
 }
 
+//Errors: ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL, ERR_CHANOPRIVSNEEDED
 int Server::invite(Client*client, const string&arg)
 {
 	(void)client;
 	(void)arg;
+
+	for (chIt it = _channels.begin(); it != _channels.end(); it++)
+	{
+		string channelName = it->getName();
+
+	}
 
 	std::cout << "invite" << std::endl;
 	return 0;
@@ -103,10 +125,10 @@ void Server::init(void)
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("USER", &Server::user));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("PASS", &Server::pass));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("QUIT", &Server::quit));
+	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("JOIN", &Server::join));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("TOPIC", &Server::topic));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("NAMES", &Server::names));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("INVITE", &Server::invite));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("KICK", &Server::kick));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("MODE", &Server::mode));
-	//TODO: add JOIN command
 }

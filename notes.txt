@@ -16,8 +16,10 @@ Auré:
 1. Handle operators of channels
 2. JOIN and INVITE command
 {
-	Join command info
-
+	JOIN command info
+	takes <channel>{,<optional channel>,...} [<key>,<optional key>]
+	INVITE command info
+	takes <nickname> <channel>
 }
 
 Will:

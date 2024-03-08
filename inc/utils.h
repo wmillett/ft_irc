@@ -14,6 +14,8 @@
 //Defines
 # define CHARACTER_LIMIT 512
 
+class Channel;
 
+typedef std::vector<Channel>::iterator chIt;
 
 #endif
