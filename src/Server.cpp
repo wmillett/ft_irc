@@ -85,8 +85,6 @@ int Server::Run()
             }
 
         }
-
-		Command commandCalled;
 		for (size_t i = 1; i < fds.size(); i++)
 		{
 			if(fds[i].revents & POLLIN)
@@ -110,21 +108,25 @@ int Server::Run()
 				{
 					string input = string(buffer, bytesRead - 1);
 					std::cout << input << std::endl;
-					//TODO: change the implementation to account for std::vector
-					std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
-					for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
+
+					if(commandCalled.validCommand(input))
 					{
-						if(input == it->first)
+						std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
+						for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
 						{
-       						// (this->*it->second)(NULL, "sdjhfkdsjfgh");
-							break;
-						}	
+							if(commandCalled.getCommand() == it->first)
+							{
+       							(this->*it->second)(NULL, commandCalled.getArgs());
+								commandCalled.commandReset();
+								break;
+							}	
 
 						}
 					}
 				}
 			}
 		}
+	}
 		
 
 	return 0;

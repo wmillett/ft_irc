@@ -1,13 +1,37 @@
 #include "Command.hpp"
 
-
-
 // void Command::setQuit(string line, size_t startPos){
 //     if(!line[startPos])
 //         return ;
 //     while(line[startPos])
 //         _args[0].push_back(line[startPos++]);
 // }
+
+
+
+Command::Command(): _valid(false), _currentCommand("INVALID"){
+}
+
+Command::~Command(){
+}
+
+bool Command::getValid(void){
+    return _valid;
+}
+
+string Command::getCommand(void){
+    return _currentCommand;
+}
+
+std::vector<string> Command::getArgs(void){
+    return _args;
+}
+
+void Command::commandReset(void){
+    _valid = false;
+    _currentCommand = "INVALID";
+    _args.clear();
+}
 
 void Command::setArgs(string line, size_t startPos){
     string currentString;
@@ -53,7 +77,7 @@ bool Command::validOptions(void){
 
 bool Command::validCommand(string line){
     const string cmds[] = CMD_LIST;
-    const e_cmd ecmds[] = ECMD_LIST;
+    // const e_cmd ecmds[] = ECMD_LIST;
     const size_t lsize = line.size();
     size_t start_pos = 0;
     size_t end_pos = 0;
@@ -62,27 +86,24 @@ bool Command::validCommand(string line){
         return false;
     while(start_pos < lsize && isspace(line[start_pos]))
         start_pos++;
-    currentCommand = INVALID;
     
     //Loops through available commands to identify the command called
     for(int i = 0; i < NB_CMD; i++){
         if(!strncmp(line.c_str() + start_pos, cmds[i].c_str(), cmds[i].size())){
-            currentCommand = ecmds[i];
+            _currentCommand = cmds[i];
+            _valid = true;
             end_pos = cmds[i].size() + start_pos;
             break;
         }
     }
     if(line[end_pos] && !isspace(line[end_pos]))
-        return false;
-    if(currentCommand == INVALID)
+        return this->commandReset(), false;
+    if(_valid == false)
         return false;
 
     //Place arguments in a vector
     setArgs(line, end_pos);
     return true;
-
-
-
 
     // //Finds the modifiers for each command and validates if the command was called correctly
     // switch(currentCommand){

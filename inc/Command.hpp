@@ -73,15 +73,22 @@ enum e_cmd{
 class Command
 {
 	private:
-		e_cmd currentCommand;
+      bool _valid;
+      string _currentCommand;
 		// map<string, string> _args;
       std::vector<string> _args;
 		void setArgs(string line, size_t startPos);
       // void setQuit(string line, size_t startPos);
 		bool validOptions(void);
 	public:
-		bool validCommand(string line);
+      Command();
+      ~Command();
 
+      void commandReset(void);
+      bool getValid(void);
+      string getCommand(void);
+      std::vector<string> getArgs(void);
+		bool validCommand(string line);
 };
 
 #endif
