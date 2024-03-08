@@ -17,7 +17,7 @@ Auré:
 2. JOIN and INVITE command
 {
 	JOIN command info
-	takes <channel>{,<optional channel>,...} [<key>,<optional key>]
+	takes <channel>{,<optional channel>,...} [<optional key>,<optional key>]
 	INVITE command info
 	takes <nickname> <channel>
 }

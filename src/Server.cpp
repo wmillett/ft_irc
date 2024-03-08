@@ -108,13 +108,13 @@ int Server::Run()
 				{
 					string input = string(buffer, bytesRead - 1);
 					std::cout << input << std::endl;
-
-					std::map<string, int(Server::*)(Client*, const string&)>::iterator it;
+					//TODO: change the implementation to account for std::vector
+					std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
 					for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
 					{
 						if(input == it->first)
 						{
-       						(this->*it->second)(NULL, "sdjhfkdsjfgh");
+       						// (this->*it->second)(NULL, "sdjhfkdsjfgh");
 							break;
 						}	
 
