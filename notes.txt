@@ -1,0 +1,27 @@
+Notes for Auré
+
+Things that are handled already:
+-Parsing
+-Commands // figure out which one is already made (none)
+
+
+Things to do:
+-Continue the main loop (request PASS from user, NICK and USER)
+-Parsing before commands;
+-CMD PASS NICK and USER;
+-JOIN and INVITE command
+
+Auré:
+-Handle channel-related stuff:
+1. Handle operators of channels
+2. JOIN and INVITE command
+
+Will:
+-Parsing avant les commandes (Nous dire ce que tu vas nous envoyer)
+"The PASS command is not required for the connection to be registered, 
+but if included it MUST precede the latter of the NICK and USER commands." -https://modern.ircdocs.horse/
+-Signaux (gérer CTRL-Z avec nc, voir correction sur slack pour détails)
+
+Alex:
+- PASS NICK USER command for now
+

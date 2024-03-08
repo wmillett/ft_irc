@@ -3,7 +3,7 @@
 #include "CustomException.hpp"
 #include "utils.h"
 
-Server::Server(const string& port_str,  const string& password) : _password(password), _clientCount(0), _serverName(SERVER_NAME)
+Server::Server(const string& port_str,  const string& password) : _password(password), _serverName(SERVER_NAME)
 {
     //Parsing for empty and invalid port/password
     if (port_str.empty() || password.empty() || !digitsCheck(port_str))
@@ -58,9 +58,15 @@ int Server::Run()
 		//Check if the server socket has incoming connection requests
 		if(fds[0].revents & POLLIN)
 		{
-			int clientSocket = accept(_sockfd, NULL, NULL);
+			struct sockaddr_in clientSockInfo;
+			memset(&clientSockInfo, 0, sizeof(clientSockInfo)); //fill with 0s to avoid undefined behaviors
+			socklen_t len = sizeof(clientSockInfo);
+
+
+			//struct addrinfo hint, *result, *res;
+			int clientSocket = accept(_sockfd, (struct sockaddr *)&clientSockInfo, &len);
 			if(clientSocket == -1)
-				break; //replace with error
+				break; //TODO: replace with error
 			else
 			{
 				std::cout << "New client connected!" << std::endl;
@@ -71,11 +77,10 @@ int Server::Run()
 				clientfd.events = POLLIN;
 
                 fds.push_back(clientfd);
-                
                 _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
-				send(fds[1].fd, "Welcome to ", 11, 0);
-				send(fds[1].fd, &this->_serverName, this->_serverName.size() + 1, 0);
-				send(fds[1].fd, ".\n", 2, 0);
+				send(clientSocket, "Welcome to ", 11, 0);
+				send(clientSocket, &this->_serverName, this->_serverName.size() + 1, 0);
+				send(clientSocket, " .\r\n", 4, 0);
 			
             }
 
@@ -99,7 +104,6 @@ int Server::Run()
 
 					close(fds[i].fd);
 					fds.erase(fds.begin() + i);
-					//  
 ;					break ;
 				}
 				else if(bytesRead > 0)
@@ -122,9 +126,6 @@ int Server::Run()
 				}
 			}
 		}
-
-		//TO DO: HANDLE THE DISCONECT, CLEANING SOCKETS CAUSE THE SERVER STOPS WHEN I CONNECT AND QUIT AND CONNECT AND QUIT AND CONNECT AND QUIT
-
     }	
 		
 
@@ -135,17 +136,11 @@ int Server::Run()
 	Order of operations for connecting a host: https://modern.ircdocs.horse/#irc-concepts
 
 	The recommended order of commands during registration is as follows:
-	CAP stuff is NOT required
-	1. CAP LS 302
 	2. PASS
 	3. NICK and USER
-	4. Capability Negotiation
-	5. SASL (if negotiated)
-	6. CAP END
 
 	Structure of a message:
-	1. Prefix starting with ':', has to be followed by "nick!username" of said client (optional)
-	2. Command name or 3 digit number in ASCII
+	2. Command name
 	3. Parameters (maximum of 15 parameters) separated by one space character each
 	4. /r/n (CR_LF)
 */
@@ -177,23 +172,6 @@ void Server::SetupServer()
 		throw CustomException::ErrorListen();
 
 	std::cout << "Server listening ..." << std::endl;
-}
-
-void Server::increaseCount(void)
-{
-	if (_clientCount < std::numeric_limits<unsigned long int>::max())
-		_clientCount++;
-}
-
-void Server::decreaseCount(void)
-{
-	if (_clientCount > std::numeric_limits<unsigned long int>::min())
-		_clientCount--;
-}
-
-size_t Server::getCount(void) const
-{
-	return (_clientCount);
 }
 
 double Server::getTime(void)

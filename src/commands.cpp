@@ -102,4 +102,5 @@ void Server::init(void)
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("INVITE", &Server::invite));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("KICK", &Server::kick));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, const string &)>("MODE", &Server::mode));
+	//TODO: add JOIN command
 }

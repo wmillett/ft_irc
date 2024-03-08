@@ -1,12 +1,13 @@
 #ifndef _ERRORMESSAGE_H_
 #define _ERRORMESSAGE_H_
 
-// Replies
+// Replies 001-004
 #define RPL_WELCOME "<client> :Welcome to the <networkname> Network, <nick>[!<user>@<host>]"
 #define RPL_YOURHOST "<client> :Your host is <servername>, running version <version>"
 #define RPL_CREATED "<client> :This server was created <datetime>"
 #define RPL_MYINFO "<client> <servername> <version> <available user modes> <available channel modes> [<channel modes with a parameter>]"
-#define RPL_INVITING "<client> <nick> <channel>
+
+#define RPL_INVITING "<client> <nick> <channel>"
 
 // Errors
 #define NO_PORT "Error: no port provided"

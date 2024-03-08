@@ -24,8 +24,6 @@ If a full set of parameters is presented, then each MUST be checked
    for validity and appropriate responses sent back to the client.  In
    the case of messages which use parameter lists using the comma as an
    item separator, a reply MUST be sent for each item.
-
-   //TODO: Please implement NAMES and LIST command
 */
 
 //Usage error messages
