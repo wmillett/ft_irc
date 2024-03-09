@@ -44,14 +44,17 @@ class Server
 	std::vector<struct pollfd> _pollfd;
 	std::vector<Channel> _channels;
 	std::map<string, int (Server::*)(Client*, std::vector<string>)> _commandsMap;
+	Command commandCalled; //tmp, pourrait le mettre dans les objets clients
 
-	Command commandCalled;
 	// sockaddr_in serverAddr;
 
 	bool digitsCheck(const std::string &arg) const;
 	void SetupServer();
 	double getTime();
 
+	// void authenticate();
+	
+	//Commands
 	int nick(Client*client, std::vector<string>);
 	int user(Client*client, std::vector<string>);
 	int pass(Client*client, std::vector<string>);

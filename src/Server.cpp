@@ -80,10 +80,9 @@ int Server::Run()
                 _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
 				send(clientSocket, "Welcome to ", 11, 0);
 				send(clientSocket, &this->_serverName, this->_serverName.size() + 1, 0);
-				send(clientSocket, " .\r\n", 4, 0);
-			
+				send(clientSocket, " !\r\n", 4, 0);
+				send(clientSocket, "Please enter server password\n", 29, 0);
             }
-
         }
 		for (size_t i = 1; i < fds.size(); i++)
 		{
@@ -107,8 +106,9 @@ int Server::Run()
 				else if(bytesRead > 0)
 				{
 					string input = string(buffer, bytesRead - 1);
-					std::cout << input << std::endl;
-
+					// std::cout << input << std::endl;
+				
+					//if()
 					if(commandCalled.validCommand(input))
 					{
 						std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
@@ -127,8 +127,6 @@ int Server::Run()
 			}
 		}
 	}
-		
-
 	return 0;
 }
 /*
