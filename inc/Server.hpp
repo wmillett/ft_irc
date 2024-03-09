@@ -59,11 +59,14 @@ class Server
 
 	// void authenticate();
 	void authenticationMessage(int sockfd) const;
-	void identificationMessage(int sockfd, bool mode) const;
+	void identificationMessage(int sockfd) const;
 	void welcomeMessage(int sockfd) const;
 	void print(string message) const;
 	void sendPrivateError(int sockfd, string message) const;
 	
+	//Error handling
+	void disconnectUser(Client*client);
+
 	//Commands
 	int nick(Client*client, std::vector<string>);
 	int user(Client*client, std::vector<string>);

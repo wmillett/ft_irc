@@ -4,13 +4,15 @@ NAME = ircserv
 
 # Compiler and Flags
 CXX = c++
-CXXFLAGS =  -std=c++98 -Wall -Wextra #-Werror  #-g -fsanitize=address
+CXXFLAGS =  -std=c++98 -Wall -Wextra  -g #-Werror  #-g -fsanitize=address
 
 # Directories
 SRC_DIR = src
 OBJ_DIR = obj
 INC_DIR = inc
 
+# Variables
+PASSWORD := 1234
 # SRC Folder Subdirector
 
 # External Libraries Directories
@@ -81,7 +83,7 @@ run:	all
     done; \
 	if [ $$UNUSED_PORT -le 65534 ]; then \
     echo "Unused port found: $$UNUSED_PORT"; \
-    ./$(NAME) $$UNUSED_PORT "password";	\
+    ./$(NAME) $$UNUSED_PORT "$(PASSWORD)";	\
 	else \
 		echo "No available port found."; \
 	fi;

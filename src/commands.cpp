@@ -72,14 +72,22 @@ int Server::nick(Client*client, std::vector<string>arg)
 
 int Server::pass(Client*client, std::vector<string>arg)
 {
-	(void)client;
+
+	// std::cout << _serverName << std::endl;
 
 	if(arg.size() == 0)
 		return 0;
 
-	if(arg[0] == _password)
+
+	if(arg[0] == _password){
+		if(client->getState() == AUTHENTICATION){
+			client->setState(IDENTIFICATION);
+			identificationMessage(client->getSocket());
+		}
 		return 1;
+	}
 	else 
+		throw CustomException::WrongPassword();
 		return 0; //and throw error and then close connection for that client
 }
 

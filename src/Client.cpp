@@ -22,7 +22,6 @@ bool Client::isAdmin(void) const{
 	return _admin;
 }
 
-
 string Client::getNickname(void) const
 {
 	return _nickname;
@@ -41,4 +40,8 @@ string Client::getUsername(void) const
 void Client::setUsername(string username) 
 {
  	_username = username;
+}
+
+void Client::setState(Registration newState){
+	_registration = newState;
 }

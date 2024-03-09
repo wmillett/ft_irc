@@ -101,6 +101,7 @@ int Server::Run()
 				std::map<int,Client*>::iterator clientIt = _clients.find(fds[i].fd);
 				if(bytesRead == 0)
 				{
+					// disconnectUser(clientIt->second);
 					std::cout << "Client disconnected" << std::endl;
 					if(clientIt != _clients.end()){
 						delete clientIt->second;
@@ -114,8 +115,7 @@ int Server::Run()
 				else if(bytesRead > 0)
 				{
 					string input = string(buffer, bytesRead - 1);
-					// std::cout << input << std::endl;
-					// if(clientIt->second->getState() ==  )
+
 					if(commandCalled.validCommand(input))
 					{
 						std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
@@ -123,8 +123,15 @@ int Server::Run()
 						{
 							if(commandCalled.getCommand() == it->first)
 							{
-								if(commandCalled.allowedCommand(clientIt->second->getState(), clientIt->second->isAdmin()))
-       								(this->*it->second)(NULL, commandCalled.getArgs());
+								if(commandCalled.allowedCommand(clientIt->second->getState(), clientIt->second->isAdmin())){
+									try{
+										commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
+									}
+									catch(const std::exception& e){
+										std::cerr << e.what() << std::endl;
+										
+									}
+								}
 								else
 									sendPrivateError(clientIt->second->getSocket(), NOT_ALLOWED);
 								commandCalled.commandReset();
@@ -196,11 +203,9 @@ void::Server::authenticationMessage(int sockfd) const{
 	send(sockfd, "For access, please enter the server password using the PASS command\n", 68, 0);
 }
 
-void Server::identificationMessage(int sockfd, bool mode) const{
-	if (!mode)
-		send(sockfd, "Please provide a username using the USER command\n", 49, 0);
-	else
-		send(sockfd, "Please provide a nickname using the NICK command\n", 49, 0);
+void Server::identificationMessage(int sockfd) const{
+	send(sockfd, "Password verified\n", 18, 0);
+	send(sockfd, "Please provide a username and a nickname using the USER and NICK command\n", 73, 0);
 }
 
 void Server::welcomeMessage(int sockfd) const{

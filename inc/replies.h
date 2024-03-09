@@ -24,6 +24,8 @@
 #define ERROR_BLOCK "Error setting socket to non-blocking mode"
 #define ERROR_POLL "Error: poll() failed"
 
+
+# define ERROR_PASSWORD "Error: Invalid password\n"
 //Parsing errors
 # define TOO_MANY_ARGS "Error: Too many parameters\n"
 # define INVALID_CMD "Error: Invalid command\n"

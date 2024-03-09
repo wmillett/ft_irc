@@ -77,19 +77,21 @@ class Command
       bool _valid;
       string _currentCommand;
       e_cmd _enumCommand;
-		// map<string, string> _args;
+      int _commandReturn;
       std::vector<string> _args;
 		void setArgs(string line, size_t startPos);
-      // void setQuit(string line, size_t startPos);
 		bool validOptions(void);
+
 	public:
       Command();
       ~Command();
 
+      int getReturn(void) const;
       void commandReset(void);
       bool getValid(void) const;
       string getCommand(void) const;
       std::vector<string> getArgs(void) const;
+      void setReturn(int value);
 		bool validCommand(string line);
       bool allowedCommand(Registration access, bool admin);
 };

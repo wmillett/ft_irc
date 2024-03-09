@@ -7,7 +7,7 @@
 //         _args[0].push_back(line[startPos++]);
 // }
 
-Command::Command(): _valid(false), _currentCommand("INVALID"), _enumCommand(INVALID){
+Command::Command(): _valid(false), _currentCommand("INVALID"), _enumCommand(INVALID), _commandReturn(false){
 }
 
 Command::~Command(){
@@ -25,8 +25,17 @@ std::vector<string> Command::getArgs(void) const{
     return _args;
 }
 
+int Command::getReturn(void) const{
+    return _commandReturn;
+}
+
+void Command::setReturn(int value){
+    _commandReturn = value;
+}
+
 void Command::commandReset(void){
     _valid = false;
+    _commandReturn = false;
     _currentCommand = "INVALID";
     _enumCommand = INVALID;
     _args.clear();
@@ -51,7 +60,6 @@ bool Command::allowedCommand(Registration access, bool isAdmin){
     return true;
 }
 
-
 void Command::setArgs(string line, size_t startPos){
     string currentString;
     string buffer;
@@ -62,8 +70,10 @@ void Command::setArgs(string line, size_t startPos){
             startPos++;
         while(line[startPos] && !isspace(line[startPos]))
             buffer.push_back(line[startPos++]);
-        this->_args[posString++] = buffer;
-        //cout << buffer << endl;
+        
+        this->_args.push_back(buffer);
+        
+        // cout << buffer << endl;
         buffer.clear();
     }
 }
