@@ -5,6 +5,7 @@
 # include <list>
 # include <vector>
 # include "CustomException.hpp"
+# include "Client.hpp"
 /*
 https://www.rfc-editor.org/rfc/rfc2813#section-3.3.1 Section 3.3 Messages
 When a server receives a message, it MUST identify its source using
@@ -75,6 +76,7 @@ class Command
 	private:
       bool _valid;
       string _currentCommand;
+      e_cmd _enumCommand;
 		// map<string, string> _args;
       std::vector<string> _args;
 		void setArgs(string line, size_t startPos);
@@ -85,10 +87,11 @@ class Command
       ~Command();
 
       void commandReset(void);
-      bool getValid(void);
-      string getCommand(void);
-      std::vector<string> getArgs(void);
+      bool getValid(void) const;
+      string getCommand(void) const;
+      std::vector<string> getArgs(void) const;
 		bool validCommand(string line);
+      bool allowedCommand(Registration access, bool admin);
 };
 
 #endif

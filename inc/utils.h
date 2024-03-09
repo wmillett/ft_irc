@@ -14,6 +14,7 @@
 # include "replies.h"
 //Defines
 # define CHARACTER_LIMIT 512
+# define RESET_TERM "\033[2J\033[H"
 
 class Channel;
 

@@ -7,31 +7,50 @@
 //         _args[0].push_back(line[startPos++]);
 // }
 
-
-
-Command::Command(): _valid(false), _currentCommand("INVALID"){
+Command::Command(): _valid(false), _currentCommand("INVALID"), _enumCommand(INVALID){
 }
 
 Command::~Command(){
 }
 
-bool Command::getValid(void){
+bool Command::getValid(void) const{
     return _valid;
 }
 
-string Command::getCommand(void){
+string Command::getCommand(void) const{
     return _currentCommand;
 }
 
-std::vector<string> Command::getArgs(void){
+std::vector<string> Command::getArgs(void) const{
     return _args;
 }
 
 void Command::commandReset(void){
     _valid = false;
     _currentCommand = "INVALID";
+    _enumCommand = INVALID;
     _args.clear();
 }
+
+bool Command::allowedCommand(Registration access, bool isAdmin){
+    if(access == AUTHENTICATION){
+        if (_enumCommand != PASS)
+            return false;
+        return true;
+    }
+    if(access == IDENTIFICATION){
+        if(_enumCommand != NICK && _enumCommand != USER)
+            return false;
+        return true;
+    }
+    if (!isAdmin)
+    {
+        if (_enumCommand == KICK || _enumCommand == TOPIC || _enumCommand == INVITE || _enumCommand == MODE)
+            return false;
+    }
+    return true;
+}
+
 
 void Command::setArgs(string line, size_t startPos){
     string currentString;
@@ -77,7 +96,7 @@ bool Command::validOptions(void){
 
 bool Command::validCommand(string line){
     const string cmds[] = CMD_LIST;
-    // const e_cmd ecmds[] = ECMD_LIST;
+    const e_cmd ecmds[] = ECMD_LIST;
     const size_t lsize = line.size();
     size_t start_pos = 0;
     size_t end_pos = 0;
@@ -92,6 +111,7 @@ bool Command::validCommand(string line){
         if(!strncmp(line.c_str() + start_pos, cmds[i].c_str(), cmds[i].size())){
             _currentCommand = cmds[i];
             _valid = true;
+            _enumCommand = ecmds[i];
             end_pos = cmds[i].size() + start_pos;
             break;
         }

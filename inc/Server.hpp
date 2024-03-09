@@ -53,6 +53,11 @@ class Server
 	double getTime();
 
 	// void authenticate();
+	void authenticationMessage(int sockfd) const;
+	void identificationMessage(int sockfd, bool mode) const;
+	void welcomeMessage(int sockfd) const;
+	void print(string message) const;
+	void sendPrivateError(int sockfd, string message) const;
 	
 	//Commands
 	int nick(Client*client, std::vector<string>);

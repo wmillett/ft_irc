@@ -38,11 +38,11 @@ class Channel;
 */
 
 
-enum ConnectionStage
+enum Registration
 {
 	AUTHENTICATION,
-	IDENTICATION,
-	CONNECTED
+	IDENTIFICATION,
+	REGISTERED
 };
 
 
@@ -54,8 +54,8 @@ class Client
 		char _ip[INET_ADDRSTRLEN];
 		string _nickname;
 		std::vector<Channel> _channels;
-		ConnectionStage _state;
-		bool _operator;
+		Registration _registration;
+		bool _admin;
 
 	enum _eInvalid // for defining invalid characters in clients, with their ascii value
 	{
@@ -76,6 +76,8 @@ class Client
 	public:
 		Client(int sockfd);
 		~Client();
-
+		
+		bool isAdmin(void) const;
+		Registration getState(void) const;
 		int getSocket(void) const;
 };
