@@ -1,6 +1,8 @@
 #include "Client.hpp"
 
-Client::Client(int sockfd) : _sockfd(sockfd) {}
+Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _admin(false) {
+
+}
 
 Client::~Client() 
 {
@@ -11,6 +13,15 @@ int Client::getSocket(void) const
 {
 	return (this->_sockfd);
 }
+
+Registration Client::getState(void) const{
+	return _registration;
+}
+
+bool Client::isAdmin(void) const{
+	return _admin;
+}
+
 
 string Client::getNickname(void) const
 {
