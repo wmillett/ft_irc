@@ -64,7 +64,7 @@ class Channel
 	private:
 	string _name;
 	string* _topic;
-	string* _key;
+	// string* _key;
 	std::map<bool, const Client&> _clients;
 	/* bool indicates whether the connected 
 	client is an operator or not */

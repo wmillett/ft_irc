@@ -63,7 +63,6 @@ bool Command::allowedCommand(Registration access, bool isAdmin){
 void Command::setArgs(string line, size_t startPos){
     string currentString;
     string buffer;
-    size_t posString = 0;
 
     while (line[startPos]){
         while(isspace(line[startPos]))
