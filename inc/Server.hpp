@@ -65,7 +65,7 @@ class Server
 	void sendPrivateError(int sockfd, string message) const;
 	
 	//Error handling
-	void disconnectUser(Client*client);
+	void disconnectUser(Client*client, std::vector<pollfd> fds, size_t i);
 
 	//Commands
 	int nick(Client*client, std::vector<string>);

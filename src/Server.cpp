@@ -3,7 +3,7 @@
 #include "CustomException.hpp"
 #include "utils.h"
 
-Server::Server(const string& port_str,  const string& password) : _password(password), _serverName(SERVER_NAME)
+Server::Server(const string& port_str,  const string& password) : _serverName(SERVER_NAME), _password(password)
 {
     //Parsing for empty and invalid port/password
     if (port_str.empty() || password.empty() || !digitsCheck(port_str))
@@ -48,7 +48,7 @@ bool Server::nameCheck(const std::string &arg) const
 
 int Server::Run()
 {
-	time_t startTime = getTime();
+	// time_t startTime = getTime();
 	SetupServer();
 
 	std::vector<pollfd> fds;
@@ -101,15 +101,15 @@ int Server::Run()
 				std::map<int,Client*>::iterator clientIt = _clients.find(fds[i].fd);
 				if(bytesRead == 0)
 				{
-					// disconnectUser(clientIt->second);
-					std::cout << "Client disconnected" << std::endl;
-					if(clientIt != _clients.end()){
-						delete clientIt->second;
-						_clients.erase(clientIt);
-					}
+					disconnectUser(clientIt->second, fds, i);
+					// std::cout << "Client disconnected" << std::endl;
+					// if(clientIt != _clients.end()){
+					// 	delete clientIt->second;
+					// 	_clients.erase(clientIt);
+					// }
 
-					close(fds[i].fd);
-					fds.erase(fds.begin() + i);
+					// close(fds[i].fd);
+					// fds.erase(fds.begin() + i);
 					break ;
 				}
 				else if(bytesRead > 0)
@@ -221,4 +221,27 @@ void Server::print(string message) const{
 
 void Server::sendPrivateError(int sockfd, string message) const{
 	send(sockfd, message.c_str(), message.size() + 1, 0);
+}
+
+void Server::disconnectUser(Client* client, std::vector<pollfd> fds, size_t i) {
+
+
+	// std::cout << "Client disconnected" << std::endl;
+					// if(clientIt != _clients.end()){
+					// 	delete clientIt->second;
+					// 	_clients.erase(clientIt);
+					// }
+    std::cout << "Client disconnected: " << client->getUsername() << std::endl;
+    _clients.erase(client->getSocket());
+	close(fds[i].fd);	
+	fds.erase(fds.begin() + i);
+
+    // close(client->getSocket());
+    // for (auto it = fds.begin(); it != fds.end(); ++it) {
+    //     if (it->fd == client->getSocket()) {
+    //         fds.erase(it);
+    //         break;
+    //     }
+    // }
+    delete client;
 }

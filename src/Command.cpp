@@ -70,8 +70,8 @@ void Command::setArgs(string line, size_t startPos){
             startPos++;
         while(line[startPos] && !isspace(line[startPos]))
             buffer.push_back(line[startPos++]);
-        
-        this->_args.push_back(buffer);
+        if(!buffer.empty())
+            this->_args.push_back(buffer);
         
         // cout << buffer << endl;
         buffer.clear();

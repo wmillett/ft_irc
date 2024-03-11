@@ -27,16 +27,16 @@ If a full set of parameters is presented, then each MUST be checked
 */
 
 //Usage error messages
-# define KICK_USAGE "usage: KICK <channel> <user>"
-# define INVITE_USAGE "usage: INVITE <channel> <user>"
-# define TOPIC_USAGE "usage: TOPIC: <channel> [<topic>]"
-# define MODE_USAGE "usage: MODE <channel> {[+ | -] | i | t | k | o | l}"
-# define NICK_USAGE "usage: NICK <nickname>"
-# define USER_USAGE "usage: USER <username>"
-# define PASS_USAGE "usage: PASS <password>"
-# define QUIT_USAGE "usage: QUIT [<Quit message>]"
-# define JOIN_USAGE "usage: JOIN <channel>"
-# define NAMES_USAGE "usage: NAMES"
+# define KICK_USAGE "usage: KICK <channel> <user>\n"
+# define INVITE_USAGE "usage: INVITE <channel> <user>\n"
+# define TOPIC_USAGE "usage: TOPIC: <channel> [<topic>]\n"
+# define MODE_USAGE "usage: MODE <channel> {[+ | -] | i | t | k | o | l}\n"
+# define NICK_USAGE "usage: NICK <nickname>\n"
+# define USER_USAGE "usage: USER <username>\n"
+# define PASS_USAGE "usage: PASS <password>\n"
+# define QUIT_USAGE "usage: QUIT [<Quit message>]\n"
+# define JOIN_USAGE "usage: JOIN <channel>\n"
+# define NAMES_USAGE "usage: NAMES\n"
 
 //Error
 // # define TOO_MANY_ARGS "Too many parameters"

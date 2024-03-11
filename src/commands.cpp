@@ -6,24 +6,24 @@ int Server::user(Client*client, std::vector<string>arg)
 
 	if(arg.size() == 0)
 	{
+		send(client->getSocket(), USER_USAGE, strlen(PASS_USAGE), 0);
 		return 0;
 	}
 	
 	if(arg[0].empty())
 	{
-		//ERR_NEEDMOREPARAMS 
+		send(client->getSocket(), USER_USAGE, strlen(PASS_USAGE), 0);
 		return 0;
 	}	
 
 	if(!client->getUsername().empty())
 	{
-		//ERR_ALREADYREGISTERED
+		send(client->getSocket(), ALREADY_IN, strlen(ALREADY_IN), 0);
 		return 0;
 	}
-
 	if(!nameCheck(arg[0]))
 	{
-		//error
+		send(client->getSocket(), NOT_ALPHA, strlen(NOT_ALPHA), 0);
 		return 0;
 	}
 
@@ -33,7 +33,7 @@ int Server::user(Client*client, std::vector<string>arg)
 		username = arg[0];
 	
 	client->setUsername(username);
-	
+	client->checkIdentified();
 	return 0;
 }
 
@@ -42,7 +42,7 @@ int Server::nick(Client*client, std::vector<string>arg)
 
 	if(arg.size() == 0)
 	{
-		//return error if no argument
+		send(client->getSocket(), NICK_USAGE, strlen(NICK_USAGE), 0);
 		return 0;
 	}
 	
@@ -66,7 +66,7 @@ int Server::nick(Client*client, std::vector<string>arg)
 		std::cout << client->getNickname() << " changed his nickname to " << arg[0] << std::endl; //send to everyone
 
 	client->setNickname(arg[0]);
-
+	client->checkIdentified();
 	return 0;
 }
 
@@ -75,8 +75,10 @@ int Server::pass(Client*client, std::vector<string>arg)
 
 	// std::cout << _serverName << std::endl;
 
-	if(arg.size() == 0)
+	if(arg.size() == 0){
+		send(client->getSocket(), PASS_USAGE, strlen(PASS_USAGE), 0);
 		return 0;
+	}
 
 
 	if(arg[0] == _password){
@@ -86,9 +88,11 @@ int Server::pass(Client*client, std::vector<string>arg)
 		}
 		return 1;
 	}
-	else 
-		throw CustomException::WrongPassword();
+	else{
+		send(client->getSocket(), ERROR_PASSWORD, strlen(ERROR_PASSWORD), 0);
 		return 0; //and throw error and then close connection for that client
+	}
+		//throw CustomException::WrongPassword();
 }
 
 int Server::quit(Client*client, std::vector<string>arg)
@@ -127,7 +131,7 @@ int Server::join(Client*client, std::vector<string> arg)
 	// }
 
 	// std::cout << "join" << std::endl;
-	// return 0;
+	return 0;
 }
 
 int Server::topic(Client*client, std::vector<string>arg)
@@ -164,7 +168,7 @@ int Server::invite(Client*client, std::vector<string>arg)
 	// }
 
 	// std::cout << "invite" << std::endl;
-	// return 0;
+	return 0;
 }
 
 int Server::kick(Client*client, std::vector<string>arg)

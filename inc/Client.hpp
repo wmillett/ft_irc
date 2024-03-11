@@ -37,6 +37,8 @@ class Channel;
    two (2) seconds without being adversely affected.
 */
 
+//Message for successful registration
+#define SUCCESS_REGISTER "You are now registered\n"
 
 enum Registration
 {
@@ -51,7 +53,7 @@ class Client
 	private:
 		int _sockfd;
 		string _username;
-		char _ip[INET_ADDRSTRLEN];
+		// char _ip[INET_ADDRSTRLEN];
 		string _nickname;
 		std::vector<Channel> _channels;
 		Registration _registration;
@@ -87,5 +89,5 @@ class Client
 		bool isAdmin(void) const;
 		Registration getState(void) const;
 		void setState(Registration newState);
-
+		void checkIdentified(void);
 };
