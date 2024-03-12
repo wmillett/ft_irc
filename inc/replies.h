@@ -39,7 +39,7 @@
 
 
 //Formating for Limechat
-# define PVM "PRIVMSG "
+# define PVM " PRIVMSG "
 
 
 
