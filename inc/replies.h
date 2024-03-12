@@ -31,6 +31,19 @@
 # define INVALID_CMD "Error: Invalid command\n"
 # define NOT_ALLOWED "Error: forbidden function\n"
 
+
+//Authentification messages
+# define AUTH_MESS "For access, please enter the server password using the PASS command\r\n"
+# define IDENT_MESS "Password verified\r\nPlease provide a username and a nickname using the USER and NICK command\r\n"
+# define WELCOME_MESS "Welcome to Minou.IRC !\r\n"
+
+
+//Formating for Limechat
+# define PVM "PRIVMSG "
+
+
+
+
 //For USER command
 # define ALREADY_IN "Error: Username already registered\n"
 # define NOT_ALPHA "Error: your username does not respect the character constraints\n"

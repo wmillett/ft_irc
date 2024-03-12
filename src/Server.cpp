@@ -60,7 +60,7 @@ int Server::Run()
 	serverfd.events = POLLIN; //monitor for data available for reading
 
 	fds.push_back(serverfd);
-
+	dprint("Server setup ready\n");
 	while(true)
 	{
 		if(poll(fds.data(), fds.size(), 0) == -1)
@@ -89,7 +89,7 @@ int Server::Run()
 
                 fds.push_back(clientfd);
                 _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
-				welcomeMessage(clientSocket);
+				// welcomeMessage(clientSocket);
             }
         }
 		for (size_t i = 1; i < fds.size(); i++)
@@ -115,6 +115,7 @@ int Server::Run()
 				else if(bytesRead > 0)
 				{
 					string input = string(buffer, bytesRead - 1);
+					dprint("Message from client: " + input);
 
 					if(commandCalled.validCommand(input))
 					{
@@ -199,20 +200,24 @@ double Server::getTime(void)
 	return tv.tv_sec + (tv.tv_usec / 1000000.0);
 }
 
-void::Server::authenticationMessage(int sockfd) const{
-	send(sockfd, "For access, please enter the server password using the PASS command\n", 68, 0);
+void::Server::authenticationMessage(Client*client) const{
+	sendMessage(client->getSocket(), client->getNickname(), AUTH_MESS);
+	// send(sockfd, "For access, please enter the server password using the PASS command\n", 68, 0);
 }
 
-void Server::identificationMessage(int sockfd) const{
-	send(sockfd, "Password verified\n", 18, 0);
-	send(sockfd, "Please provide a username and a nickname using the USER and NICK command\n", 73, 0);
+void Server::identificationMessage(Client*client) const{
+	sendMessage(client->getSocket(), client->getNickname(), IDENT_MESS);
+
+	// send(sockfd, "Password verified\n", 18, 0);
+	// send(sockfd, "Please provide a username and a nickname using the USER and NICK command\n", 73, 0);
 }
 
-void Server::welcomeMessage(int sockfd) const{
-	send(sockfd, "Welcome to ", 11, 0);
-	send(sockfd, &this->_serverName, this->_serverName.size() + 1, 0);
-	send(sockfd, " !\r\n", 4, 0);
-	authenticationMessage(sockfd);
+void Server::welcomeMessage(Client*client) const{
+	sendMessage(client->getSocket(), client->getNickname(), WELCOME_MESS);
+	// send(sockfd, "Welcome to ", 11, 0);
+	// send(sockfd, &this->_serverName, this->_serverName.size() + 1, 0);
+	// send(sockfd, " !\r\n", 4, 0);
+	authenticationMessage(client);
 }
 
 void Server::print(string message) const{
@@ -223,25 +228,8 @@ void Server::sendPrivateError(int sockfd, string message) const{
 	send(sockfd, message.c_str(), message.size() + 1, 0);
 }
 
-void Server::disconnectUser(Client* client, std::vector<pollfd> fds, size_t i) {
+void Server::sendMessage(int sockfd, string target, string message) const{
 
-
-	// std::cout << "Client disconnected" << std::endl;
-					// if(clientIt != _clients.end()){
-					// 	delete clientIt->second;
-					// 	_clients.erase(clientIt);
-					// }
-    std::cout << "Client disconnected: " << client->getUsername() << std::endl;
-    _clients.erase(client->getSocket());
-	close(fds[i].fd);	
-	fds.erase(fds.begin() + i);
-
-    // close(client->getSocket());
-    // for (auto it = fds.begin(); it != fds.end(); ++it) {
-    //     if (it->fd == client->getSocket()) {
-    //         fds.erase(it);
-    //         break;
-    //     }
-    // }
-    delete client;
+	string ircMessage = PVM + target + " :" + message + "\r\n";
+	send(sockfd, ircMessage.c_str(), ircMessage.length(), 0);
 }

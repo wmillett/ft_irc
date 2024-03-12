@@ -84,7 +84,7 @@ int Server::pass(Client*client, std::vector<string>arg)
 	if(arg[0] == _password){
 		if(client->getState() == AUTHENTICATION){
 			client->setState(IDENTIFICATION);
-			identificationMessage(client->getSocket());
+			identificationMessage(client);
 		}
 		return 1;
 	}

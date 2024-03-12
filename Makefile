@@ -87,5 +87,16 @@ run:	all
 	else \
 		echo "No available port found."; \
 	fi;
+debug:	all
+	@UNUSED_PORT=1024; \
+    while [ $$(netstat -t -a -n -l | awk '{print substr($$4, index($$4, ":")+1)}' | sort -n | grep -c $$UNUSED_PORT) -ne 0 ] && [ $$UNUSED_PORT -le 65534 ] ; do \
+        ((UNUSED_PORT++)); \
+    done; \
+	if [ $$UNUSED_PORT -le 65534 ]; then \
+    echo "Unused port found: $$UNUSED_PORT"; \
+    ./$(NAME) $$UNUSED_PORT "$(PASSWORD)" "debug";	\
+	else \
+		echo "No available port found."; \
+	fi;
 	
 .PHONY: all clean fclean test run leaks re 

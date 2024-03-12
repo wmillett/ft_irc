@@ -18,6 +18,10 @@
 # include "Command.hpp"
 # include "utils.h"
 
+
+//Debug
+# include "debug.h"
+
 #define SERVER_NAME "Minou.IRC"
 
 
@@ -58,11 +62,12 @@ class Server
 	double getTime();
 
 	// void authenticate();
-	void authenticationMessage(int sockfd) const;
-	void identificationMessage(int sockfd) const;
-	void welcomeMessage(int sockfd) const;
+	void authenticationMessage(Client*client) const;
+	void identificationMessage(Client*client) const;
+	void welcomeMessage(Client*client) const;
 	void print(string message) const;
 	void sendPrivateError(int sockfd, string message) const;
+	void sendMessage(int sockfd, string target, string message) const;
 	
 	//Error handling
 	void disconnectUser(Client*client, std::vector<pollfd> fds, size_t i);
@@ -85,6 +90,8 @@ class Server
 	Server(const string& port_str,  const string& password);
 	~Server();
 
+
+	void dprint(string message) const; //Only to use with make debug
 	int Run();
 };
 
