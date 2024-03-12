@@ -10,6 +10,7 @@
 # include <iterator>
 # include <netdb.h>
 # include <sys/types.h>
+# include <vector>
 
 # include "replies.h"
 //Defines

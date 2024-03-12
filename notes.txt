@@ -44,3 +44,12 @@ void errormsg(int errorNumber, string params[])
 	errorNumber is for the error to get and the list of strings is for
 	inputting the client, channel or command necessary for that one error.
 }
+
+Optimal way to return a container in a function: 
+std::vector<std::string> sorted(std::vector<std::string> names)
+{
+    std::sort(names);
+    std::vector<std::string> ret;
+    swap(ret, names);
+    return ret;
+}

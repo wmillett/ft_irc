@@ -60,14 +60,20 @@ class Channel
 	void addUser(const Client& client);
 	void removeUser(const Client& client);
 	string getName(void);
+	string* getKey(void);
+	int isKeyValid(string key); // checks if the key is valid for joining channel
+	int isInviteOnly(void);
 
 	private:
 	string _name;
 	string* _topic;
-	// string* _key;
-	std::map<bool, const Client&> _clients;
+	string* _key;
+	std::vector<const Client&> _clients;
+	std::vector<const Client&> _operators;
 	/* bool indicates whether the connected 
 	client is an operator or not */
+	int* _userLimit;
+	bool _inviteOnly;
 
 	enum _eInvalid // for defining invalid characters in channel names
 	{

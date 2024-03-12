@@ -8,7 +8,6 @@
 # include <unistd.h>
 # include <sys/poll.h>
 # include <map>
-# include <vector>
 # include <fcntl.h>
 # include <sys/time.h>
 # include <time.h>
@@ -72,6 +71,10 @@ class Server
 	//Error handling
 	void disconnectUser(Client*client, std::vector<pollfd> fds, size_t i);
 
+	// Join command methods
+	int isChannelValid(string channel); // returns 0 if channel already exists, 1 otherwise
+	void createChannel(Client* client, string *key);
+
 	//Commands
 	int nick(Client*client, std::vector<string>);
 	int user(Client*client, std::vector<string>);
@@ -83,6 +86,9 @@ class Server
 	int invite(Client*client, std::vector<string>);
 	int kick(Client*client, std::vector<string>);
 	int mode(Client*client, std::vector<string>);
+
+	//Server utils
+	std::vector<string> buildStrings(string arg, char delimiter, std::vector<string> vec);
 
 	void init(void);
 

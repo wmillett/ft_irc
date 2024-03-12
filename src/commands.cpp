@@ -114,18 +114,26 @@ int Server::quit(Client*client, std::vector<string>arg)
 	6. If there is a channel topic, send the topic to the client. (Same as TOPIC command I think)
 	7. Send the list of users in the channel to the client. (Same as NAMES command, maybe)
 
-
+	Channels names are strings (beginning with a '&', '#', '+' or '!'
+	character) of length up to fifty (50) characters.  Channel names are
+	case insensitive.
 */
 int Server::join(Client*client, std::vector<string> arg)
 {
 	char delimiter = ',';
 	string name;
 
-	if (arg.size() < 2)
+	if (arg.size() < 1)
 		return (1);
 
+	if (arg.size() == 1 && arg[0].compare("0") == 0)
+	{
+		// user leaves all channels it's connected to
+	}
+	
 	string channels = arg[0];
-	string keys = arg[1];
+	if (arg.size() > 1)
+		string keys = arg[1];
 
 	for (chIt it = _channels.begin(); it != _channels.end(); it++)
 	{
@@ -136,6 +144,7 @@ int Server::join(Client*client, std::vector<string> arg)
 			name = channels.substr(last, next - last);
 			if (name.compare(channelName) == 0)
 			{
+				// check if key is good, if not, send ERR_BADCHANNELKEY
 			}
 			std::cout << name << std::endl;
 			last = next + 1;
