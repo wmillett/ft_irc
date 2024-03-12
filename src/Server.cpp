@@ -233,3 +233,31 @@ void Server::sendMessage(int sockfd, string target, string message) const{
 	string ircMessage = PVM + target + " :" + message + "\r\n";
 	send(sockfd, ircMessage.c_str(), ircMessage.length(), 0);
 }
+
+void Server::createChannel(Client* client, string name, string *key) // cannot fail
+{
+	// TODO: create channel with given name and key, may not work with just <Channel>
+	Channel newChannel(client, name, key);
+
+	if (_channels.size() == _channels.capacity()) //TODO: maybe change this
+		return ;
+	_channels.push_back(newChannel);
+}
+
+Channel* Server::isChannelValid(string channel) //cannot fail, returns a pointer to the right channel or NULL
+{
+	for (chIt it = _channels.begin(); it != _channels.end(); it++)
+	{
+		string channelName = it->getName();
+		if (channelName.compare(channel) == 0)
+		{
+			return &(*it);
+		}
+	}
+	return (NULL);
+}
+
+int Server::joinWithKeys(Client* client, std::vector<string> arg)
+{
+	//TODO: fill once Server::join() is done
+}

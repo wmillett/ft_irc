@@ -53,12 +53,12 @@ class Client;
 class Channel
 {
 	public:
-	Channel(string name, const Client& op);
+	Channel(Client* op, string name, string* key);
 	~Channel(void);
 
-	void printTopic(const Client& client);
-	void addUser(const Client& client);
-	void removeUser(const Client& client);
+	void sendTopic(Client* client);
+	void addUser(Client* client);
+	void removeUser(Client* client);
 	string getName(void);
 	string* getKey(void);
 	int isKeyValid(string key); // checks if the key is valid for joining channel
@@ -68,10 +68,8 @@ class Channel
 	string _name;
 	string* _topic;
 	string* _key;
-	std::vector<const Client&> _clients;
-	std::vector<const Client&> _operators;
-	/* bool indicates whether the connected 
-	client is an operator or not */
+	std::vector<Client*> _clients;
+	std::vector<Client*> _operators;
 	int* _userLimit;
 	bool _inviteOnly;
 

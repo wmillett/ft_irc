@@ -55,7 +55,7 @@ class Client
 		string _username;
 		// char _ip[INET_ADDRSTRLEN];
 		string _nickname;
-		std::vector<Channel> _channels;
+		std::vector<Channel> _channels; // MAY BE USELESS
 		Registration _registration;
 		bool _admin;
 

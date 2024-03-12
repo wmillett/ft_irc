@@ -118,46 +118,47 @@ int Server::quit(Client*client, std::vector<string>arg)
 	character) of length up to fifty (50) characters.  Channel names are
 	case insensitive.
 */
-int Server::join(Client*client, std::vector<string> arg)
+int Server::join(Client* client, std::vector<string> arg) // standard command to create / join channels
 {
-	char delimiter = ',';
-	string name;
 
 	if (arg.size() < 1)
-		return (1);
+		return (1); //TODO: send appropriate error
 
 	if (arg.size() == 1 && arg[0].compare("0") == 0)
 	{
-		// user leaves all channels it's connected to
+		//TODO: user leaves all channels it's connected to
 	}
 	
-	string channels = arg[0];
 	if (arg.size() > 1)
-		string keys = arg[1];
-
-	for (chIt it = _channels.begin(); it != _channels.end(); it++)
 	{
-		string channelName = it->getName();
-		size_t last = 0, next = 0;
-		while ((next = channels.find(delimiter, last)) != std::string::npos)
+		return (this->joinWithKeys(client, arg));
+	}
+		
+	char delimiter = ',';
+	string name;
+	int createChannel = 1;
+	std::vector<string> channels = buildStrings(arg[0], delimiter, channels);
+
+	for (int i = 0; i < channels.size(); i++)
+	{
+		Channel* toJoin = isChannelValid(channels[i]);
+		if (toJoin)
 		{
-			name = channels.substr(last, next - last);
-			if (name.compare(channelName) == 0)
-			{
-				// check if key is good, if not, send ERR_BADCHANNELKEY
-			}
-			std::cout << name << std::endl;
-			last = next + 1;
-			std::cout << channels.substr(last);
+			if (toJoin->isInviteOnly() == 0)
+				return (1); //TODO: make sure the appropriate error is sent too
+			toJoin->addUser(client);
 		}
-		name = channels.substr(last);
-		if (name.compare(channelName) == 0)
+		else
 		{
+			if ((channels[i])[0] != '#') // ADD '#' to the start if not present
+			{
+				
+			}
+			this->createChannel(client, channels[i], NULL);
 		}
 	}
 
-	std::cout << "join" << std::endl;
-	return 0;
+	return (0);
 }
 
 int Server::topic(Client*client, std::vector<string>arg)
@@ -195,14 +196,6 @@ int Server::invite(Client*client, std::vector<string>arg)
 		return (1);
 
 	string channel = arg[1], user = arg[0];
-	char delimiter = ' ';
-	size_t next = 0, last = 0;
-
-	for (chIt it = _channels.begin(); it != _channels.end(); it++)
-	{
-		string channelName = it->getName();
-		
-	}
 
 	std::cout << "invite" << std::endl;
 	return 0;

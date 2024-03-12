@@ -11,6 +11,7 @@
 # include <netdb.h>
 # include <sys/types.h>
 # include <vector>
+# include <string>
 
 # include "replies.h"
 //Defines

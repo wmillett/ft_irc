@@ -53,3 +53,5 @@ std::vector<std::string> sorted(std::vector<std::string> names)
     swap(ret, names);
     return ret;
 }
+
+Message format: :JohnDoe!john@example.com PRIVMSG Alice :Hello, Alice!\r\n

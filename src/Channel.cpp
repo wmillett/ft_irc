@@ -1,9 +1,9 @@
 #include "Channel.hpp"
 #include "utils.h"
 
-Channel::Channel(string name, const Client& op) : _name(name), _inviteOnly(false)
+Channel::Channel(Client* op, string name, string* key) : _name(name), _inviteOnly(false), _key(key)
 {
-	//this->_connectedClients = NULL;
+	if (op)
 	this->_clients.push_back(op);
 	this->_operators.push_back(op);
 	this->_topic = NULL;
@@ -14,21 +14,24 @@ Channel::~Channel(void)
 
 }
 
-void Channel::printTopic(const Client& client) // send to client fd
+void Channel::sendTopic(Client* client) // send to client fd
 {
-	if (_topic)
+	if (client)
 	{
-		send(client.getSocket(), _topic, _topic->size(), 0);
-		send(client.getSocket(), "\r\n", 2, 0);
+		if (_topic)
+		{
+			
+		}
 	}
 }
 
-void Channel::addUser(const Client& client)
+void Channel::addUser(Client* client)
 {
-	this->_clients.push_back(client);
+	if (client)
+		this->_clients.push_back(client);
 }
 
-void Channel::removeUser(const Client& client)
+void Channel::removeUser(Client* client)
 {
 	(void)client;
 }
@@ -50,4 +53,10 @@ int Channel::isKeyValid(string key)
 string* Channel::getKey(void)
 {
 	return (this->_key);
+}
+int Channel::isInviteOnly(void)
+{
+	if (_inviteOnly == true)
+		return (0);
+	return (1);
 }
