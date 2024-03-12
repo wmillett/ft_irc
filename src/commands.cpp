@@ -122,7 +122,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 {
 
 	if (arg.size() < 1)
-		return (1); //TODO: send appropriate error
+		return (1); //TODO: send appropriate error, this checl may not be necessary
 
 	if (arg.size() == 1 && arg[0].compare("0") == 0)
 	{
@@ -133,11 +133,11 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 	{
 		return (this->joinWithKeys(client, arg));
 	}
-		
+
 	char delimiter = ',';
 	string name;
-	int createChannel = 1;
-	std::vector<string> channels = buildStrings(arg[0], delimiter, channels);
+	std::vector<string> channels;
+	buildStrings(arg[0], delimiter, channels);
 
 	for (int i = 0; i < channels.size(); i++)
 	{
@@ -152,7 +152,8 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 		{
 			if ((channels[i])[0] != '#') // ADD '#' to the start if not present
 			{
-				
+				std::string::iterator it = channels[i].begin();
+				channels[i].insert(it, '#');
 			}
 			this->createChannel(client, channels[i], NULL);
 		}

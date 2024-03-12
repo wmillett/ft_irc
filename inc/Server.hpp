@@ -89,7 +89,7 @@ class Server
 	int mode(Client*client, std::vector<string>);
 
 	//Server utils
-	std::vector<string> buildStrings(string arg, char delimiter, std::vector<string> vec);
+	void buildStrings(string arg, char delimiter, std::vector<string> vec);
 
 	void init(void);
 

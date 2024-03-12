@@ -1,7 +1,7 @@
 #include "../inc/Command.hpp"
 #include "Server.hpp"
 
-std::vector<string> Server::buildStrings(string arg, char delimiter, std::vector<string> vec)
+void Server::buildStrings(string arg, char delimiter, std::vector<string> vec)
 {
 	size_t last = 0, next = 0;
 	string str;
@@ -16,7 +16,6 @@ std::vector<string> Server::buildStrings(string arg, char delimiter, std::vector
 
 	std::vector<string> rtn;
 	rtn.swap(vec);
-	return (rtn);
 }
 
 void errorMessage(int errnum)
