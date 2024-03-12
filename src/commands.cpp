@@ -1,30 +1,98 @@
 #include "Server.hpp"
 
-int Server::nick(Client*client, std::vector<string>arg)
+int Server::user(Client*client, std::vector<string>arg)
 {
-	(void)client;
-	(void)arg;
+	string username;
 
-	std::cout << "nick" << std::endl;
+	if(arg.size() == 0)
+	{
+		send(client->getSocket(), USER_USAGE, strlen(PASS_USAGE), 0);
+		return 0;
+	}
+	
+	if(arg[0].empty())
+	{
+		send(client->getSocket(), USER_USAGE, strlen(PASS_USAGE), 0);
+		return 0;
+	}	
+
+	if(!client->getUsername().empty())
+	{
+		send(client->getSocket(), ALREADY_IN, strlen(ALREADY_IN), 0);
+		return 0;
+	}
+	if(!nameCheck(arg[0]))
+	{
+		send(client->getSocket(), NOT_ALPHA, strlen(NOT_ALPHA), 0);
+		return 0;
+	}
+
+	if(username.size() > USERLEN)
+		username = arg[0].substr(0,USERLEN);
+	else
+		username = arg[0];
+	
+	client->setUsername(username);
+	client->checkIdentified();
 	return 0;
 }
 
-int Server::user(Client*client, std::vector<string>arg)
+int Server::nick(Client*client, std::vector<string>arg)
 {
-	(void)client;
-	(void)arg;
 
-	std::cout << "user" << std::endl;
+	if(arg.size() == 0)
+	{
+		send(client->getSocket(), NICK_USAGE, strlen(NICK_USAGE), 0);
+		return 0;
+	}
+	
+	if(!nameCheck(arg[0]) || arg[0].size() > NICKLEN)
+	{
+		//error
+		return 0;
+	}
+
+	std::map<int,Client*>::iterator it;
+	for(it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if(it->second->getNickname() == arg[0])
+		{
+			//error
+			return 0;
+		}
+	}
+	
+	if(!client->getNickname().empty())
+		std::cout << client->getNickname() << " changed his nickname to " << arg[0] << std::endl; //send to everyone
+
+	client->setNickname(arg[0]);
+	client->checkIdentified();
 	return 0;
 }
 
 int Server::pass(Client*client, std::vector<string>arg)
 {
-	(void)client;
-	(void)arg;
 
-	std::cout << "pass" << std::endl;
-	return 0;
+	// std::cout << _serverName << std::endl;
+
+	if(arg.size() == 0){
+		send(client->getSocket(), PASS_USAGE, strlen(PASS_USAGE), 0);
+		return 0;
+	}
+
+
+	if(arg[0] == _password){
+		if(client->getState() == AUTHENTICATION){
+			client->setState(IDENTIFICATION);
+			identificationMessage(client);
+		}
+		return 1;
+	}
+	else{
+		send(client->getSocket(), ERROR_PASSWORD, strlen(ERROR_PASSWORD), 0);
+		return 0; //and throw error and then close connection for that client
+	}
+		//throw CustomException::WrongPassword();
 }
 
 int Server::quit(Client*client, std::vector<string>arg)

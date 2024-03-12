@@ -1,4 +1,4 @@
-#include "../inc/CommandParse.hpp"
+#include "../inc/Command.hpp"
 
 void errorMessage(int errnum)
 {

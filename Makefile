@@ -4,13 +4,15 @@ NAME = ircserv
 
 # Compiler and Flags
 CXX = c++
-CXXFLAGS =  -std=c++98 -Wall -Wextra #-Werror  #-g -fsanitize=address
+CXXFLAGS =  -std=c++98 -Wall -Wextra  -Werror  #-g -fsanitize=address
 
 # Directories
 SRC_DIR = src
 OBJ_DIR = obj
 INC_DIR = inc
 
+# Variables
+PASSWORD := 1234
 # SRC Folder Subdirector
 
 # External Libraries Directories
@@ -75,6 +77,26 @@ leaks: all
 	@leaks --atExit -- ./$(NAME)
 
 run:	all
-	@./$(NAME) 8080 ok
+	@UNUSED_PORT=1024; \
+    while [ $$(netstat -t -a -n -l | awk '{print substr($$4, index($$4, ":")+1)}' | sort -n | grep -c $$UNUSED_PORT) -ne 0 ] && [ $$UNUSED_PORT -le 65534 ] ; do \
+        ((UNUSED_PORT++)); \
+    done; \
+	if [ $$UNUSED_PORT -le 65534 ]; then \
+    echo "Unused port found: $$UNUSED_PORT"; \
+    ./$(NAME) $$UNUSED_PORT "$(PASSWORD)";	\
+	else \
+		echo "No available port found."; \
+	fi;
+debug:	all
+	@UNUSED_PORT=1024; \
+    while [ $$(netstat -t -a -n -l | awk '{print substr($$4, index($$4, ":")+1)}' | sort -n | grep -c $$UNUSED_PORT) -ne 0 ] && [ $$UNUSED_PORT -le 65534 ] ; do \
+        ((UNUSED_PORT++)); \
+    done; \
+	if [ $$UNUSED_PORT -le 65534 ]; then \
+    echo "Unused port found: $$UNUSED_PORT"; \
+    ./$(NAME) $$UNUSED_PORT "$(PASSWORD)" "debug";	\
+	else \
+		echo "No available port found."; \
+	fi;
 	
 .PHONY: all clean fclean test run leaks re 

@@ -11,22 +11,20 @@
 #include "../inc/utils.h"
 #include "Server.hpp"
 
-#include "../inc/CommandParse.hpp"
+#include "../inc/Command.hpp"
+
+bool debug = false;
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3){
+    if (argc != 3 && argc != 4){
         std::cerr << USAGE_MESS << std::endl;
         return 1;
     }
+    if (argc == 4)
+        debug = true;
     try
     {
-        // CommandParse test;
-        // bool ok = test.validCommand(argv[1]);
-        // if (ok)
-        //     printf("oui\n");
-        // else
-        //     printf("non\n");
         Server irc(argv[1],argv[2]);
         irc.Run();
     }

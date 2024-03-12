@@ -32,6 +32,9 @@ un autre qui prend seulment les commandes NICK et USER, ainsi qu'un troisième s
 qui prendrait toutes les commandes (donc le USER est registered). Voir si la commande
 PASS est toujours disponible.
 
+ Command: USER
+  Parameters: <username> 0 * <realname>
+
 Alex:
 - PASS NICK USER command for now
 

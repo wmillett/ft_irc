@@ -37,14 +37,27 @@ class Channel;
    two (2) seconds without being adversely affected.
 */
 
+//Message for successful registration
+#define SUCCESS_REGISTER "You are now registered\n"
+
+enum Registration
+{
+	AUTHENTICATION,
+	IDENTIFICATION,
+	REGISTERED
+};
+
+
 class Client
 {
 	private:
-	int _sockfd;
-	string _username;
-	char _ip[INET_ADDRSTRLEN];
-	string _nickname;
-	std::vector<Channel> _channels;
+		int _sockfd;
+		string _username;
+		// char _ip[INET_ADDRSTRLEN];
+		string _nickname;
+		std::vector<Channel> _channels;
+		Registration _registration;
+		bool _admin;
 
 	enum _eInvalid // for defining invalid characters in clients, with their ascii value
 	{
@@ -63,8 +76,18 @@ class Client
 	};
 	
 	public:
-	Client(int sockfd);
-	~Client();
+		Client(int sockfd);
+		~Client();
 
-	int getSocket(void) const;
+
+		string getNickname(void) const;
+		void setNickname(string nickname);
+		string getUsername(void) const;
+		void setUsername(string username);
+		int getSocket(void) const;
+		
+		bool isAdmin(void) const;
+		Registration getState(void) const;
+		void setState(Registration newState);
+		void checkIdentified(void);
 };

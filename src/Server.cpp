@@ -1,8 +1,9 @@
 #include "Server.hpp"
+#include "Command.hpp"
 #include "CustomException.hpp"
 #include "utils.h"
 
-Server::Server(const string& port_str,  const string& password) : _password(password), _serverName(SERVER_NAME)
+Server::Server(const string& port_str,  const string& password) : _serverName(SERVER_NAME), _password(password)
 {
     //Parsing for empty and invalid port/password
     if (port_str.empty() || password.empty() || !digitsCheck(port_str))
@@ -34,9 +35,20 @@ bool Server::digitsCheck(const std::string &arg) const
     return true;
 }
 
+bool Server::nameCheck(const std::string &arg) const
+{
+    for(size_t i = 0; i < arg.size(); i++)
+    {
+        if(!isalpha(arg[i]) && !isdigit(arg[i]) && arg[i] != '[' && arg[i] != ']' 
+			 && arg[i] != '{' && arg[i] != '}' && arg[i] != '\\' && arg[i] != '|')
+			return false;
+    }
+    return true;
+}
+
 int Server::Run()
 {
-	time_t startTime = getTime();
+	// time_t startTime = getTime();
 	SetupServer();
 
 	std::vector<pollfd> fds;
@@ -48,7 +60,7 @@ int Server::Run()
 	serverfd.events = POLLIN; //monitor for data available for reading
 
 	fds.push_back(serverfd);
-
+	dprint("Server setup ready\n");
 	while(true)
 	{
 		if(poll(fds.data(), fds.size(), 0) == -1)
@@ -77,54 +89,64 @@ int Server::Run()
 
                 fds.push_back(clientfd);
                 _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
-				send(clientSocket, "Welcome to ", 11, 0);
-				send(clientSocket, &this->_serverName, this->_serverName.size() + 1, 0);
-				send(clientSocket, " .\r\n", 4, 0);
-			
+				// welcomeMessage(clientSocket);
             }
-           
         }
-
 		for (size_t i = 1; i < fds.size(); i++)
 		{
 			if(fds[i].revents & POLLIN)
 			{
 				char buffer[1024];
 				int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+				std::map<int,Client*>::iterator clientIt = _clients.find(fds[i].fd);
 				if(bytesRead == 0)
 				{
-					std::cout << "Client disconnected" << std::endl;
-					std::map<int,Client*>::iterator it = _clients.find(fds[i].fd);
-					if(it != _clients.end()){
-						delete it->second;
-						_clients.erase(it);
-					}
+					disconnectUser(clientIt->second, fds, i);
+					// std::cout << "Client disconnected" << std::endl;
+					// if(clientIt != _clients.end()){
+					// 	delete clientIt->second;
+					// 	_clients.erase(clientIt);
+					// }
 
-					close(fds[i].fd);
-					fds.erase(fds.begin() + i);
-;					break ;
+					// close(fds[i].fd);
+					// fds.erase(fds.begin() + i);
+					break ;
 				}
 				else if(bytesRead > 0)
 				{
 					string input = string(buffer, bytesRead - 1);
-					std::cout << input << std::endl;
-					//TODO: change the implementation to account for std::vector
-					std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
-					for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
-					{
-						if(input == it->first)
-						{
-       						// (this->*it->second)(NULL, "sdjhfkdsjfgh");
-							break;
-						}	
+					dprint("Message from client: " + input);
 
+					if(commandCalled.validCommand(input))
+					{
+						std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
+						for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
+						{
+							if(commandCalled.getCommand() == it->first)
+							{
+								if(commandCalled.allowedCommand(clientIt->second->getState(), clientIt->second->isAdmin())){
+									try{
+										commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
+									}
+									catch(const std::exception& e){
+										std::cerr << e.what() << std::endl;
+										
+									}
+								}
+								else
+									sendPrivateError(clientIt->second->getSocket(), NOT_ALLOWED);
+								commandCalled.commandReset();
+								break;
+							}	
+
+						}
 					}
+					else
+						send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
 				}
 			}
 		}
-    }	
-		
-
+	}
 	return 0;
 }
 /*
@@ -176,4 +198,38 @@ double Server::getTime(void)
 	gettimeofday(&tv, NULL);
 	
 	return tv.tv_sec + (tv.tv_usec / 1000000.0);
+}
+
+void::Server::authenticationMessage(Client*client) const{
+	sendMessage(client->getSocket(), client->getNickname(), AUTH_MESS);
+	// send(sockfd, "For access, please enter the server password using the PASS command\n", 68, 0);
+}
+
+void Server::identificationMessage(Client*client) const{
+	sendMessage(client->getSocket(), client->getNickname(), IDENT_MESS);
+
+	// send(sockfd, "Password verified\n", 18, 0);
+	// send(sockfd, "Please provide a username and a nickname using the USER and NICK command\n", 73, 0);
+}
+
+void Server::welcomeMessage(Client*client) const{
+	sendMessage(client->getSocket(), client->getNickname(), WELCOME_MESS);
+	// send(sockfd, "Welcome to ", 11, 0);
+	// send(sockfd, &this->_serverName, this->_serverName.size() + 1, 0);
+	// send(sockfd, " !\r\n", 4, 0);
+	authenticationMessage(client);
+}
+
+void Server::print(string message) const{
+	std::cout << message << std::endl;
+}
+
+void Server::sendPrivateError(int sockfd, string message) const{
+	send(sockfd, message.c_str(), message.size() + 1, 0);
+}
+
+void Server::sendMessage(int sockfd, string target, string message) const{
+
+	string ircMessage = PVM + target + " :" + message + "\r\n";
+	send(sockfd, ircMessage.c_str(), ircMessage.length(), 0);
 }
