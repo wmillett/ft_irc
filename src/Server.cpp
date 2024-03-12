@@ -201,19 +201,20 @@ double Server::getTime(void)
 }
 
 void::Server::authenticationMessage(Client*client) const{
-	sendMessage(client->getSocket(), client->getNickname(), AUTH_MESS);
+
+	sendMessage(client->getSocket(), _serverName, client->getNickname(), AUTH_MESS);
 	// send(sockfd, "For access, please enter the server password using the PASS command\n", 68, 0);
 }
 
 void Server::identificationMessage(Client*client) const{
-	sendMessage(client->getSocket(), client->getNickname(), IDENT_MESS);
+	sendMessage(client->getSocket(), _serverName, client->getNickname(), IDENT_MESS);
 
 	// send(sockfd, "Password verified\n", 18, 0);
 	// send(sockfd, "Please provide a username and a nickname using the USER and NICK command\n", 73, 0);
 }
 
 void Server::welcomeMessage(Client*client) const{
-	sendMessage(client->getSocket(), client->getNickname(), WELCOME_MESS);
+	sendMessage(client->getSocket(), _serverName, client->getNickname(), WELCOME_MESS);
 	// send(sockfd, "Welcome to ", 11, 0);
 	// send(sockfd, &this->_serverName, this->_serverName.size() + 1, 0);
 	// send(sockfd, " !\r\n", 4, 0);
@@ -228,9 +229,9 @@ void Server::sendPrivateError(int sockfd, string message) const{
 	send(sockfd, message.c_str(), message.size() + 1, 0);
 }
 
-void Server::sendMessage(int sockfd, string target, string message) const{
+void Server::sendMessage(int sockfd, string source, string target, string message) const{
 
-	string ircMessage = PVM + target + " :" + message + "\r\n";
+	string ircMessage = ":" + source +  PVM + target + " :" + SUCCESS_REGISTER + "\r\n"; //<---- format
 	send(sockfd, ircMessage.c_str(), ircMessage.length(), 0);
 }
 
