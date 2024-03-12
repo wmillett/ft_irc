@@ -55,3 +55,4 @@ std::vector<std::string> sorted(std::vector<std::string> names)
 }
 
 Message format: :JohnDoe!john@example.com PRIVMSG Alice :Hello, Alice!\r\n
+minimal format: :JohnDoe PRIVMSG k :Hello, Alice!\r\n
