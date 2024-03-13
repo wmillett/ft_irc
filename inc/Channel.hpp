@@ -83,14 +83,7 @@ class Channel
 	string* _key;
 	std::vector<Client*> _clients;
 	std::vector<Client*> _operators;
-	int _userLimit; //if user limit is 0, there is no limit
+	size_t _userLimit; //if user limit is 0, there is no limit
 	bool _inviteOnly;
 
-	enum _eInvalid // for defining invalid characters in channel names
-	{
-		CTRLG = 7,
-		SPACE = ' ',
-		COMMA = ','
-	};
-		
 };

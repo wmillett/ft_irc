@@ -53,17 +53,6 @@
 # define NICK_SUCCESS "You have successfully changed your nickname\n"
 # define ALREADY_NICK "Error: You already have this nickname\n"
 
-
-// for JOIN command
-# define RPL_TOPIC "<client> <channel> :<topic>"
-# define ERR_NEEDMOREPARAMS "<client> <command> :Not enough parameters"
-# define ERR_NOSUCHCHANNEL "<client> <channel> :No such channel"
-# define ERR_TOOMANYCHANNELS "<client> <channel> :You have joined too many channels"
-# define ERR_BADCHANNELKEY "<client> <channel> :Cannot join channel (+k)"
-# define ERR_CHANNELISFULL "<client> <channel> :Cannot join channel (+l)"
-# define ERR_CANNOTSENDTOCHAN "<client> <channel> :Cannot send to channel"
-# define ERR_INVITEONLYCHAN "<client> <channel> :Cannot join channel (+i)"
-
 # define ERR_ALREADYREGISTERED "<client> :You may not reregister"
 # define ERR_PASSWDMISMATCH "<client> :Password incorrect"
 # define ERR_NONICKNAMEGIVEN "<client> :No nickname given"
@@ -81,13 +70,14 @@
 # define ERR_NOTEXTTOSEND "<client> :No text to send"
 
 // for JOIN command
-#define RPL_TOPIC "<client> <channel> :<topic>"
-#define ERR_NEEDMOREPARAMS "<client> <command> :Not enough parameters"
+#define RPL_TOPIC(client, channel) client + " " + channel + " :<topic>"
+#define ERR_NEEDMOREPARAMS(client, command) client + " " + command + " :Not enough parameters"
 #define ERR_NOSUCHCHANNEL "<client> <channel> :No such channel"
 #define ERR_TOOMANYCHANNELS "<client> <channel> :You have joined too many channels"
 #define ERR_BADCHANNELKEY "<client> <channel> :Cannot join channel (+k)"
 #define ERR_CHANNELISFULL "<client> <channel> :Cannot join channel (+l)"
 #define ERR_CANNOTSENDTOCHAN "<client> <channel> :Cannot send to channel"
 #define ERR_INVITEONLYCHAN "<client> <channel> :Cannot join channel (+i)"
+#define ERR_BADCHANMASK(channel) channel + " :Bad Channel Name"
 
 #endif

@@ -72,10 +72,11 @@ class Server
 	//Error handling
 	void disconnectUser(Client*client, std::vector<pollfd> fds, size_t i);
 
-	// Join command methods
-	Channel* isChannelValid(string channel); // returns 0 if channel already exists, 1 otherwise
-	void createChannel(Client* client, string name, string *key); // never fails
+	// Join methods
+	Channel* doesChannelExist(string& channel); // returns 0 if channel already exists, 1 otherwise
+	void createChannel(Client* client, string& name, string *key); // never fails
 	int joinWithKeys(Client* client, std::vector<string> arg);
+	int isChannelNameValid(string& name);
 
 	//Commands
 	int nick(Client*client, std::vector<string>);

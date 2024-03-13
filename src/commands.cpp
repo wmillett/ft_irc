@@ -117,8 +117,8 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 
 	if (arg.size() < 1)
 	{
-		sendMessage(client->getSocket(), "ircserv", \
-		client->getNickname(), JOIN_USAGE);
+		sendMessage(client->getSocket(), _serverName, \
+		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "JOIN"));
 		return (1); //TODO: change error string (maybe)
 	}
 	if (arg.size() == 1 && arg[0].compare("0") == 0)
@@ -135,21 +135,15 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 	std::vector<string> channels;
 	buildStrings(arg[0], delimiter, channels);
 
-	for (int i = 0; i < channels.size(); i++)
+	for (size_t i = 0; i < channels.size(); i++)
 	{
-		Channel* toJoin = isChannelValid(channels[i]);
+		Channel* toJoin = this->doesChannelExist(channels[i]);
 		if (toJoin)
 		{
-			if (toJoin->isInviteOnly() == 0)
-			{
-				sendMessage(client->getSocket(), "ircserv", \
-				client->getNickname(), ":Channel is in invite-only mode");
-				return (1); //TODO: change error string (maybe), may not return
-			}
 			if (toJoin->canAddToChannel(client, NULL) == 0)
 				toJoin->addUser(client);
 			else
-				sendMessage(client->getSocket(), "ircserv", \
+				sendMessage(client->getSocket(), _serverName, \
 				client->getNickname(), ":Cannot join channel!"); //TODO: change error string (maybe)
 		}
 		else
@@ -159,7 +153,11 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 				std::string::iterator it = channels[i].begin();
 				channels[i].insert(it, '#');
 			}
-			this->createChannel(client, channels[i], NULL);
+			if (this->isChannelNameValid(channels[i]))
+				this->createChannel(client, channels[i], NULL);
+			else
+				sendMessage(client->getSocket(), _serverName, \
+				client->getNickname(), ERR_BADCHANMASK(channels[i]));
 		}
 	}
 
@@ -197,6 +195,7 @@ int Server::names(Client*client, std::vector<string>arg)
 //Errors: ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL, ERR_CHANOPRIVSNEEDED
 int Server::invite(Client*client, std::vector<string>arg)
 {
+	(void)client;
 	if (arg.size() < 2)
 		return (1);
 
