@@ -35,7 +35,7 @@ If a full set of parameters is presented, then each MUST be checked
 # define USER_USAGE "usage: USER <username>\n"
 # define PASS_USAGE "usage: PASS <password>\n"
 # define QUIT_USAGE "usage: QUIT [<Quit message>]\n"
-# define JOIN_USAGE "usage: JOIN <channel>\n"
+# define JOIN_USAGE "usage: JOIN <channel>{,<channel>,...} [<key>{,<key>,...}]\n"
 # define NAMES_USAGE "usage: NAMES\n"
 
 //Error

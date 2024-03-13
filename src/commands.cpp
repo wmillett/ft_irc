@@ -110,15 +110,13 @@ int Server::quit(Client*client, std::vector<string>arg)
 	6. If there is a channel topic, send the topic to the client. (Same as TOPIC command I think)
 	7. Send the list of users in the channel to the client. (Same as NAMES command, maybe)
 
-	Channels names are strings (beginning with a '&', '#', '+' or '!'
-	character) of length up to fifty (50) characters.  Channel names are
-	case insensitive.
+	Channels WILL start with '#', added automatically during the JOIN process
 */
 int Server::join(Client* client, std::vector<string> arg) // standard command to create / join channels
 {
 
 	if (arg.size() < 1)
-		return (1); //TODO: send appropriate error, this checl may not be necessary
+		return (1); //TODO: send appropriate error, this check may not be necessary
 
 	if (arg.size() == 1 && arg[0].compare("0") == 0)
 	{

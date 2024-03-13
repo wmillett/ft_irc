@@ -55,7 +55,7 @@ class Client
 		string _username;
 		// char _ip[INET_ADDRSTRLEN];
 		string _nickname;
-		std::vector<Channel> _channels; // MAY BE USELESS
+		std::vector<Channel*> _channels;
 		Registration _registration;
 		bool _admin;
 
@@ -86,8 +86,8 @@ class Client
 		string getUsername(void) const;
 		void setUsername(string username);
 		int getSocket(void) const;
-
-
+		void addChannel(Channel* channel);
+		void removeChannel(Channel *channel);
 		
 		bool isAdmin(void) const;
 		Registration getState(void) const;

@@ -50,7 +50,7 @@ class Server
 	string _password;
 	std::map<int, Client*> _clients;
 	std::vector<struct pollfd> _pollfd;
-	std::vector<Channel> _channels;
+	std::vector<Channel*> _channels;
 	std::map<string, int (Server::*)(Client*, std::vector<string>)> _commandsMap;
 	Command commandCalled; //tmp, pourrait le mettre dans les objets clients
 	

@@ -284,21 +284,20 @@ void Server::sendMessage(int sockfd, string source, string target, string messag
 void Server::createChannel(Client* client, string name, string *key) // cannot fail
 {
 	// TODO: create channel with given name and key, may not work with just <Channel>
-	Channel newChannel(client, name, key);
+	Channel *newChannel = new Channel(client, name, key);
 
-	if (_channels.size() == _channels.capacity()) //TODO: maybe change this
-		return ;
-	_channels.push_back(newChannel);
+	if (_channels.size() < _channels.capacity()) //TODO: maybe change this
+		_channels.push_back(newChannel);
 }
 
 Channel* Server::isChannelValid(string channel) //cannot fail, returns a pointer to the right channel or NULL
 {
 	for (chIt it = _channels.begin(); it != _channels.end(); it++)
 	{
-		string channelName = it->getName();
+		string channelName = (*it)->getName();
 		if (channelName.compare(channel) == 0)
 		{
-			return &(*it);
+			return (*it);
 		}
 	}
 	return (NULL);

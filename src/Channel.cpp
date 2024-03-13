@@ -4,9 +4,12 @@
 Channel::Channel(Client* op, string name, string* key) : _name(name), _inviteOnly(false), _key(key)
 {
 	if (op)
-	this->_clients.push_back(op);
-	this->_operators.push_back(op);
-	this->_topic = NULL;
+	{
+		this->_clients.push_back(op);
+		this->_operators.push_back(op);
+		this->_topic = NULL;
+		op->addChannel(this);
+	}
 }
 
 Channel::~Channel(void)
