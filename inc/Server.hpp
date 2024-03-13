@@ -52,7 +52,7 @@ class Server
 	std::vector<Channel> _channels;
 	std::map<string, int (Server::*)(Client*, std::vector<string>)> _commandsMap;
 	Command commandCalled; //tmp, pourrait le mettre dans les objets clients
-
+	
 	// sockaddr_in serverAddr;
 
 	bool digitsCheck(const std::string &arg) const;
@@ -93,6 +93,9 @@ class Server
 
 	void init(void);
 
+	//parsing
+	string inputParsing(string s, Client *client);
+	
 	public:
 	Server(const string& port_str,  const string& password);
 	~Server();

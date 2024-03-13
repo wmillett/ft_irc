@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _admin(false) {
+Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _admin(false), clientInput("") {
 
 }
 
