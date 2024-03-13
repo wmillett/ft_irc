@@ -58,7 +58,10 @@ string Server::inputParsing(string s, Client *client)
 		//std::cout << "Sdf" << std::endl;
 		string input = client->clientInput + s.substr(0,i);
 		client->clientInput.clear();
-		client->clientInput = s.substr(i,s.size());
+		client->clientInput = s.substr(i,s.size() - i);
+		// if(client->clientInput[client->clientInput.length()] == '\n')
+		// 	client->clientInput[client->clientInput.length()] = ' ';
+		std::cout << input << std::endl;
 		return input;
 	}
 	else
