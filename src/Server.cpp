@@ -50,15 +50,18 @@ bool Server::nameCheck(const std::string &arg) const
 string Server::inputParsing(string s, Client *client)
 {
 	
-	printf("char in decimal: %i %i\n", s[0], s[1]);
+	// printf("char in decimal: %i %i\n", s[0], s[1]);
 	size_t i = s.find("\r\n");
 	
-	std::cout << i << std::endl;
+	// std::cout << i << std::endl;
 	if(i != string::npos)
 	{
-		std::cout << "Sdf" << std::endl;
+		// std::cout << "Sdf" << std::endl;
 		string input = client->clientInput + s.substr(0,i);
-		client->clientInput = s.substr(i,s.size());
+		client->clientInput = s.substr(i,s.size() - i);
+		// if(client->clientInput[client->clientInput.length()] == '\n')
+		// 	client->clientInput[client->clientInput.length()] = ' ';
+		std::cout << input << std::endl;
 		return input;
 	}
 	else
@@ -138,7 +141,7 @@ int Server::Run()
 				}
 				else if(bytesRead > 0)
 				{
-					string newInput = string(buffer, bytesRead - 1);
+					string newInput = string(buffer, bytesRead);
 					
 					string input = inputParsing(newInput, clientIt->second);
 					std::cout << "input: " << input << " " << "client buffer: " << clientIt->second->clientInput << std::endl;
