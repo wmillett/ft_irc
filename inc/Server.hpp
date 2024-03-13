@@ -65,7 +65,7 @@ class Server
 	void identificationMessage(Client*client) const;
 	void welcomeMessage(Client*client) const;
 	void print(string message) const;
-	void sendPrivateError(int sockfd, string message) const;
+	// void sendPrivateError(int sockfd, string message) const;
 	void sendMessage(int sockfd, string source, string target, string message) const;
 	
 	//Error handling

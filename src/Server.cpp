@@ -116,7 +116,8 @@ int Server::Run()
 				{
 					string input = string(buffer, bytesRead - 1);
 					dprint("Message from client: " + input);
-
+					//
+					
 					if(commandCalled.validCommand(input))
 					{
 						std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
@@ -134,11 +135,10 @@ int Server::Run()
 									}
 								}
 								else
-									sendPrivateError(clientIt->second->getSocket(), NOT_ALLOWED);
+									sendMessage(clientIt->second->getSocket(), _serverName, clientIt->second->getUsername(), NOT_ALLOWED);
 								commandCalled.commandReset();
 								break;
 							}	
-
 						}
 					}
 					else
@@ -225,13 +225,13 @@ void Server::print(string message) const{
 	std::cout << message << std::endl;
 }
 
-void Server::sendPrivateError(int sockfd, string message) const{
-	send(sockfd, message.c_str(), message.size() + 1, 0);
-}
+// void Server::sendPrivateError(int sockfd, string message) const{
+// 	send(sockfd, message.c_str(), message.size() + 1, 0);
+// }
 
 void Server::sendMessage(int sockfd, string source, string target, string message) const{
 
-	string ircMessage = ":" + source +  PVM + target + " :" + SUCCESS_REGISTER + "\r\n"; //<---- format
+	string ircMessage = ":" + source +  PVM + target + " :" + message + "\r\n"; //<---- format
 	send(sockfd, ircMessage.c_str(), ircMessage.length(), 0);
 }
 

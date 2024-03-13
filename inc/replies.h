@@ -48,8 +48,9 @@
 # define ALREADY_IN "Error: Username already registered\n"
 # define NOT_ALPHA "Error: your username does not respect the character constraints\n"
 
-
-
+//For NICK Command
+# define NICK_SUCCESS "You have successfully changed your nickname\n"
+# define ALREADY_NICK "Error: You already have this nickname\n"
 
 
 // for JOIN command

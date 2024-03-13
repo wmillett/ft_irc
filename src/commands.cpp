@@ -42,13 +42,13 @@ int Server::nick(Client*client, std::vector<string>arg)
 
 	if(arg.size() == 0)
 	{
-		send(client->getSocket(), NICK_USAGE, strlen(NICK_USAGE), 0);
+		sendMessage(client->getSocket(), _serverName, client->getUsername(), NICK_USAGE);
 		return 0;
 	}
 	
 	if(!nameCheck(arg[0]) || arg[0].size() > NICKLEN)
 	{
-		//error
+		sendMessage(client->getSocket(), _serverName, client->getUsername(), NOT_ALPHA);
 		return 0;
 	}
 
@@ -57,13 +57,14 @@ int Server::nick(Client*client, std::vector<string>arg)
 	{
 		if(it->second->getNickname() == arg[0])
 		{
-			//error
+			sendMessage(client->getSocket(), _serverName, client->getNickname(), ALREADY_NICK);
 			return 0;
 		}
 	}
-	
-	if(!client->getNickname().empty())
+	if(!client->getNickname().empty()){
+		sendMessage(client->getSocket(), _serverName, client->getUsername(), NICK_SUCCESS);
 		std::cout << client->getNickname() << " changed his nickname to " << arg[0] << std::endl; //send to everyone
+	}
 
 	client->setNickname(arg[0]);
 	client->checkIdentified();
@@ -76,7 +77,7 @@ int Server::pass(Client*client, std::vector<string>arg)
 	// std::cout << _serverName << std::endl;
 
 	if(arg.size() == 0){
-		send(client->getSocket(), PASS_USAGE, strlen(PASS_USAGE), 0);
+		sendMessage(client->getSocket(), _serverName, client->getUsername(), PASS_USAGE);
 		return 0;
 	}
 
@@ -89,7 +90,7 @@ int Server::pass(Client*client, std::vector<string>arg)
 		return 1;
 	}
 	else{
-		send(client->getSocket(), ERROR_PASSWORD, strlen(ERROR_PASSWORD), 0);
+		sendMessage(client->getSocket(), _serverName, client->getUsername(), ERROR_PASSWORD);
 		return 0; //and throw error and then close connection for that client
 	}
 		//throw CustomException::WrongPassword();

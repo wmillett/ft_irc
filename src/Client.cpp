@@ -46,13 +46,12 @@ void Client::setState(Registration newState){
 	_registration = newState;
 }
 void Client::checkIdentified(void){
-	if(getState() == IDENTIFICATION){
+	if(this->getState() == IDENTIFICATION){
 		if(!getUsername().empty() && !getNickname().empty()){
-			setState(REGISTERED);
+			this->setState(REGISTERED);
 			
 			string ircMessage = ":" + _nickname +  PVM + _nickname + " :" + SUCCESS_REGISTER + "\r\n"; //<---- format
 			send(getSocket(), ircMessage.c_str(), ircMessage.length(), 0); 
-
 		}
 	}
 }
