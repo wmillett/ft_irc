@@ -19,8 +19,10 @@
 # define RESET_TERM "\033[2J\033[H"
 
 class Channel;
+class Client;
 
 typedef std::vector<Channel*>::iterator chIt;
+typedef std::vector<Client*>::iterator clIt;
 typedef std::vector<std::string>::iterator strIt;
 
 #endif

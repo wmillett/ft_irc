@@ -56,6 +56,14 @@ class Channel
 	Channel(Client* op, string name, string* key);
 	~Channel(void);
 
+	enum e_channelErrors
+	{
+		INVITEONLY,
+		NEEDMOREPARAMS,
+		BADKEY,
+		CHANNELISFULL
+	};
+
 	void sendTopic(Client* client);
 	void addUser(Client* client);
 	void removeUser(Client* client);
@@ -63,6 +71,11 @@ class Channel
 	string* getKey(void);
 	int isKeyValid(string key); // checks if the key is valid for joining channel
 	int isInviteOnly(void);
+	int isUserInChannel(Client* client);
+	int isUserAnOp(Client* client);
+	int isChannelFull(void);
+	int canAddToChannel(Client *client, string* key);
+	string error(enum e_channelErrors chError);
 
 	private:
 	string _name;
@@ -70,7 +83,7 @@ class Channel
 	string* _key;
 	std::vector<Client*> _clients;
 	std::vector<Client*> _operators;
-	int* _userLimit;
+	int _userLimit; //if user limit is 0, there is no limit
 	bool _inviteOnly;
 
 	enum _eInvalid // for defining invalid characters in channel names

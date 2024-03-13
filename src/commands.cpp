@@ -116,13 +116,15 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 {
 
 	if (arg.size() < 1)
-		return (1); //TODO: send appropriate error, this check may not be necessary
-
+	{
+		sendMessage(client->getSocket(), "ircserv", \
+		client->getNickname(), JOIN_USAGE);
+		return (1); //TODO: change error string (maybe)
+	}
 	if (arg.size() == 1 && arg[0].compare("0") == 0)
 	{
 		//TODO: user leaves all channels it's connected to
 	}
-	
 	if (arg.size() > 1)
 	{
 		return (this->joinWithKeys(client, arg));
@@ -139,8 +141,16 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 		if (toJoin)
 		{
 			if (toJoin->isInviteOnly() == 0)
-				return (1); //TODO: make sure the appropriate error is sent too
-			toJoin->addUser(client);
+			{
+				sendMessage(client->getSocket(), "ircserv", \
+				client->getNickname(), ":Channel is in invite-only mode");
+				return (1); //TODO: change error string (maybe), may not return
+			}
+			if (toJoin->canAddToChannel(client, NULL) == 0)
+				toJoin->addUser(client);
+			else
+				sendMessage(client->getSocket(), "ircserv", \
+				client->getNickname(), ":Cannot join channel!"); //TODO: change error string (maybe)
 		}
 		else
 		{
