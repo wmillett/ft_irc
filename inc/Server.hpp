@@ -67,7 +67,7 @@ class Server
 	void welcomeMessage(Client*client) const;
 	void print(string message) const;
 	// void sendPrivateError(int sockfd, string message) const;
-	void sendMessage(int sockfd, string source, string target, string message) const;
+	void sendMessage(Client*client, string source, string target, string message) const;
 	
 	//Error handling
 	void disconnectUser(Client*client, std::vector<pollfd> fds, size_t i);
@@ -89,6 +89,8 @@ class Server
 	int kick(Client*client, std::vector<string>);
 	int mode(Client*client, std::vector<string>);
 
+	//Utils commands
+	bool validOptions(const string mode) const;
 	//Server utils
 	void buildStrings(string arg, char delimiter, std::vector<string> vec);
 

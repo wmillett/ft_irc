@@ -53,6 +53,12 @@
 # define NICK_SUCCESS "You have successfully changed your nickname\n"
 # define ALREADY_NICK "Error: You already have this nickname\n"
 
+//For MODE command
+# define INVALID_MODE "Error: invalid mode: usage: MODE <channel> {[+ | -] | i | t | k | o | l}\n"
+
+//For QUIT command
+# define QUIT_MESS(x, y) x + " has been disconnected from the server for: " + y + "\n"
+# define DEFAULT_REASON "not wanting to be here"
 
 // for JOIN command
 # define RPL_TOPIC "<client> <channel> :<topic>"

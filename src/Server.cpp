@@ -57,11 +57,13 @@ string Server::inputParsing(string s, Client *client)
 	{
 		//std::cout << "Sdf" << std::endl;
 		string input = client->clientInput + s.substr(0,i);
+		std::cout << "clientInput: " << client->clientInput << std::endl;
+		std::cout << "substr: " << s.substr(0,i) << client->clientInput << std::endl;
 		client->clientInput.clear();
 		client->clientInput = s.substr(i,s.size() - i);
 		// if(client->clientInput[client->clientInput.length()] == '\n')
 		// 	client->clientInput[client->clientInput.length()] = ' ';
-		std::cout << input << std::endl;
+		std::cout << "input: " << input << std::endl;
 		return input;
 	}
 	else
@@ -80,7 +82,7 @@ string Server::containsAdditionnal(Client*client){
 	if (i != string::npos)
 	{
 		string input = client->clientInput.substr(0,i);
-		client->clientInput.erase(0, input.length() + 2);
+		client->clientInput.erase(0, i + 2);
 		return input;
 	}
 	else
@@ -157,8 +159,9 @@ int Server::Run()
 				else if(bytesRead > 0)
 				{
 					string newInput = string(buffer, bytesRead); //enlever le -1
+					std::cout << "newInput:" << newInput << std::endl;
 					string input = inputParsing(newInput, clientIt->second);
-					while(!input.empty())
+					while(input.size())
 					{
 						std::cout << "input: " << input << " " << "client buffer: " << clientIt->second->clientInput << std::endl;
 
@@ -171,17 +174,17 @@ int Server::Run()
 							{
 								if(commandCalled.getCommand() == it->first)
 								{
-									if(commandCalled.allowedCommand(clientIt->second->getState(), clientIt->second->isAdmin())){
+									if(commandCalled.allowedCommand(clientIt->second->getState(), false)){//clientIt->second->isAdmin() TODO: change isAdmin to check if client is operator in the channel called
 										try{
 											commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
 										}
 										catch(const std::exception& e){
 											std::cerr << e.what() << std::endl;
-
+										
 										}
 									}
 									else
-										sendMessage(clientIt->second->getSocket(), _serverName, clientIt->second->getUsername(), NOT_ALLOWED);
+										sendMessage(clientIt->second, _serverName, clientIt->second->getUsername(), NOT_ALLOWED);
 									commandCalled.commandReset();
 									break;
 								}	
@@ -190,7 +193,7 @@ int Server::Run()
 						else if(!commandCalled.validCommand(input))
 							send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
 						input.clear();
-						input = containsAdditionnal(clientIt->second);
+						// input = containsAdditionnal(clientIt->second); //TODO: fix to implement if the client buffer contains multiple commands that can be called
 					}
 				}
 			}
@@ -251,19 +254,19 @@ double Server::getTime(void)
 
 void::Server::authenticationMessage(Client*client) const{
 
-	sendMessage(client->getSocket(), _serverName, client->getNickname(), AUTH_MESS);
+	sendMessage(client, _serverName, client->getNickname(), AUTH_MESS);
 	// send(sockfd, "For access, please enter the server password using the PASS command\n", 68, 0);
 }
 
 void Server::identificationMessage(Client*client) const{
-	sendMessage(client->getSocket(), _serverName, client->getNickname(), IDENT_MESS);
+	sendMessage(client, _serverName, client->getNickname(), IDENT_MESS);
 
 	// send(sockfd, "Password verified\n", 18, 0);
 	// send(sockfd, "Please provide a username and a nickname using the USER and NICK command\n", 73, 0);
 }
 
 void Server::welcomeMessage(Client*client) const{
-	sendMessage(client->getSocket(), _serverName, client->getNickname(), WELCOME_MESS);
+	sendMessage(client, _serverName, client->getNickname(), WELCOME_MESS);
 	// send(sockfd, "Welcome to ", 11, 0);
 	// send(sockfd, &this->_serverName, this->_serverName.size() + 1, 0);
 	// send(sockfd, " !\r\n", 4, 0);
@@ -278,10 +281,15 @@ void Server::print(string message) const{
 // 	send(sockfd, message.c_str(), message.size() + 1, 0);
 // }
 
-void Server::sendMessage(int sockfd, string source, string target, string message) const{
+void Server::sendMessage(Client*client, string source, string target, string message) const{
 
-	string ircMessage = ":" + source +  PVM + target + " :" + message + "\r\n"; //<---- format
-	send(sockfd, ircMessage.c_str(), ircMessage.length(), 0);
+	if(client->getLimeState()){
+		string ircMessage = ":" + source +  PVM + target + " :" + message + "\r\n"; //<---- format
+		send(client->getSocket(), ircMessage.c_str(), ircMessage.length(), 0);
+	}
+	else{
+		send(client->getSocket(), message.c_str(), message.length(), 0);
+	}
 }
 
 void Server::createChannel(Client* client, string name, string *key) // cannot fail
