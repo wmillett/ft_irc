@@ -79,12 +79,15 @@ class Client
 		Client(int sockfd);
 		~Client();
 
+		string clientInput;
 
 		string getNickname(void) const;
 		void setNickname(string nickname);
 		string getUsername(void) const;
 		void setUsername(string username);
 		int getSocket(void) const;
+
+
 		
 		bool isAdmin(void) const;
 		Registration getState(void) const;
