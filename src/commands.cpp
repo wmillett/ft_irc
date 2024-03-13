@@ -4,26 +4,19 @@ int Server::user(Client*client, std::vector<string>arg)
 {
 	string username;
 
-	if(arg.size() == 0)
+	if(arg.size() == 0 || arg.empty())
 	{
-		send(client->getSocket(), USER_USAGE, strlen(PASS_USAGE), 0);
+		sendMessage(client->getSocket(), this->_serverName, client->getUsername(), USER_USAGE);
 		return 0;
 	}
-	
-	if(arg[0].empty())
-	{
-		send(client->getSocket(), USER_USAGE, strlen(PASS_USAGE), 0);
-		return 0;
-	}	
-
 	if(!client->getUsername().empty())
 	{
-		send(client->getSocket(), ALREADY_IN, strlen(ALREADY_IN), 0);
+		sendMessage(client->getSocket(), this->_serverName, client->getUsername(), ALREADY_USER);
 		return 0;
 	}
 	if(!nameCheck(arg[0]))
 	{
-		send(client->getSocket(), NOT_ALPHA, strlen(NOT_ALPHA), 0);
+		sendMessage(client->getSocket(), this->_serverName, client->getUsername(), NOT_ALPHA);
 		return 0;
 	}
 
@@ -87,6 +80,8 @@ int Server::pass(Client*client, std::vector<string>arg)
 			client->setState(IDENTIFICATION);
 			identificationMessage(client);
 		}
+		else
+			sendMessage(client->getSocket(), _serverName, client->getUsername(), ALREADY_IN);
 		return 1;
 	}
 	else{

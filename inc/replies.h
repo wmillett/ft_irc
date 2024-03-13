@@ -42,10 +42,11 @@
 # define PVM " PRIVMSG "
 
 
-
+//For PASS command
+# define ALREADY_IN "Error: you have already entered the password\n"
 
 //For USER command
-# define ALREADY_IN "Error: Username already registered\n"
+# define ALREADY_USER "Error: Username already registered\n"
 # define NOT_ALPHA "Error: your username does not respect the character constraints\n"
 
 //For NICK Command

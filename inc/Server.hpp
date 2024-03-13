@@ -21,11 +21,12 @@
 //Debug
 # include "debug.h"
 
-#define SERVER_NAME "Minou.IRC"
+# define SERVER_NAME "Minou.IRC"
 
+# define MAX_BUFFER 1024
 
-#define USERLEN 31
-#define NICKLEN 10
+# define USERLEN 31
+# define NICKLEN 10
 
 class Client;
 
@@ -95,7 +96,8 @@ class Server
 
 	//parsing
 	string inputParsing(string s, Client *client);
-	
+	string containsAdditionnal(Client*client);
+
 	public:
 	Server(const string& port_str,  const string& password);
 	~Server();

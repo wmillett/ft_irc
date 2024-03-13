@@ -49,25 +49,40 @@ bool Server::nameCheck(const std::string &arg) const
 
 string Server::inputParsing(string s, Client *client)
 {
-	
-	printf("char in decimal: %i %i\n", s[0], s[1]);
+	//printf("char in decimal: %i %i\n", s[0], s[1]);
 	size_t i = s.find("\r\n");
 	
-	std::cout << i << std::endl;
+	//std::cout << i << std::endl;
 	if(i != string::npos)
 	{
-		std::cout << "Sdf" << std::endl;
+		//std::cout << "Sdf" << std::endl;
 		string input = client->clientInput + s.substr(0,i);
+		client->clientInput.clear();
 		client->clientInput = s.substr(i,s.size());
 		return input;
 	}
 	else
 	{
-		client->clientInput += s;
+		if(!client->clientInput.empty())
+			client->clientInput += s;
+		else
+			client->clientInput = s;
 		return "";
 	}
 }
 
+string Server::containsAdditionnal(Client*client){
+
+	size_t i = client->clientInput.find("\r\n");
+	if (i != string::npos)
+	{
+		string input = client->clientInput.substr(0,i);
+		client->clientInput.erase(0, input.length() + 2);
+		return input;
+	}
+	else
+		return "";
+}
 
 int Server::Run()
 {
@@ -119,7 +134,7 @@ int Server::Run()
 		{
 			if(fds[i].revents & POLLIN)
 			{
-				char buffer[1024];
+				char buffer[MAX_BUFFER];
 				int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
 				std::map<int,Client*>::iterator clientIt = _clients.find(fds[i].fd);
 				if(bytesRead == 0)
@@ -138,38 +153,42 @@ int Server::Run()
 				}
 				else if(bytesRead > 0)
 				{
-					string newInput = string(buffer, bytesRead - 1);
-					
+					string newInput = string(buffer, bytesRead); //enlever le -1
 					string input = inputParsing(newInput, clientIt->second);
-					std::cout << "input: " << input << " " << "client buffer: " << clientIt->second->clientInput << std::endl;
-				
-					dprint("Message from client: " + input);
-
-					if(!input.empty() && commandCalled.validCommand(input))
+					while(!input.empty())
 					{
-						std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
-						for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
+						std::cout << "input: " << input << " " << "client buffer: " << clientIt->second->clientInput << std::endl;
+
+						dprint("Message from client: " + input);
+
+						if(commandCalled.validCommand(input))
 						{
-							if(commandCalled.getCommand() == it->first)
+							std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
+							for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
 							{
-								if(commandCalled.allowedCommand(clientIt->second->getState(), clientIt->second->isAdmin())){
-									try{
-										commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
+								if(commandCalled.getCommand() == it->first)
+								{
+									if(commandCalled.allowedCommand(clientIt->second->getState(), clientIt->second->isAdmin())){
+										try{
+											commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
+										}
+										catch(const std::exception& e){
+											std::cerr << e.what() << std::endl;
+
+										}
 									}
-									catch(const std::exception& e){
-										std::cerr << e.what() << std::endl;
-										
-									}
-								}
-								else
-									sendMessage(clientIt->second->getSocket(), _serverName, clientIt->second->getUsername(), NOT_ALLOWED);
-								commandCalled.commandReset();
-								break;
-							}	
+									else
+										sendMessage(clientIt->second->getSocket(), _serverName, clientIt->second->getUsername(), NOT_ALLOWED);
+									commandCalled.commandReset();
+									break;
+								}	
+							}
 						}
+						else if(!commandCalled.validCommand(input))
+							send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
+						input.clear();
+						input = containsAdditionnal(clientIt->second);
 					}
-					else if(!commandCalled.validCommand(input))
-						send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
 				}
 			}
 		}
