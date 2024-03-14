@@ -21,11 +21,12 @@
 //Debug
 # include "debug.h"
 
-#define SERVER_NAME "Minou.IRC"
+# define SERVER_NAME "Minou.IRC"
 
+# define MAX_BUFFER 1024
 
-#define USERLEN 31
-#define NICKLEN 10
+# define USERLEN 31
+# define NICKLEN 10
 
 class Client;
 
@@ -65,8 +66,8 @@ class Server
 	void identificationMessage(Client*client) const;
 	void welcomeMessage(Client*client) const;
 	void print(string message) const;
-	void sendPrivateError(int sockfd, string message) const;
-	void sendMessage(int sockfd, string target, string message) const;
+	// void sendPrivateError(int sockfd, string message) const;
+	void sendMessage(Client*client, string source, string target, string message) const;
 	
 	//Error handling
 	void disconnectUser(Client*client, std::vector<pollfd> fds, size_t i);
@@ -88,6 +89,8 @@ class Server
 	int kick(Client*client, std::vector<string>);
 	int mode(Client*client, std::vector<string>);
 
+	//Utils commands
+	bool validOptions(const string mode) const;
 	//Server utils
 	void buildStrings(string arg, char delimiter, std::vector<string> vec);
 
@@ -95,7 +98,8 @@ class Server
 
 	//parsing
 	string inputParsing(string s, Client *client);
-	
+	string containsAdditionnal(Client*client);
+
 	public:
 	Server(const string& port_str,  const string& password);
 	~Server();

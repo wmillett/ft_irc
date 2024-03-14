@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _admin(false), clientInput("") {
+Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), clientInput(""), _inLimechat(true) {
 
 }
 
@@ -18,8 +18,17 @@ Registration Client::getState(void) const{
 	return _registration;
 }
 
-bool Client::isAdmin(void) const{
-	return _admin;
+// bool Client::isAdmin(void) const{
+// 	return _admin;
+// }
+
+bool Client::getLimeState(void) const
+{
+	return _inLimechat;
+}
+
+void Client::setLimeState(bool toSet){
+	_inLimechat = toSet;
 }
 
 string Client::getNickname(void) const
@@ -46,13 +55,12 @@ void Client::setState(Registration newState){
 	_registration = newState;
 }
 void Client::checkIdentified(void){
-	if(getState() == IDENTIFICATION){
+	if(this->getState() == IDENTIFICATION){
 		if(!getUsername().empty() && !getNickname().empty()){
-			setState(REGISTERED);
+			this->setState(REGISTERED);
 			
 			string ircMessage = ":" + _nickname +  PVM + _nickname + " :" + SUCCESS_REGISTER + "\r\n"; //<---- format
 			send(getSocket(), ircMessage.c_str(), ircMessage.length(), 0); 
-
 		}
 	}
 }

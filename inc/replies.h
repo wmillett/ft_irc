@@ -42,15 +42,23 @@
 # define PVM " PRIVMSG "
 
 
-
+//For PASS command
+# define ALREADY_IN "Error: you have already entered the password\n"
 
 //For USER command
-# define ALREADY_IN "Error: Username already registered\n"
+# define ALREADY_USER "Error: Username already registered\n"
 # define NOT_ALPHA "Error: your username does not respect the character constraints\n"
 
+//For NICK Command
+# define NICK_SUCCESS "You have successfully changed your nickname\n"
+# define ALREADY_NICK "Error: You already have this nickname\n"
 
+//For MODE command
+# define INVALID_MODE "Error: invalid mode: usage: MODE <channel> {[+ | -] | i | t | k | o | l}\n"
 
-
+//For QUIT command
+# define QUIT_MESS(x, y) x + " has been disconnected from the server for: " + y + "\n"
+# define DEFAULT_REASON "not wanting to be here"
 
 // for JOIN command
 # define RPL_TOPIC "<client> <channel> :<topic>"

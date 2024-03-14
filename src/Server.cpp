@@ -49,28 +49,45 @@ bool Server::nameCheck(const std::string &arg) const
 
 string Server::inputParsing(string s, Client *client)
 {
-	
-	// printf("char in decimal: %i %i\n", s[0], s[1]);
+	//printf("char in decimal: %i %i\n", s[0], s[1]);
 	size_t i = s.find("\r\n");
 	
-	// std::cout << i << std::endl;
+	//std::cout << i << std::endl;
 	if(i != string::npos)
 	{
-		// std::cout << "Sdf" << std::endl;
+		//std::cout << "Sdf" << std::endl;
 		string input = client->clientInput + s.substr(0,i);
+		std::cout << "clientInput: " << client->clientInput << std::endl;
+		std::cout << "substr: " << s.substr(0,i) << client->clientInput << std::endl;
+		client->clientInput.clear();
 		client->clientInput = s.substr(i,s.size() - i);
 		// if(client->clientInput[client->clientInput.length()] == '\n')
 		// 	client->clientInput[client->clientInput.length()] = ' ';
-		std::cout << input << std::endl;
+		std::cout << "input: " << input << std::endl;
 		return input;
 	}
 	else
 	{
-		client->clientInput += s;
+		if(!client->clientInput.empty())
+			client->clientInput += s;
+		else
+			client->clientInput = s;
 		return "";
 	}
 }
 
+string Server::containsAdditionnal(Client*client){
+
+	size_t i = client->clientInput.find("\r\n");
+	if (i != string::npos)
+	{
+		string input = client->clientInput.substr(0,i);
+		client->clientInput.erase(0, i + 2);
+		return input;
+	}
+	else
+		return "";
+}
 
 int Server::Run()
 {
@@ -122,7 +139,7 @@ int Server::Run()
 		{
 			if(fds[i].revents & POLLIN)
 			{
-				char buffer[1024];
+				char buffer[MAX_BUFFER];
 				int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
 				std::map<int,Client*>::iterator clientIt = _clients.find(fds[i].fd);
 				if(bytesRead == 0)
@@ -141,39 +158,43 @@ int Server::Run()
 				}
 				else if(bytesRead > 0)
 				{
-					string newInput = string(buffer, bytesRead);
-					
+					string newInput = string(buffer, bytesRead); //enlever le -1
+					std::cout << "newInput:" << newInput << std::endl;
 					string input = inputParsing(newInput, clientIt->second);
-					std::cout << "input: " << input << " " << "client buffer: " << clientIt->second->clientInput << std::endl;
-				
-					dprint("Message from client: " + input);
-
-					if(!input.empty() && commandCalled.validCommand(input))
+					while(input.size())
 					{
-						std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
-						for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
-						{
-							if(commandCalled.getCommand() == it->first)
-							{
-								if(commandCalled.allowedCommand(clientIt->second->getState(), clientIt->second->isAdmin())){
-									try{
-										commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
-									}
-									catch(const std::exception& e){
-										std::cerr << e.what() << std::endl;
-										
-									}
-								}
-								else
-									sendPrivateError(clientIt->second->getSocket(), NOT_ALLOWED);
-								commandCalled.commandReset();
-								break;
-							}	
+						std::cout << "input: " << input << " " << "client buffer: " << clientIt->second->clientInput << std::endl;
 
+						dprint("Message from client: " + input);
+
+						if(commandCalled.validCommand(input))
+						{
+							std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
+							for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
+							{
+								if(commandCalled.getCommand() == it->first)
+								{
+									if(commandCalled.allowedCommand(clientIt->second->getState(), false)){//clientIt->second->isAdmin() TODO: change isAdmin to check if client is operator in the channel called
+										try{
+											commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
+										}
+										catch(const std::exception& e){
+											std::cerr << e.what() << std::endl;
+										
+										}
+									}
+									else
+										sendMessage(clientIt->second, _serverName, clientIt->second->getUsername(), NOT_ALLOWED);
+									commandCalled.commandReset();
+									break;
+								}	
+							}
 						}
+						else if(!commandCalled.validCommand(input))
+							send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
+						input.clear();
+						// input = containsAdditionnal(clientIt->second); //TODO: fix to implement if the client buffer contains multiple commands that can be called
 					}
-					else if(!commandCalled.validCommand(input))
-						send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
 				}
 			}
 		}
@@ -232,19 +253,20 @@ double Server::getTime(void)
 }
 
 void::Server::authenticationMessage(Client*client) const{
-	sendMessage(client->getSocket(), client->getNickname(), AUTH_MESS);
+
+	sendMessage(client, _serverName, client->getNickname(), AUTH_MESS);
 	// send(sockfd, "For access, please enter the server password using the PASS command\n", 68, 0);
 }
 
 void Server::identificationMessage(Client*client) const{
-	sendMessage(client->getSocket(), client->getNickname(), IDENT_MESS);
+	sendMessage(client, _serverName, client->getNickname(), IDENT_MESS);
 
 	// send(sockfd, "Password verified\n", 18, 0);
 	// send(sockfd, "Please provide a username and a nickname using the USER and NICK command\n", 73, 0);
 }
 
 void Server::welcomeMessage(Client*client) const{
-	sendMessage(client->getSocket(), client->getNickname(), WELCOME_MESS);
+	sendMessage(client, _serverName, client->getNickname(), WELCOME_MESS);
 	// send(sockfd, "Welcome to ", 11, 0);
 	// send(sockfd, &this->_serverName, this->_serverName.size() + 1, 0);
 	// send(sockfd, " !\r\n", 4, 0);
@@ -255,14 +277,19 @@ void Server::print(string message) const{
 	std::cout << message << std::endl;
 }
 
-void Server::sendPrivateError(int sockfd, string message) const{
-	send(sockfd, message.c_str(), message.size() + 1, 0);
-}
+// void Server::sendPrivateError(int sockfd, string message) const{
+// 	send(sockfd, message.c_str(), message.size() + 1, 0);
+// }
 
-void Server::sendMessage(int sockfd, string target, string message) const{
+void Server::sendMessage(Client*client, string source, string target, string message) const{
 
-	string ircMessage = PVM + target + " :" + message + "\r\n";
-	send(sockfd, ircMessage.c_str(), ircMessage.length(), 0);
+	if(client->getLimeState()){
+		string ircMessage = ":" + source +  PVM + target + " :" + message + "\r\n"; //<---- format
+		send(client->getSocket(), ircMessage.c_str(), ircMessage.length(), 0);
+	}
+	else{
+		send(client->getSocket(), message.c_str(), message.length(), 0);
+	}
 }
 
 void Server::createChannel(Client* client, string name, string *key) // cannot fail

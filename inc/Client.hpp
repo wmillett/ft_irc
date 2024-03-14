@@ -57,7 +57,7 @@ class Client
 		string _nickname;
 		std::vector<Channel> _channels; // MAY BE USELESS
 		Registration _registration;
-		bool _admin;
+		bool _inLimechat;
 
 	enum _eInvalid // for defining invalid characters in clients, with their ascii value
 	{
@@ -86,10 +86,10 @@ class Client
 		string getUsername(void) const;
 		void setUsername(string username);
 		int getSocket(void) const;
+		void setLimeState(bool toSet);
 
-
-		
-		bool isAdmin(void) const;
+		bool getLimeState(void) const;
+		// bool isAdmin(void) const;
 		Registration getState(void) const;
 		void setState(Registration newState);
 		void checkIdentified(void);

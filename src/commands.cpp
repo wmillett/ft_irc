@@ -4,26 +4,19 @@ int Server::user(Client*client, std::vector<string>arg)
 {
 	string username;
 
-	if(arg.size() == 0)
+	if(arg.size() == 0 || arg.empty())
 	{
-		send(client->getSocket(), USER_USAGE, strlen(PASS_USAGE), 0);
+		sendMessage(client, this->_serverName, client->getUsername(), USER_USAGE);
 		return 0;
 	}
-	
-	if(arg[0].empty())
-	{
-		send(client->getSocket(), USER_USAGE, strlen(PASS_USAGE), 0);
-		return 0;
-	}	
-
 	if(!client->getUsername().empty())
 	{
-		send(client->getSocket(), ALREADY_IN, strlen(ALREADY_IN), 0);
+		sendMessage(client, this->_serverName, client->getUsername(), ALREADY_USER);
 		return 0;
 	}
 	if(!nameCheck(arg[0]))
 	{
-		send(client->getSocket(), NOT_ALPHA, strlen(NOT_ALPHA), 0);
+		sendMessage(client, this->_serverName, client->getUsername(), NOT_ALPHA);
 		return 0;
 	}
 
@@ -32,6 +25,10 @@ int Server::user(Client*client, std::vector<string>arg)
 	else
 		username = arg[0];
 	
+	if(arg.size() == 4 && arg[0] == arg[3] && arg[1] == "0" && arg[2] == "*")
+		client->setLimeState(true);
+	else
+		client->setLimeState(false);
 	client->setUsername(username);
 	client->checkIdentified();
 	return 0;
@@ -42,13 +39,13 @@ int Server::nick(Client*client, std::vector<string>arg)
 
 	if(arg.size() == 0)
 	{
-		send(client->getSocket(), NICK_USAGE, strlen(NICK_USAGE), 0);
+		sendMessage(client, _serverName, client->getUsername(), NICK_USAGE);
 		return 0;
 	}
 	
 	if(!nameCheck(arg[0]) || arg[0].size() > NICKLEN)
 	{
-		//error
+		sendMessage(client, _serverName, client->getUsername(), NOT_ALPHA);
 		return 0;
 	}
 
@@ -57,13 +54,14 @@ int Server::nick(Client*client, std::vector<string>arg)
 	{
 		if(it->second->getNickname() == arg[0])
 		{
-			//error
+			sendMessage(client, _serverName, client->getNickname(), ALREADY_NICK);
 			return 0;
 		}
 	}
-	
-	if(!client->getNickname().empty())
+	if(!client->getNickname().empty()){
+		sendMessage(client, _serverName, client->getUsername(), NICK_SUCCESS);
 		std::cout << client->getNickname() << " changed his nickname to " << arg[0] << std::endl; //send to everyone
+	}
 
 	client->setNickname(arg[0]);
 	client->checkIdentified();
@@ -76,7 +74,7 @@ int Server::pass(Client*client, std::vector<string>arg)
 	// std::cout << _serverName << std::endl;
 
 	if(arg.size() == 0){
-		send(client->getSocket(), PASS_USAGE, strlen(PASS_USAGE), 0);
+		sendMessage(client, _serverName, client->getUsername(), PASS_USAGE);
 		return 0;
 	}
 
@@ -86,10 +84,12 @@ int Server::pass(Client*client, std::vector<string>arg)
 			client->setState(IDENTIFICATION);
 			identificationMessage(client);
 		}
+		else
+			sendMessage(client, _serverName, client->getUsername(), ALREADY_IN);
 		return 1;
 	}
 	else{
-		send(client->getSocket(), ERROR_PASSWORD, strlen(ERROR_PASSWORD), 0);
+		sendMessage(client, _serverName, client->getUsername(), ERROR_PASSWORD);
 		return 0; //and throw error and then close connection for that client
 	}
 		//throw CustomException::WrongPassword();
@@ -97,10 +97,15 @@ int Server::pass(Client*client, std::vector<string>arg)
 
 int Server::quit(Client*client, std::vector<string>arg)
 {
-	(void)client;
-	(void)arg;
-
-	std::cout << "quit" << std::endl;
+	if(!arg[0].empty()){
+		print(QUIT_MESS(client->getUsername(), arg[0]));
+		sendMessage(client, _serverName, client->getNickname(), QUIT_MESS(client->getUsername(), arg[0]));
+	}
+	else{
+		print(QUIT_MESS(client->getUsername(), DEFAULT_REASON));
+		sendMessage(client, _serverName, client->getNickname(), QUIT_MESS(client->getUsername(), DEFAULT_REASON));
+	}
+	//disconnectUser(client); //TODO: update function to work outside of Server.run
 	return 0;
 }
 
@@ -211,11 +216,47 @@ int Server::kick(Client*client, std::vector<string>arg)
 	return 0;
 }
 
+bool Server::validOptions(const string mode) const{
+    const char options[] = MODE_OPTIONS;
+    //const string mode = _args[0];
+    size_t i = 0;
+
+    while(i < mode.size() && mode[i] == ' ')
+        i++;
+    if (mode[i] != '+' && mode[i] != '-')
+        return false;
+    i++;
+    while(mode[i] && mode[i] != ' '){
+        for(int j = 0; j < NB_OPTIONS; j++){
+            if(mode[i] == options[j])
+                break;
+            if(j == NB_OPTIONS - 1)
+                return false;
+        }
+        i++;
+    }
+    while(++i < mode.size() && mode[i] == ' ')
+        ;
+    if(mode[i])
+        return false;
+    return true;
+}
+
 int Server::mode(Client*client, std::vector<string>arg)
 {
 	(void)client;
 	(void)arg;
 
+	if (arg[0].empty() || arg[1].empty())
+	{
+		sendMessage(client, _serverName, client->getNickname(), MODE_USAGE);
+		return false;
+	}
+	//TODO: check if channel exists (arg[0])
+	if (!validOptions(arg[1])){
+		sendMessage(client, _serverName, client->getNickname(), INVALID_MODE);
+		return false;
+	}
 	std::cout << "mode" << std::endl;
 	return 0;
 }
