@@ -144,7 +144,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 				toJoin->addUser(client);
 			else
 				sendMessage(client->getSocket(), _serverName, \
-				client->getNickname(), ":Cannot join channel!"); //TODO: change error string (maybe)
+				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i], "other")); //TODO: change error string (maybe)
 		}
 		else
 		{

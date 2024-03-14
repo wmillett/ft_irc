@@ -14,7 +14,16 @@ Channel::Channel(Client* op, string name, string* key) : _name(name), _key(key),
 
 Channel::~Channel(void)
 {
-
+	if (this->_key)
+	{
+		delete _key;
+		_key = NULL;
+	}
+	if (this->_topic)
+	{
+		delete _topic;
+		_topic = NULL;
+	}
 }
 
 void Channel::sendTopic(Client* client) // send to client fd
@@ -47,11 +56,11 @@ string Channel::getName(void)
 	return (_name);
 }
 
-int Channel::isKeyValid(string key)
+int Channel::isKeyValid(string* key)
 {
 	if (!this->getKey())
 		return (0);
-	if ((this->getKey())->compare(key) == 0)
+	if ((this->getKey())->compare(*key) == 0)
 		return (0);
 	return (1);
 }
@@ -94,7 +103,7 @@ int Channel::isUserAnOp(Client* client) // returns 0 if Client is an operator
 int Channel::canAddToChannel(Client *client, string* key)
 {
 	return (this->isChannelFull() && this->isInviteOnly() && \
-	this->isKeyValid(*key) && this->isUserInChannel(client));
+	this->isKeyValid(key) && this->isUserInChannel(client));
 }
 
 int Channel::isChannelFull(void) // returns 0 if channel is full

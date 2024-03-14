@@ -79,5 +79,6 @@
 #define ERR_CANNOTSENDTOCHAN "<client> <channel> :Cannot send to channel"
 #define ERR_INVITEONLYCHAN "<client> <channel> :Cannot join channel (+i)"
 #define ERR_BADCHANMASK(channel) channel + " :Bad Channel Name"
+#define ERR_CANTJOINCHAN(client, channel, reason) client + " " + channel + " :Cannot join channel " + reason
 
 #endif

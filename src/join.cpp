@@ -3,11 +3,14 @@
 
 void Server::createChannel(Client* client, string& name, string *key) // cannot fail
 {
-	if (_channels.size() < _channels.capacity()) //TODO: maybe change this
-		_channels.push_back(new Channel(client, name, key));
+	if (_channels.size() < _channels.capacity()) //TODO: new may not work here
+	{
+		string* allocKey = new string(*key);
+		_channels.push_back(new Channel(client, name, allocKey));
+	}
 }
 
-Channel* Server::doesChannelExist(string& channel) //cannot fail, returns a pointer to the right channel or NULL
+Channel* Server::doesChannelExist(string& channel) //cannot fail, returns a pointer to the right channel or NULL if it doesn't exitst
 {
 	for (chIt it = _channels.begin(); it != _channels.end(); it++)
 	{
@@ -26,24 +29,20 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 	char delimiter = ',';
 	string name;
 	std::vector<string> channels;
+	std::vector<string> keys;
 	buildStrings(arg[0], delimiter, channels);
+	buildStrings(arg[1], delimiter, keys);
 
 	for (size_t i = 0; i < channels.size(); i++)
 	{
-		Channel* toJoin = doesChannelExist(channels[i]);
+		Channel* toJoin = this->doesChannelExist(channels[i]);
 		if (toJoin)
 		{
-			if (toJoin->isInviteOnly() == 0)
-			{
-				sendMessage(client->getSocket(), "ircserv", \
-				client->getNickname(), ":Channel is in invite-only mode");
-				return (1); //TODO: change error string (maybe), may not return
-			}
-			if (toJoin->isUserInChannel(client) == 1)
+			if (toJoin->canAddToChannel(client, ((i < keys.size()) ? (&keys[i]) : NULL)) == 0) //TODO: does this work?
 				toJoin->addUser(client);
 			else
-				sendMessage(client->getSocket(), "ircserv", \
-				client->getNickname(), ":Already in channel!"); //TODO: change error string (maybe)
+				sendMessage(client->getSocket(), _serverName, \
+				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i], "other")); //TODO: change error string (maybe)
 		}
 		else
 		{
@@ -52,7 +51,14 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 				std::string::iterator it = channels[i].begin();
 				channels[i].insert(it, '#');
 			}
-			this->createChannel(client, channels[i], NULL);
+			if (this->isChannelNameValid(channels[i]))
+			{
+				if (i < keys.size())
+				this->createChannel(client, channels[i], &keys[i]);
+			}
+			else
+				sendMessage(client->getSocket(), _serverName, \
+				client->getNickname(), ERR_BADCHANMASK(channels[i]));
 		}
 	}
 

@@ -69,7 +69,7 @@ class Channel
 	void removeUser(Client* client);
 	string getName(void);
 	string* getKey(void);
-	int isKeyValid(string key); // checks if the key is valid for joining channel
+	int isKeyValid(string* key); // checks if the key is valid for joining channel
 	int isInviteOnly(void);
 	int isUserInChannel(Client* client);
 	int isUserAnOp(Client* client);
