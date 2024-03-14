@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _admin(false), clientInput("") {
+Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), clientInput(""), _inLimechat(true) {
 
 }
 
@@ -18,8 +18,17 @@ Registration Client::getState(void) const{
 	return _registration;
 }
 
-bool Client::isAdmin(void) const{
-	return _admin;
+// bool Client::isAdmin(void) const{
+// 	return _admin;
+// }
+
+bool Client::getLimeState(void) const
+{
+	return _inLimechat;
+}
+
+void Client::setLimeState(bool toSet){
+	_inLimechat = toSet;
 }
 
 string Client::getNickname(void) const
