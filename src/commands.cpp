@@ -109,19 +109,7 @@ int Server::quit(Client*client, std::vector<string>arg)
 	return 0;
 }
 
-/*
-	Steps of the JOIN command: 
-	1. Take the first channel passed as argument
-	2. Look for the channel in the list of channels
-	3. If the channel exists, look if there is a key associated to the channel, check if the key is correct.
-	4. If the channel does not exist, create the channel with its associated key (if there is one)
-	5. Add the client to the channel.
-	6. If there is a channel topic, send the topic to the client. (Same as TOPIC command I think)
-	7. Send the list of users in the channel to the client. (Same as NAMES command, maybe)
-
-	Channels WILL start with '#', added automatically during the JOIN process
-*/
-int Server::join(Client* client, std::vector<string> arg) // standard command to create / join channels
+int Server::join(Client* client, std::vector<string> arg) // standard command to create / join channels, does not need channel names to start with '#'
 {
 	if (arg.size() < 1)
 	{
@@ -129,10 +117,10 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "JOIN"));
 		return (1); //TODO: change error string (maybe)
 	}
-	if (arg.size() == 1 && arg[0].compare("0") == 0)
+	if (arg.size() == 1 && arg[0] == "0")
 	{
-		std::cout << "1" << std::endl;
 		//TODO: user leaves all channels it's connected to
+		return (0);
 	}
 	if (arg.size() > 1)
 	{
@@ -150,6 +138,11 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 
 	for (size_t i = 0; i < channels.size(); i++)
 	{
+		if ((channels[i])[0] != '#') // ADD '#' to the start if not present
+		{
+			std::string::iterator it = channels[i].begin();
+			channels[i].insert(it, '#');
+		}
 		Channel* toJoin = this->doesChannelExist(channels[i]);
 		if (toJoin)
 		{
@@ -161,11 +154,6 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 		}
 		else
 		{
-			if ((channels[i])[0] != '#') // ADD '#' to the start if not present
-			{
-				std::string::iterator it = channels[i].begin();
-				channels[i].insert(it, '#');
-			}
 			if (this->isChannelNameValid(channels[i]) == 0)
 				this->createChannel(client, channels[i], NULL);
 			else

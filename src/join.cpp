@@ -41,6 +41,11 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 
 	for (size_t i = 0; i < channels.size(); i++)
 	{
+		if ((channels[i])[0] != '#') // ADD '#' to the start if not present
+		{
+			std::string::iterator it = channels[i].begin();
+			channels[i].insert(it, '#');
+		}
 		Channel* toJoin = this->doesChannelExist(channels[i]);
 		if (toJoin)
 		{
@@ -52,11 +57,6 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 		}
 		else
 		{
-			if ((channels[i])[0] != '#') // ADD '#' to the start if not present
-			{
-				std::string::iterator it = channels[i].begin();
-				channels[i].insert(it, '#');
-			}
 			if (this->isChannelNameValid(channels[i]) == 0)
 			{
 				if (i < keys.size())
