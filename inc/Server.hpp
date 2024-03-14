@@ -77,6 +77,12 @@ class Server
 	void createChannel(Client* client, string& name, string *key); // never fails
 	int joinWithKeys(Client* client, std::vector<string> arg);
 	int isChannelNameValid(string& name);
+	std::vector<string> buildStrings(string arg, char delimiter, std::vector<string> vec);
+
+	// PRIVMSG methods
+	Client* isTargetAUser(string& target);
+	Channel* isTargetAChannel(string& target);
+	void sendArgs(Client* sender, Client* target, std::vector<string>& arg);
 
 	//Commands
 	int nick(Client*client, std::vector<string>);
@@ -89,11 +95,10 @@ class Server
 	int invite(Client*client, std::vector<string>);
 	int kick(Client*client, std::vector<string>);
 	int mode(Client*client, std::vector<string>);
+	int privmsg(Client*client, std::vector<string>);
 
 	//Utils commands
 	bool validOptions(const string mode) const;
-	//Server utils
-	void buildStrings(string arg, char delimiter, std::vector<string> vec);
 
 	void init(void);
 

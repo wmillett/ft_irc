@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), clientInput(""), _inLimechat(true) {
+Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _inLimechat(true), clientInput(""){
 
 }
 

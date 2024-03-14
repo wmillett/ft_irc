@@ -123,15 +123,15 @@ int Server::quit(Client*client, std::vector<string>arg)
 */
 int Server::join(Client* client, std::vector<string> arg) // standard command to create / join channels
 {
-
 	if (arg.size() < 1)
 	{
-		sendMessage(client->getSocket(), _serverName, \
+		sendMessage(client, _serverName, \
 		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "JOIN"));
 		return (1); //TODO: change error string (maybe)
 	}
 	if (arg.size() == 1 && arg[0].compare("0") == 0)
 	{
+		std::cout << "1" << std::endl;
 		//TODO: user leaves all channels it's connected to
 	}
 	if (arg.size() > 1)
@@ -142,7 +142,11 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 	char delimiter = ',';
 	string name;
 	std::vector<string> channels;
-	buildStrings(arg[0], delimiter, channels);
+	channels = buildStrings(arg[0], delimiter, channels);
+	for (strIt it = channels.begin(); it < channels.end(); it++)
+	{
+		std::cout << "args: " << *it << std::endl;
+	}
 
 	for (size_t i = 0; i < channels.size(); i++)
 	{
@@ -152,7 +156,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 			if (toJoin->canAddToChannel(client, NULL) == 0)
 				toJoin->addUser(client);
 			else
-				sendMessage(client->getSocket(), _serverName, \
+				sendMessage(client, _serverName, \
 				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i], "other")); //TODO: change error string (maybe)
 		}
 		else
@@ -162,10 +166,10 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 				std::string::iterator it = channels[i].begin();
 				channels[i].insert(it, '#');
 			}
-			if (this->isChannelNameValid(channels[i]))
+			if (this->isChannelNameValid(channels[i]) == 0)
 				this->createChannel(client, channels[i], NULL);
 			else
-				sendMessage(client->getSocket(), _serverName, \
+				sendMessage(client, _serverName, \
 				client->getNickname(), ERR_BADCHANMASK(channels[i]));
 		}
 	}
@@ -268,6 +272,40 @@ int Server::mode(Client*client, std::vector<string>arg)
 	return 0;
 }
 
+int Server::privmsg(Client*client, std::vector<string>arg)
+{
+	if (arg.size() < 2)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "PRIVMSG"));
+	}
+	std::vector<string> targets;
+	targets = this->buildStrings(arg[0], ',', targets);
+
+	std::vector<string>::iterator it = arg.begin();
+	arg.erase(it); // erase the targets to make it easier to send everything that needs to be sent from arg
+
+	Client* clientTarget;
+	Channel* channelTarget;
+
+	for (size_t i = 0; i < targets.size(); i++)
+	{
+		clientTarget = isTargetAUser(targets[i]);
+		if (clientTarget != NULL)
+		{
+			sendArgs(client, clientTarget, arg);
+			continue ;
+		}
+		channelTarget = isTargetAChannel(targets[i]);
+		if (channelTarget != NULL)
+		{
+			//TODO: use sendArgs() on each user in the channel
+			continue ;
+		}
+	}
+
+	return (0);
+}
 
 void Server::init(void)
 {
@@ -281,4 +319,5 @@ void Server::init(void)
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("INVITE", &Server::invite));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("KICK", &Server::kick));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("MODE", &Server::mode));
+	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("PRIVMSG", &Server::privmsg));
 }

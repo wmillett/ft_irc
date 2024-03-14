@@ -3,10 +3,11 @@
 
 void Server::createChannel(Client* client, string& name, string *key) // cannot fail
 {
-	if (_channels.size() < _channels.capacity()) //TODO: new may not work here
+	if (_channels.size() < _channels.capacity()) //TODO: new may not work here, change message
 	{
 		string* allocKey = new string(*key);
 		_channels.push_back(new Channel(client, name, allocKey));
+		sendMessage(client, _serverName, client->getNickname(), "channel created");
 	}
 }
 
@@ -30,18 +31,18 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 	string name;
 	std::vector<string> channels;
 	std::vector<string> keys;
-	buildStrings(arg[0], delimiter, channels);
-	buildStrings(arg[1], delimiter, keys);
+	channels = buildStrings(arg[0], delimiter, channels);
+	keys = buildStrings(arg[1], delimiter, keys);
 
 	for (size_t i = 0; i < channels.size(); i++)
 	{
 		Channel* toJoin = this->doesChannelExist(channels[i]);
 		if (toJoin)
 		{
-			if (toJoin->canAddToChannel(client, ((i < keys.size()) ? (&keys[i]) : NULL)) == 0) //TODO: does this work?
+			if (toJoin->canAddToChannel(client, ((i < keys.size()) ? &keys[i] : NULL)) == 0) // TODO: does this work?
 				toJoin->addUser(client);
 			else
-				sendMessage(client->getSocket(), _serverName, \
+				sendMessage(client, _serverName, \
 				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i], "other")); //TODO: change error string (maybe)
 		}
 		else
@@ -51,13 +52,13 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 				std::string::iterator it = channels[i].begin();
 				channels[i].insert(it, '#');
 			}
-			if (this->isChannelNameValid(channels[i]))
+			if (this->isChannelNameValid(channels[i]) == 0)
 			{
 				if (i < keys.size())
 				this->createChannel(client, channels[i], &keys[i]);
 			}
 			else
-				sendMessage(client->getSocket(), _serverName, \
+				sendMessage(client, _serverName, \
 				client->getNickname(), ERR_BADCHANMASK(channels[i]));
 		}
 	}
@@ -75,7 +76,7 @@ int Server::isChannelNameValid(string& name) // returns 0 if valid
 	return (0);
 }
 
-void Server::buildStrings(string arg, char delimiter, std::vector<string> vec)
+std::vector<string> Server::buildStrings(string arg, char delimiter, std::vector<string> vec)
 {
 	size_t last = 0, next = 0;
 	string str;
@@ -83,11 +84,12 @@ void Server::buildStrings(string arg, char delimiter, std::vector<string> vec)
 	while ((next = arg.find(delimiter, last)) != std::string::npos)
 	{
 		str = arg.substr(last, next - last);
-		rtn.push_back(str);
+		vec.push_back(str);
 		last = next + 1;
 	}
 	str = arg.substr(last);
-	rtn.push_back(str);
+	vec.push_back(str);
 
-	rtn.swap(vec);
+	vec.swap(rtn);
+	return (rtn);
 }

@@ -26,14 +26,12 @@ Channel::~Channel(void)
 	}
 }
 
-void Channel::sendTopic(Client* client) // send to client fd
+void Channel::sendTopic(Client* client) // TODO: sent to client fd if there is a topic
 {
-	if (client)
+	(void)client;
+	if (_topic)
 	{
-		if (_topic)
-		{
-			
-		}
+
 	}
 }
 
@@ -46,7 +44,7 @@ void Channel::addUser(Client* client)
 	}
 }
 
-void Channel::removeUser(Client* client)
+void Channel::removeUser(Client* client) //TODO
 {
 	(void)client;
 }
@@ -56,7 +54,7 @@ string Channel::getName(void)
 	return (_name);
 }
 
-int Channel::isKeyValid(string* key)
+int Channel::isKeyValid(string* key) // returns 0 if channel has to key or if key is correct
 {
 	if (!this->getKey())
 		return (0);
@@ -69,7 +67,7 @@ string* Channel::getKey(void)
 {
 	return (this->_key);
 }
-int Channel::isInviteOnly(void)
+int Channel::isInviteOnly(void) // returns 0 if channel is invite-only
 {
 	if (_inviteOnly == true)
 		return (0);
