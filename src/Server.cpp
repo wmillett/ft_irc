@@ -45,49 +45,42 @@ bool Server::nameCheck(const std::string &arg) const
     }
     return true;
 }
-#include <stdio.h>
+
 
 string Server::inputParsing(string s, Client *client)
 {
-	//printf("char in decimal: %i %i\n", s[0], s[1]);
-	size_t i = s.find("\r\n");
-	
-	//std::cout << i << std::endl;
+	size_t i = s.find("\r");
+	printf("here %i %i %i %i\n", s[0],s[1],s[2],s[4]);
 	if(i != string::npos)
 	{
-		//std::cout << "Sdf" << std::endl;
-		string input = client->clientInput + s.substr(0,i);
-		std::cout << "clientInput: " << client->clientInput << std::endl;
-		std::cout << "substr: " << s.substr(0,i) << client->clientInput << std::endl;
-		client->clientInput.clear();
-		client->clientInput = s.substr(i,s.size() - i);
-		// if(client->clientInput[client->clientInput.length()] == '\n')
-		// 	client->clientInput[client->clientInput.length()] = ' ';
-		std::cout << "input: " << input << std::endl;
+	//	printf("before %i %i\n",client->clientInput[0],client->clientInput[1]);
+		string input = client->clientInput + s.substr(0, i);
+		printf("here %i %i\n", input[0],input[1]);
+		//client->clientInput.clear();
+		client->clientInput = s.substr(i + 1);
+		client->clientInput = client->clientInput.substr(0,client->clientInput.size() - 1 );
+		//printf("after %d  / %i %i\n",s.size(),client->clientInput[0],client->clientInput[1]);
 		return input;
 	}
 	else
 	{
-		if(!client->clientInput.empty())
-			client->clientInput += s;
-		else
-			client->clientInput = s;
+		client->clientInput += s.substr(0, s.size() - 1);
 		return "";
 	}
 }
 
-string Server::containsAdditionnal(Client*client){
+// string Server::containsAdditionnal(Client*client){
 
-	size_t i = client->clientInput.find("\r\n");
-	if (i != string::npos)
-	{
-		string input = client->clientInput.substr(0,i);
-		client->clientInput.erase(0, i + 2);
-		return input;
-	}
-	else
-		return "";
-}
+// 	size_t i = client->clientInput.find("\r\n");
+// 	if (i != string::npos)
+// 	{
+// 		string input = client->clientInput.substr(0,i);
+// 		client->clientInput.erase(0, i + 2);
+// 		return input;
+// 	}
+// 	else
+// 		return "";
+// }
 
 int Server::Run()
 {
@@ -158,8 +151,10 @@ int Server::Run()
 				}
 				else if(bytesRead > 0)
 				{
-					string newInput = string(buffer, bytesRead); //enlever le -1
-					std::cout << "newInput:" << newInput << std::endl;
+					string newInput = string(buffer, bytesRead);
+					//std::cout << "newInput:" << newInput << std::endl;
+					printf("%i %i %i %i read: %d\n", newInput[0],newInput[1],newInput[2],newInput[4], bytesRead); //
+				//	std::cout << std::endl; // 
 					string input = inputParsing(newInput, clientIt->second);
 					while(input.size())
 					{
