@@ -25,17 +25,17 @@
 # define ERROR_POLL "Error: poll() failed"
 
 
-# define ERROR_PASSWORD "Error: Invalid password\n"
+# define ERROR_PASSWORD "Error: Invalid password"
 //Parsing errors
-# define TOO_MANY_ARGS "Error: Too many parameters\n"
-# define INVALID_CMD "Error: Invalid command\n"
-# define NOT_ALLOWED "Error: forbidden function\n"
+# define TOO_MANY_ARGS "Error: Too many parameters"
+# define INVALID_CMD "Error: Invalid command"
+# define NOT_ALLOWED "Error: forbidden function"
 
 
 //Authentification messages
-# define AUTH_MESS "For access, please enter the server password using the PASS command\r\n"
-# define IDENT_MESS "Password verified\r\nPlease provide a username and a nickname using the USER and NICK command\r\n"
-# define WELCOME_MESS "Welcome to Minou.IRC !\r\n"
+# define AUTH_MESS "For access, please enter the server password using the PASS command"
+# define IDENT_MESS "Password verified\r\nPlease provide a username and a nickname using the USER and NICK command"
+# define WELCOME_MESS "Welcome to Minou.IRC !"
 
 
 //Formating for Limechat
@@ -43,21 +43,22 @@
 
 
 //For PASS command
-# define ALREADY_IN "Error: you have already entered the password\n"
+# define ALREADY_IN "Error: you have already entered the password"
 
 //For USER command
-# define ALREADY_USER "Error: Username already registered\n"
-# define NOT_ALPHA "Error: your username does not respect the character constraints\n"
-
+# define ALREADY_USER "Error: Username already registered"
+# define NOT_ALPHA "Error: your username does not respect the character constraints"
+# define USER_SUCCESS(x) "You have successfully set your username to: " + x
 //For NICK Command
-# define NICK_SUCCESS "You have successfully changed your nickname\n"
-# define ALREADY_NICK "Error: You already have this nickname\n"
+# define NICK_SUCCESS(x) "You have successfully set your nickname to: " + x
+# define NICK_CHANGE(x) "You have successfully changed your nickname to: " + x
+# define ALREADY_NICK "Error: You already have this nickname"
 
 //For MODE command
-# define INVALID_MODE "Error: invalid mode: usage: MODE <channel> {[+ | -] | i | t | k | o | l}\n"
+# define INVALID_MODE "Error: invalid mode: usage: MODE <channel> {[+ | -] | i | t | k | o | l}"
 
 //For QUIT command
-# define QUIT_MESS(x, y) x + " has been disconnected from the server for: " + y + "\n"
+# define QUIT_MESS(x, y) x + " has been disconnected from the server for: " + y
 # define DEFAULT_REASON "not wanting to be here"
 
 // for JOIN command

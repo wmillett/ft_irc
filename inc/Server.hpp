@@ -21,8 +21,10 @@
 //Debug
 # include "debug.h"
 
-# define SERVER_NAME "Minou.IRC"
-
+# define SERVER_NAME "\033[35;1mMinou.IRC\033[0m"
+# define SERVER_COLOR(x) x + "Minou.IRC"
+# define SERVER_CSEND(x) x + "Minou.IRC: \033[0m"
+# define SERVER_SEND "\033[35;1mMinou.IRC: \033[0m"
 # define MAX_BUFFER 1024
 
 # define USERLEN 31
@@ -70,7 +72,7 @@ class Server
 	void sendMessage(Client*client, string source, string target, string message) const;
 	
 	//Error handling
-	void disconnectUser(Client*client, std::vector<pollfd> fds, size_t i);
+	void disconnectUser(Client*client, std::vector<pollfd> fds);
 
 	// Join command methods
 	Channel* isChannelValid(string channel); // returns 0 if channel already exists, 1 otherwise
@@ -99,7 +101,7 @@ class Server
 	//parsing
 	string inputParsing(string s, Client *client);
 	string containsAdditionnal(Client*client);
-
+	void checkIdentified(Client*client);
 	public:
 	Server(const string& port_str,  const string& password);
 	~Server();
@@ -109,4 +111,4 @@ class Server
 	int Run();
 };
 
-#endif
+#endif 

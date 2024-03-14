@@ -92,5 +92,4 @@ class Client
 		// bool isAdmin(void) const;
 		Registration getState(void) const;
 		void setState(Registration newState);
-		void checkIdentified(void);
 };

@@ -144,16 +144,7 @@ int Server::Run()
 				std::map<int,Client*>::iterator clientIt = _clients.find(fds[i].fd);
 				if(bytesRead == 0)
 				{
-					disconnectUser(clientIt->second, fds, i);
-					// std::cout << "Client disconnected" << std::endl;
-					// if(clientIt != _clients.end()){
-					// 	delete clientIt->second;
-					// 	_clients.erase(clientIt);
-					// }
-
-					// close(fds[i].fd);
-					// fds.erase(fds.begin() + i);
-					
+					disconnectUser(clientIt->second, fds);
 					break ; // ?
 				}
 				else if(bytesRead > 0)
@@ -284,11 +275,12 @@ void Server::print(string message) const{
 void Server::sendMessage(Client*client, string source, string target, string message) const{
 
 	if(client->getLimeState()){
-		string ircMessage = ":" + source +  PVM + target + " :" + message + "\r\n"; //<---- format
-		send(client->getSocket(), ircMessage.c_str(), ircMessage.length(), 0);
+		string limechatMessage = ":" + source +  PVM + target + " :" + message + "\r\n"; //<---- format
+		send(client->getSocket(), limechatMessage.c_str(), limechatMessage.length(), 0);
 	}
 	else{
-		send(client->getSocket(), message.c_str(), message.length(), 0);
+		string ncMessage = source + ": " + message + "\n";
+		send(client->getSocket(), ncMessage.c_str(), ncMessage.length(), 0);
 	}
 }
 
@@ -318,4 +310,16 @@ Channel* Server::isChannelValid(string channel) //cannot fail, returns a pointer
 int Server::joinWithKeys(Client* client, std::vector<string> arg)
 {
 	//TODO: fill once Server::join() is done
+}
+
+void Server::checkIdentified(Client*client){
+	if(client->getState() == IDENTIFICATION){
+		if(!client->getUsername().empty() && !client->getNickname().empty()){
+			client->setState(REGISTERED);
+			
+			sendMessage(client, SERVER_NAME, client->getUsername(), SUCCESS_REGISTER);
+			// string ircMessage = ":" + _nickname +  PVM + _nickname + " :" + SUCCESS_REGISTER + "\r\n"; //<---- format
+			// send(client->getSocket(), ircMessage.c_str(), ircMessage.length(), 0); 
+		}
+	}
 }

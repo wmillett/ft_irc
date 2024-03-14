@@ -27,10 +27,11 @@ int Server::user(Client*client, std::vector<string>arg)
 	
 	if(arg.size() == 4 && arg[0] == arg[3] && arg[1] == "0" && arg[2] == "*")
 		client->setLimeState(true);
-	else
-		client->setLimeState(false);
+	// else
+	// 	client->setLimeState(false);
 	client->setUsername(username);
-	client->checkIdentified();
+	sendMessage(client, SERVER_NAME, client->getNickname(), USER_SUCCESS(client->getUsername()));
+	checkIdentified(client);
 	return 0;
 }
 
@@ -58,13 +59,17 @@ int Server::nick(Client*client, std::vector<string>arg)
 			return 0;
 		}
 	}
+	client->setNickname(arg[0]);
+	checkIdentified(client);
 	if(!client->getNickname().empty()){
-		sendMessage(client, _serverName, client->getUsername(), NICK_SUCCESS);
-		std::cout << client->getNickname() << " changed his nickname to " << arg[0] << std::endl; //send to everyone
+		sendMessage(client, _serverName, client->getUsername(), NICK_SUCCESS(client->getNickname()));
+	}
+	else
+	{
+		sendMessage(client, _serverName, client->getUsername(), NICK_CHANGE(client->getNickname()));	
+		print(SERVER_SEND + client->getUsername() + " has changed his nickname to " + client->getNickname() + "\n");
 	}
 
-	client->setNickname(arg[0]);
-	client->checkIdentified();
 	return 0;
 }
 
@@ -102,10 +107,11 @@ int Server::quit(Client*client, std::vector<string>arg)
 		sendMessage(client, _serverName, client->getNickname(), QUIT_MESS(client->getUsername(), arg[0]));
 	}
 	else{
+
 		print(QUIT_MESS(client->getUsername(), DEFAULT_REASON));
 		sendMessage(client, _serverName, client->getNickname(), QUIT_MESS(client->getUsername(), DEFAULT_REASON));
 	}
-	//disconnectUser(client); //TODO: update function to work outside of Server.run
+	disconnectUser(client, _pollfd);
 	return 0;
 }
 
