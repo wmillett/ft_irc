@@ -55,3 +55,37 @@ void Client::setState(Registration newState){
 	_registration = newState;
 }
 
+
+void Client::addChannel(Channel* channel) // adds the channel to _channels
+{
+	this->_channels.push_back(channel);
+}
+
+void Client::removeChannel(Channel* channel) // removes the channel from _channels
+{
+	for (chIt it = _channels.begin(); it < _channels.end(); it++)
+	{
+		if ((*it)->getName() == channel->getName())
+		{
+			_channels.erase(it);
+			return ;
+		}
+	}
+}
+
+void Client::addChannel(Channel* channel) // adds the channel to _channels
+{
+	this->_channels.push_back(channel);
+}
+
+void Client::removeChannel(Channel* channel) // removes the channel from _channels
+{
+	for (chIt it = _channels.begin(); it < _channels.end(); it++)
+	{
+		if ((*it)->getName() == channel->getName())
+		{
+			_channels.erase(it);
+			return ;
+		}
+	}
+}

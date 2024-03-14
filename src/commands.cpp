@@ -115,31 +115,19 @@ int Server::quit(Client*client, std::vector<string>arg)
 	return 0;
 }
 
-/*
-	Steps of the JOIN command: 
-	1. Take the first channel passed as argument
-	2. Look for the channel in the list of channels
-	3. If the channel exists, look if there is a key associated to the channel, check if the key is correct.
-	4. If the channel does not exist, create the channel with its associated key (if there is one)
-	5. Add the client to the channel.
-	6. If there is a channel topic, send the topic to the client. (Same as TOPIC command I think)
-	7. Send the list of users in the channel to the client. (Same as NAMES command, maybe)
-
-	Channels names are strings (beginning with a '&', '#', '+' or '!'
-	character) of length up to fifty (50) characters.  Channel names are
-	case insensitive.
-*/
-int Server::join(Client* client, std::vector<string> arg) // standard command to create / join channels
+int Server::join(Client* client, std::vector<string> arg) // standard command to create / join channels, does not need channel names to start with '#'
 {
-
 	if (arg.size() < 1)
-		return (1); //TODO: send appropriate error, this checl may not be necessary
-
-	if (arg.size() == 1 && arg[0].compare("0") == 0)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "JOIN"));
+		return (1); //TODO: change error string (maybe)
+	}
+	if (arg.size() == 1 && arg[0] == "0")
 	{
 		//TODO: user leaves all channels it's connected to
+		return (0);
 	}
-	
 	if (arg.size() > 1)
 	{
 		return (this->joinWithKeys(client, arg));
@@ -148,25 +136,35 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 	char delimiter = ',';
 	string name;
 	std::vector<string> channels;
-	buildStrings(arg[0], delimiter, channels);
-
-	for (int i = 0; i < channels.size(); i++)
+	channels = buildStrings(arg[0], delimiter, channels);
+	for (strIt it = channels.begin(); it < channels.end(); it++)
 	{
-		Channel* toJoin = isChannelValid(channels[i]);
+		std::cout << "args: " << *it << std::endl;
+	}
+
+	for (size_t i = 0; i < channels.size(); i++)
+	{
+		if ((channels[i])[0] != '#') // ADD '#' to the start if not present
+		{
+			std::string::iterator it = channels[i].begin();
+			channels[i].insert(it, '#');
+		}
+		Channel* toJoin = this->doesChannelExist(channels[i]);
 		if (toJoin)
 		{
-			if (toJoin->isInviteOnly() == 0)
-				return (1); //TODO: make sure the appropriate error is sent too
-			toJoin->addUser(client);
+			if (toJoin->canAddToChannel(client, NULL) == 0)
+				toJoin->addUser(client);
+			else
+				sendMessage(client, _serverName, \
+				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i], "other")); //TODO: change error string (maybe)
 		}
 		else
 		{
-			if ((channels[i])[0] != '#') // ADD '#' to the start if not present
-			{
-				std::string::iterator it = channels[i].begin();
-				channels[i].insert(it, '#');
-			}
-			this->createChannel(client, channels[i], NULL);
+			if (this->isChannelNameValid(channels[i]) == 0)
+				this->createChannel(client, channels[i], NULL);
+			else
+				sendMessage(client, _serverName, \
+				client->getNickname(), ERR_BADCHANMASK(channels[i]));
 		}
 	}
 
@@ -204,6 +202,7 @@ int Server::names(Client*client, std::vector<string>arg)
 //Errors: ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL, ERR_CHANOPRIVSNEEDED
 int Server::invite(Client*client, std::vector<string>arg)
 {
+	(void)client;
 	if (arg.size() < 2)
 		return (1);
 
@@ -267,6 +266,40 @@ int Server::mode(Client*client, std::vector<string>arg)
 	return 0;
 }
 
+int Server::privmsg(Client*client, std::vector<string>arg)
+{
+	if (arg.size() < 2)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "PRIVMSG"));
+	}
+	std::vector<string> targets;
+	targets = this->buildStrings(arg[0], ',', targets);
+
+	std::vector<string>::iterator it = arg.begin();
+	arg.erase(it); // erase the targets to make it easier to send everything that needs to be sent from arg
+
+	Client* clientTarget;
+	Channel* channelTarget;
+
+	for (size_t i = 0; i < targets.size(); i++)
+	{
+		clientTarget = isTargetAUser(targets[i]);
+		if (clientTarget != NULL)
+		{
+			sendArgs(client, clientTarget, arg);
+			continue ;
+		}
+		channelTarget = isTargetAChannel(targets[i]);
+		if (channelTarget != NULL)
+		{
+			//TODO: use sendArgs() on each user in the channel
+			continue ;
+		}
+	}
+
+	return (0);
+}
 
 void Server::init(void)
 {
@@ -280,4 +313,5 @@ void Server::init(void)
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("INVITE", &Server::invite));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("KICK", &Server::kick));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("MODE", &Server::mode));
+	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("PRIVMSG", &Server::privmsg));
 }

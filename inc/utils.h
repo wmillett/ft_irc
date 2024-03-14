@@ -35,8 +35,10 @@
 
 
 class Channel;
+class Client;
 
-typedef std::vector<Channel>::iterator chIt;
+typedef std::vector<Channel*>::iterator chIt;
+typedef std::vector<Client*>::iterator clIt;
 typedef std::vector<std::string>::iterator strIt;
 
 #endif

@@ -55,7 +55,7 @@ class Client
 		string _username;
 		// char _ip[INET_ADDRSTRLEN];
 		string _nickname;
-		std::vector<Channel> _channels; // MAY BE USELESS
+		std::vector<Channel*> _channels;
 		Registration _registration;
 		bool _inLimechat;
 
@@ -90,6 +90,9 @@ class Client
 
 		bool getLimeState(void) const;
 		// bool isAdmin(void) const;
+		void addChannel(Channel* channel);
+		void removeChannel(Channel *channel);
+		
 		Registration getState(void) const;
 		void setState(Registration newState);
 };

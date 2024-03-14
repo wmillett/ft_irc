@@ -52,7 +52,7 @@ class Server
 	string _password;
 	std::map<int, Client*> _clients;
 	std::vector<struct pollfd> _pollfd;
-	std::vector<Channel> _channels;
+	std::vector<Channel*> _channels;
 	std::map<string, int (Server::*)(Client*, std::vector<string>)> _commandsMap;
 	Command commandCalled; //tmp, pourrait le mettre dans les objets clients
 	
@@ -74,10 +74,17 @@ class Server
 	//Error handling
 	void disconnectUser(Client*client, std::vector<pollfd> fds);
 
-	// Join command methods
-	Channel* isChannelValid(string channel); // returns 0 if channel already exists, 1 otherwise
-	void createChannel(Client* client, string name, string *key); // never fails
+	// Join methods
+	Channel* doesChannelExist(string& channel); // returns 0 if channel already exists, 1 otherwise
+	void createChannel(Client* client, string& name, string *key); // never fails
 	int joinWithKeys(Client* client, std::vector<string> arg);
+	int isChannelNameValid(string& name);
+	std::vector<string> buildStrings(string arg, char delimiter, std::vector<string> vec);
+
+	// PRIVMSG methods
+	Client* isTargetAUser(string& target);
+	Channel* isTargetAChannel(string& target);
+	void sendArgs(Client* sender, Client* target, std::vector<string>& arg);
 
 	//Commands
 	int nick(Client*client, std::vector<string>);
@@ -90,11 +97,10 @@ class Server
 	int invite(Client*client, std::vector<string>);
 	int kick(Client*client, std::vector<string>);
 	int mode(Client*client, std::vector<string>);
+	int privmsg(Client*client, std::vector<string>);
 
 	//Utils commands
 	bool validOptions(const string mode) const;
-	//Server utils
-	void buildStrings(string arg, char delimiter, std::vector<string> vec);
 
 	void init(void);
 

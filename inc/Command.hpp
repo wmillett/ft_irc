@@ -35,15 +35,15 @@ If a full set of parameters is presented, then each MUST be checked
 # define USER_USAGE "usage: USER <username>\n"
 # define PASS_USAGE "usage: PASS <password>\n"
 # define QUIT_USAGE "usage: QUIT [<Quit message>]\n"
-# define JOIN_USAGE "usage: JOIN <channel>\n"
+# define JOIN_USAGE "usage: JOIN <channel>{,<channel>,...} [<key>{,<key>,...}]\n"
 # define NAMES_USAGE "usage: NAMES\n"
 
 //Error
 // # define TOO_MANY_ARGS "Too many parameters"
 
 //Defines for the commands
-# define CMD_LIST {"KICK", "INVITE", "TOPIC", "MODE", "NICK", "USER", "PASS", "QUIT", "JOIN", "NAMES"}
-# define ECMD_LIST {KICK,INVITE,TOPIC,MODE,NICK,USER,PASS,QUIT,JOIN,NAMES,INVALID}
+# define CMD_LIST {"KICK", "INVITE", "TOPIC", "MODE", "NICK", "USER", "PASS", "QUIT", "JOIN", "NAMES", "PRIVMSG"}
+# define ECMD_LIST {KICK,INVITE,TOPIC,MODE,NICK,USER,PASS,QUIT,JOIN,NAMES,INVALID,PRIVMSG}
 # define NB_CMD 10
 # define MAX_ARG_SIZE 15
 
@@ -68,7 +68,8 @@ enum e_cmd{
    QUIT,
    JOIN,
    NAMES,
-	INVALID
+	INVALID,
+	PRIVMSG
 };
 
 class Command
