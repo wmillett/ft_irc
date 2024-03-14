@@ -74,8 +74,7 @@ class Channel
 	int isUserInChannel(Client* client);
 	int isUserAnOp(Client* client);
 	int isChannelFull(void);
-	int canAddToChannel(Client *client, string* key);
-	string error(enum e_channelErrors chError);
+	int canAddToChannel(Client *client, string* key); //does the checks to see if user can be added to the channel
 
 	private:
 	string _name;

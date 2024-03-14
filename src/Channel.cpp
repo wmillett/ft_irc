@@ -37,11 +37,9 @@ void Channel::sendTopic(Client* client) // TODO: sent to client fd if there is a
 
 void Channel::addUser(Client* client)
 {
-	if (client)
-	{
-		this->_clients.push_back(client);
-		client->addChannel(this);
-	}
+	std::cout << "ADDINGUSER" <<std::endl;
+	this->_clients.push_back(client);
+	client->addChannel(this);
 }
 
 void Channel::removeUser(Client* client) //TODO

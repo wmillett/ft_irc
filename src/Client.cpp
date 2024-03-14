@@ -67,10 +67,7 @@ void Client::checkIdentified(void){
 
 void Client::addChannel(Channel* channel) // adds the channel to _channels
 {
-	if (this->_channels.size() < this->_channels.capacity())
-	{
-		this->_channels.push_back(channel);
-	}
+	this->_channels.push_back(channel);
 }
 
 void Client::removeChannel(Channel* channel) // removes the channel from _channels

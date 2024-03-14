@@ -3,12 +3,17 @@
 
 void Server::createChannel(Client* client, string& name, string *key) // cannot fail
 {
-	if (_channels.size() < _channels.capacity()) //TODO: new may not work here, change message
+	std::cout << "CREATINGCAHNNEL" <<std::endl;
+	if (key)
 	{
 		string* allocKey = new string(*key);
 		_channels.push_back(new Channel(client, name, allocKey));
-		sendMessage(client, _serverName, client->getNickname(), "channel created");
 	}
+	else
+	{
+		_channels.push_back(new Channel(client, name, key));
+	}
+	sendMessage(client, _serverName, client->getNickname(), "channel created");
 }
 
 Channel* Server::doesChannelExist(string& channel) //cannot fail, returns a pointer to the right channel or NULL if it doesn't exitst
@@ -16,7 +21,7 @@ Channel* Server::doesChannelExist(string& channel) //cannot fail, returns a poin
 	for (chIt it = _channels.begin(); it != _channels.end(); it++)
 	{
 		string channelName = (*it)->getName();
-		if (channelName.compare(channel) == 0)
+		if (channelName == channel)
 		{
 			return (*it);
 		}
