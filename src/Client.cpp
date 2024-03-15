@@ -70,7 +70,7 @@ void Client::addChannel(Channel* channel) // adds the channel to _channels
 	this->_channels.push_back(channel);
 }
 
-void Client::removeChannel(Channel* channel) // removes the channel from _channels
+void Client::removeChannel(Channel* channel) // removes the channel from _channels, test
 {
 	for (chIt it = _channels.begin(); it < _channels.end(); it++)
 	{
