@@ -1,7 +1,6 @@
 #pragma once
 #include "replies.h"
 #include "Client.hpp"
-#include "Server.hpp"
 #include <map>
 
 using std::string;
