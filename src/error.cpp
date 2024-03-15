@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-void Server::disconnectUser(Client* client, std::vector<pollfd> fds, size_t i) {
+void Server::disconnectUser(Client* client, std::vector<pollfd> fds) {
 
 
 	// std::cout << "Client disconnected" << std::endl;
@@ -8,10 +8,17 @@ void Server::disconnectUser(Client* client, std::vector<pollfd> fds, size_t i) {
 					// 	delete clientIt->second;
 					// 	_clients.erase(clientIt);
 					// }
-    std::cout << "Client disconnected: " << client->getUsername() << std::endl;
+    //std::cout << "Client disconnected: " << client->getUsername() << std::endl;
     _clients.erase(client->getSocket());
-	close(fds[i].fd);	
-	fds.erase(fds.begin() + i);
+	close(client->getSocket());
+    std::vector<pollfd>::iterator it;
+	for(it = fds.begin(); it != fds.end(); it++){
+		if(it->fd == client->getSocket()){
+        fds.erase(it);
+        break ;
+        }
+    }
+	// fds.erase(fds.begin() + i);
 
     // close(client->getSocket());
     // for (auto it = fds.begin(); it != fds.end(); ++it) {

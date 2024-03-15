@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _inLimechat(true), clientInput(""){
+Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _inLimechat(false), clientInput("") {
 
 }
 
@@ -54,16 +54,7 @@ void Client::setUsername(string username)
 void Client::setState(Registration newState){
 	_registration = newState;
 }
-void Client::checkIdentified(void){
-	if(this->getState() == IDENTIFICATION){
-		if(!getUsername().empty() && !getNickname().empty()){
-			this->setState(REGISTERED);
-			
-			string ircMessage = ":" + _nickname +  PVM + _nickname + " :" + SUCCESS_REGISTER + "\r\n"; //<---- format
-			send(getSocket(), ircMessage.c_str(), ircMessage.length(), 0); 
-		}
-	}
-}
+
 
 void Client::addChannel(Channel* channel) // adds the channel to _channels
 {
