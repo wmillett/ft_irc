@@ -55,7 +55,7 @@ string Server::inputParsing(string s, Client *client)
 	{
 	//	printf("before %i %i\n",client->clientInput[0],client->clientInput[1]);
 		string input = client->clientInput + s.substr(0, i);
-		printf("here %i %i\n", input[0],input[1]);
+		// printf("here %i %i\n", input[0],input[1]);
 		//client->clientInput.clear();
 		client->clientInput = s.substr(i + 1);
 		client->clientInput = client->clientInput.substr(0,client->clientInput.size() - 1 );
@@ -96,7 +96,7 @@ int Server::Run()
 	serverfd.events = POLLIN; //monitor for data available for reading
 
 	fds.push_back(serverfd);
-	dprint("Server setup ready\n");
+	dprint(DEBUG_MESS(_serverName, " is ready"));
 	while(true)
 	{
 		if(poll(fds.data(), fds.size(), 0) == -1)
@@ -116,7 +116,8 @@ int Server::Run()
 				break; //TODO: replace with error
 			else
 			{
-				std::cout << "New client connected!" << std::endl;
+				print("New client connected !");
+
 				//std::cout << "Time elapsed " << getTime() - startTime  << std::endl; //to test
 
 				struct pollfd clientfd;
@@ -143,15 +144,15 @@ int Server::Run()
 				else if(bytesRead > 0)
 				{
 					string newInput = string(buffer, bytesRead);
-					//std::cout << "newInput:" << newInput << std::endl;
-					printf("%i %i %i %i read: %d\n", newInput[0],newInput[1],newInput[2],newInput[4], bytesRead); //
+					dprint(DEBUG_MESS("New input: ", newInput));
+					// printf("%i %i %i %i read: %d\n", newInput[0],newInput[1],newInput[2],newInput[4], bytesRead); //
 				//	std::cout << std::endl; // 
 					string input = inputParsing(newInput, clientIt->second);
 					while(input.size())
 					{
-						std::cout << "input: " << input << " " << "client buffer: " << clientIt->second->clientInput << std::endl;
-
-						dprint("Message from client: " + input);
+						dprint(DEBUG_MESS("input ", input));
+						dprint(DEBUG_MESS("client buffer ", clientIt->second->clientInput));
+						dprint(DEBUG_MESS("Message from client ", input));
 
 						if(commandCalled.validCommand(input))
 						{

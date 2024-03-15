@@ -2,5 +2,5 @@
 
 void Server::dprint(string message) const{
     if(debug)
-        this->print(message);
+        this->print(MESSAGE_COLOR("\033[33;1m", message));
 }

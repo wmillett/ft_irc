@@ -18,6 +18,10 @@
 # define CHARACTER_LIMIT 512
 # define RESET_TERM "\033[2J\033[H"
 
+
+# define DEBUG_MESS(x, y) x + y + "\n"
+
+
 //Colours
 # define BLACK    = "\033[30;1m"
 # define RED      = "\033[0;31m"
@@ -31,7 +35,7 @@
 # define MAGENTA  = "\033[0;95m"
 # define BOLD     = "\033[1m"
 # define RESET_COLOR    = "\033[0m"
-
+# define MESSAGE_COLOR(x, y) x + y + "\033[0m"
 
 
 class Channel;
