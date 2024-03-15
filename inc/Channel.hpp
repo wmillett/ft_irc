@@ -1,10 +1,10 @@
 #pragma once
 #include "replies.h"
 #include "Client.hpp"
+#include "Server.hpp"
 #include <map>
 
 using std::string;
-class Client;
 
 /*
 	Channels names are strings (beginning with a '&', '#', '+' or '!'
@@ -74,7 +74,8 @@ class Channel
 	int isUserInChannel(Client* client);
 	int isUserAnOp(Client* client);
 	int isChannelFull(void);
-	int canAddToChannel(Client *client, string* key); //does the checks to see if user can be added to the channel
+	int canAddToChannel(Client* client, string* key); //does the checks to see if user can be added to the channel
+	void sendMessage(Server* irc, Client* sender, std::vector<string> arg); // sends the message to all user in the channel
 
 	private:
 	string _name;

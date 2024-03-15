@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "utils.h"
 
 void Server::createChannel(Client* client, string& name, string *key) // cannot fail
 {

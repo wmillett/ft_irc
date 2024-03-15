@@ -20,9 +20,12 @@
 
 class Channel;
 class Client;
+class Server;
 
 typedef std::vector<Channel*>::iterator chIt;
 typedef std::vector<Client*>::iterator clIt;
 typedef std::vector<std::string>::iterator strIt;
+
+void sendArgs(Server* irc, Client* sender, Client* target, std::vector<std::string>& arg);
 
 #endif

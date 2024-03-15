@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "utils.h"
 
 Client* Server::isTargetAUser(string& target) //returns a pointer to the user if it exists
 {
@@ -22,13 +21,13 @@ Channel* Server::isTargetAChannel(string& target) // returns a pointer to the ch
 	return (NULL);
 }
 
-void Server::sendArgs(Client* sender, Client* target, std::vector<string>& arg)
+void sendArgs(Server* irc, Client* sender, Client* target, std::vector<string>& arg)
 {
 	for (strIt it = arg.begin(); it != arg.end(); it++)
 	{
 		if ((it + 1) != arg.end())
-			sendMessage(target, sender->getNickname(), target->getNickname(), *it + " ");
+			irc->sendMessage(target, sender->getNickname(), target->getNickname(), *it + " ");
 		else
-			sendMessage(target, sender->getNickname(), target->getNickname(), *it);
+			irc->sendMessage(target, sender->getNickname(), target->getNickname(), *it);
 	}
 }

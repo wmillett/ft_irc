@@ -281,14 +281,16 @@ int Server::privmsg(Client*client, std::vector<string>arg)
 		clientTarget = isTargetAUser(targets[i]);
 		if (clientTarget != NULL)
 		{
-			sendArgs(client, clientTarget, arg);
+			sendArgs(this, client, clientTarget, arg);
 			continue ;
 		}
 		channelTarget = isTargetAChannel(targets[i]);
 		if (channelTarget != NULL)
 		{
-			//TODO: use sendArgs() on each user in the channel
-			continue ;
+			if (channelTarget->isUserInChannel(client) == 0)
+			{
+				channelTarget->sendMessage(this, client, arg);
+			}
 		}
 	}
 

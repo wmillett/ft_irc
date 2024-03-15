@@ -113,3 +113,13 @@ int Channel::isChannelFull(void) // returns 0 if channel is full
 	}
 	return (1);
 }
+
+void Channel::sendMessage(Server* irc, Client* sender, std::vector<string> arg)
+{
+	for (clIt it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (*it == sender)
+			continue ;
+		sendArgs(irc, sender, *it, arg);
+	}
+}

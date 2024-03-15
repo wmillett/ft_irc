@@ -67,7 +67,6 @@ class Server
 	void welcomeMessage(Client*client) const;
 	void print(string message) const;
 	// void sendPrivateError(int sockfd, string message) const;
-	void sendMessage(Client*client, string source, string target, string message) const;
 	
 	//Error handling
 	void disconnectUser(Client*client, std::vector<pollfd> fds, size_t i);
@@ -82,7 +81,6 @@ class Server
 	// PRIVMSG methods
 	Client* isTargetAUser(string& target);
 	Channel* isTargetAChannel(string& target);
-	void sendArgs(Client* sender, Client* target, std::vector<string>& arg);
 
 	//Commands
 	int nick(Client*client, std::vector<string>);
@@ -110,7 +108,7 @@ class Server
 	Server(const string& port_str,  const string& password);
 	~Server();
 
-
+	void sendMessage(Client*client, string source, string target, string message) const;
 	void dprint(string message) const; //Only to use with make debug
 	int Run();
 };
