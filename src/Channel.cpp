@@ -52,18 +52,23 @@ string Channel::getName(void)
 	return (_name);
 }
 
-int Channel::isKeyValid(string* key) // returns 0 if channel has no key or if key is correct
-{
-	if (!this->getKey())
-		return (0);
-	if (*_key == *key)
-		return (0);
-	return (1);
-}
-
 string* Channel::getKey(void)
 {
 	return (this->_key);
+}
+
+int Channel::isKeyValid(string* key) // returns 0 if channel has no key or if key is correct
+{
+	if (this->getKey() == NULL || key == NULL)
+	{
+		if (this->getKey() == NULL)
+			return (0);
+		else
+			return (1);
+	}
+	if (*_key == *key)
+		return (0);
+	return (1);
 }
 int Channel::isInviteOnly(void) // returns 0 if channel is invite-only
 {
@@ -98,7 +103,6 @@ int Channel::isUserAnOp(Client* client) // returns 0 if Client is an operator
 
 int Channel::canAddToChannel(Client *client, string* key)
 {
-	std::cout << "key:" << *key << std::endl;
 	if (this->isChannelFull() == 1 && this->isInviteOnly() == 1 && \
 	this->isKeyValid(key) == 0 && this->isUserInChannel(client) == 1)
 		return (0);

@@ -17,9 +17,17 @@ Server::~Server()
 {
 	std::map<int,Client*>::iterator it;
 	for(it = _clients.begin(); it != _clients.end(); it++)
-		delete it->second; 
+	{
+		delete it->second;
+	}	
+
+	for (chIt it = _channels.begin(); it != _channels.end(); it++)
+	{
+		delete *it;
+	}
 
 	_clients.clear();
+	_channels.clear();
 
 	close(_sockfd);
 
@@ -176,7 +184,7 @@ int Server::Run()
 								}	
 							}
 						}
-						else if(!commandCalled.validCommand(input))
+						else
 							send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
 						input.clear();
 						// input = containsAdditionnal(clientIt->second); //TODO: fix to implement if the client buffer contains multiple commands that can be called
@@ -278,34 +286,6 @@ void Server::sendMessage(Client*client, string source, string target, string mes
 		send(client->getSocket(), ncMessage.c_str(), ncMessage.length(), 0);
 	}
 }
-
-// void Server::createChannel(Client* client, string name, string *key) // cannot fail
-// {
-// 	// TODO: create channel with given name and key, may not work with just <Channel>
-// 	Channel newChannel(client, name, key);
-
-// 	if (_channels.size() == _channels.capacity()) //TODO: maybe change this
-// 		return ;
-// 	_channels.push_back(newChannel);
-// }
-
-// Channel* Server::isChannelValid(string channel) //cannot fail, returns a pointer to the right channel or NULL
-// {
-// 	for (chIt it = _channels.begin(); it != _channels.end(); it++)
-// 	{
-// 		string channelName = it->getName();
-// 		if (channelName.compare(channel) == 0)
-// 		{
-// 			return &(*it);
-// 		}
-// 	}
-// 	return (NULL);
-// }
-
-// int Server::joinWithKeys(Client* client, std::vector<string> arg)
-// {
-// 	//TODO: fill once Server::join() is done
-// }
 
 void Server::checkIdentified(Client*client){
 	if(client->getState() == IDENTIFICATION){

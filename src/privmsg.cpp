@@ -23,11 +23,18 @@ Channel* Server::isTargetAChannel(string& target) // returns a pointer to the ch
 
 void sendArgs(Server* irc, Client* sender, Client* target, std::vector<string>& arg)
 {
+	if (sender == target)
+		return ;
+
+	string message;
 	for (strIt it = arg.begin(); it != arg.end(); it++)
 	{
 		if ((it + 1) != arg.end())
-			irc->sendMessage(target, sender->getNickname(), target->getNickname(), *it + " ");
+			message += (*it + " ");
 		else
-			irc->sendMessage(target, sender->getNickname(), target->getNickname(), *it);
+			message += *it;
 	}
+	std::cout << "message: " + message << std::endl;
+
+	irc->sendMessage(target, sender->getNickname(), target->getNickname(), message);
 }
