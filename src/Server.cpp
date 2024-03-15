@@ -1,7 +1,5 @@
 #include "Server.hpp"
-#include "Command.hpp"
 #include "CustomException.hpp"
-#include "utils.h"
 
 Server::Server(const string& port_str,  const string& password) : _serverName(SERVER_NAME), _password(password)
 {
@@ -50,7 +48,7 @@ bool Server::nameCheck(const std::string &arg) const
 string Server::inputParsing(string s, Client *client)
 {
 	size_t i = s.find("\r");
-	printf("here %i %i %i %i\n", s[0],s[1],s[2],s[4]);
+	// printf("here %i %i %i %i\n", s[0],s[1],s[2],s[4]);
 	if(i != string::npos)
 	{
 	//	printf("before %i %i\n",client->clientInput[0],client->clientInput[1]);
@@ -150,9 +148,9 @@ int Server::Run()
 					string input = inputParsing(newInput, clientIt->second);
 					while(input.size())
 					{
-						dprint(DEBUG_MESS("input ", input));
-						dprint(DEBUG_MESS("client buffer ", clientIt->second->clientInput));
-						dprint(DEBUG_MESS("Message from client ", input));
+						dprint(DEBUG_MESS("input: ", input));
+						dprint(DEBUG_MESS("client buffer: ", clientIt->second->clientInput));
+						dprint(DEBUG_MESS("Message from client: ", input));
 
 						if(commandCalled.validCommand(input))
 						{
@@ -259,14 +257,6 @@ void Server::welcomeMessage(Client*client) const{
 	// send(sockfd, " !\r\n", 4, 0);
 	authenticationMessage(client);
 }
-
-void Server::print(string message) const{
-	std::cout << message << std::endl;
-}
-
-// void Server::sendPrivateError(int sockfd, string message) const{
-// 	send(sockfd, message.c_str(), message.size() + 1, 0);
-// }
 
 void Server::sendMessage(Client*client, string source, string target, string message) const{
 

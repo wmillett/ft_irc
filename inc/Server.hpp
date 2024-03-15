@@ -7,7 +7,6 @@
 # include <arpa/inet.h>
 # include <unistd.h>
 # include <sys/poll.h>
-# include <map>
 # include <fcntl.h>
 # include <sys/time.h>
 # include <time.h>
@@ -16,10 +15,6 @@
 # include "Client.hpp"
 # include "Command.hpp"
 # include "utils.h"
-
-
-//Debug
-# include "debug.h"
 
 # define SERVER_NAME "\033[35;1mMinou.IRC\033[0m"
 # define SERVER_COLOR(x) x + "Minou.IRC"
@@ -30,9 +25,10 @@
 # define USERLEN 31
 # define NICKLEN 10
 
+//Class dependencies
+class Command;
 class Client;
-
-using std::string;
+class Channel;
 
 /*
 the server MUST keep track of the channel members, as
@@ -67,7 +63,6 @@ class Server
 	void authenticationMessage(Client*client) const;
 	void identificationMessage(Client*client) const;
 	void welcomeMessage(Client*client) const;
-	void print(string message) const;
 	// void sendPrivateError(int sockfd, string message) const;
 	void sendMessage(Client*client, string source, string target, string message) const;
 	
@@ -112,8 +107,6 @@ class Server
 	Server(const string& port_str,  const string& password);
 	~Server();
 
-
-	void dprint(string message) const; //Only to use with make debug
 	int Run();
 };
 

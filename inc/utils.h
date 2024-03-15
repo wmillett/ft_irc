@@ -12,14 +12,22 @@
 # include <sys/types.h>
 # include <vector>
 # include <string>
+# include <map>
 
 # include "replies.h"
 //Defines
 # define CHARACTER_LIMIT 512
 # define RESET_TERM "\033[2J\033[H"
 
-
+//Debug
+extern bool debug;
 # define DEBUG_MESS(x, y) x + y + "\n"
+
+//Using
+using std::string;
+using std::map;
+using std::endl;
+using std::cout;
 
 
 //Colours
@@ -44,5 +52,8 @@ class Client;
 typedef std::vector<Channel*>::iterator chIt;
 typedef std::vector<Client*>::iterator clIt;
 typedef std::vector<std::string>::iterator strIt;
+
+void print(string message);
+void dprint(string message);
 
 #endif

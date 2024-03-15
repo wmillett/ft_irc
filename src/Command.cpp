@@ -72,36 +72,10 @@ void Command::setArgs(string line, size_t startPos){
         if(!buffer.empty())
             this->_args.push_back(buffer);
         
-        cout << buffer << endl;//Only for tests
+        dprint(DEBUG_MESS("Command arg buffer: ", buffer));
         buffer.clear();
     }
 }
-
-// bool Command::validOptions(void){
-//     const char options[] = MODE_OPTIONS;
-//     const string mode = _args[0];
-//     size_t i = 0;
-
-//     while(i < mode.size() && mode[i] == ' ')
-//         i++;
-//     if (mode[i] != '+' && mode[i] != '-')
-//         return false;
-//     i++;
-//     while(mode[i] && mode[i] != ' '){
-//         for(int j = 0; j < NB_OPTIONS; j++){
-//             if(mode[i] == options[j])
-//                 break;
-//             if(j == NB_OPTIONS - 1)
-//                 return false;
-//         }
-//         i++;
-//     }
-//     while(++i < mode.size() && mode[i] == ' ')
-//         ;
-//     if(mode[i])
-//         return false;
-//     return true;
-// }
 
 bool Command::validCommand(string line){
     const string cmds[] = CMD_LIST;

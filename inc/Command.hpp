@@ -6,6 +6,7 @@
 # include <vector>
 # include "CustomException.hpp"
 # include "Client.hpp"
+# include "utils.h"
 /*
 https://www.rfc-editor.org/rfc/rfc2813#section-3.3.1 Section 3.3 Messages
 When a server receives a message, it MUST identify its source using
@@ -51,11 +52,6 @@ If a full set of parameters is presented, then each MUST be checked
 # define MODE_OPTIONS {'i', 't', 'k', 'o', 'l'}
 # define NB_OPTIONS 5
 
-
-using std::string;
-using std::map;
-using std::endl;
-using std::cout;
 
 enum e_cmd{
 	KICK,
