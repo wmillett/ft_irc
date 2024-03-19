@@ -56,6 +56,7 @@
 
 //For MODE command
 # define INVALID_MODE "Error: invalid mode: usage: MODE <channel> {[+ | -] | i | t | k | o | l}"
+# define NO_CHANNEL "Error: channel does not exist"
 
 //For QUIT command
 # define QUIT_MESS(x, y) x + " has been disconnected from the server for: " + y

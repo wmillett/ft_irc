@@ -95,7 +95,7 @@ class Server
 	int privmsg(Client*client, std::vector<string>);
 
 	//Utils commands
-	bool validOptions(const string mode) const;
+	int validOptions(const string mode) const;
 
 	void init(void);
 

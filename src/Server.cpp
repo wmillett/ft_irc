@@ -251,7 +251,7 @@ void Server::identificationMessage(Client*client) const{
 }
 
 void Server::welcomeMessage(Client*client) const{
-	sendMessage(client, _serverName, client->getNickname(), WELCOME_MESS);
+	sendMessage(client, _serverName, client->getNickname(), "Limechat :Welcome to the Minou Network");
 	// send(sockfd, "Welcome to ", 11, 0);
 	// send(sockfd, &this->_serverName, this->_serverName.size() + 1, 0);
 	// send(sockfd, " !\r\n", 4, 0);
