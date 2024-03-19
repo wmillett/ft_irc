@@ -69,7 +69,6 @@ class Server
 	void disconnectUser(Client*client, std::vector<pollfd> fds);
 
 	// Join methods
-	Channel* doesChannelExist(string& channel); // returns 0 if channel already exists, 1 otherwise
 	void createChannel(Client* client, string& name, string *key); // never fails
 	int joinWithKeys(Client* client, std::vector<string> arg);
 	int isChannelNameValid(string& name);
@@ -106,6 +105,7 @@ class Server
 	~Server();
 
 	void sendMessage(Client*client, string source, string target, string message) const;
+	string& getName(void);
 	void dprint(string message) const; //Only to use with make debug
 	int Run();
 };

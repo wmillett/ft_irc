@@ -68,10 +68,7 @@
 # define ERR_NICKNAMEINUSE "<client> <nick> :Nickname is already in use"
 # define ERR_NICKCOLLISION "<client> <nick> :Nickname collision KILL from <user>@<host>"
 # define ERR_NOTONCHANNEL "<client> <channel> :You're not on that channel"
-# define ERR_CHANOPRIVSNEEDED "<client> <channel> :You're not channel operator"
-# define ERR_USERONCHANNEL "<client> <nick> <channel> :is already on channel"
 # define ERR_USERNOTINCHANNEL "<client> <nick> <channel> :They aren't on that channel"
-# define ERR_NOSUCHNICK "<client> <nickname> :No such nick/channel"
 # define ERR_NOSUCHSERVER "<client> <server name> :No such server"
 # define ERR_CANNOTSENDTOCHAN "<client> <channel> :Cannot send to channel" //PRIVMSG unknown channel
 # define ERR_NORECIPIENT "<client> :No recipient given (<command>)"
@@ -80,13 +77,20 @@
 // for JOIN command
 #define RPL_TOPIC(client, channel) client + " " + channel + " :<topic>"
 #define ERR_NEEDMOREPARAMS(client, command) client + " " + command + " :Not enough parameters"
-#define ERR_NOSUCHCHANNEL "<client> <channel> :No such channel"
+#define ERR_NOSUCHCHANNEL(client, channel) client + " " + channel + " :No such channel"
 #define ERR_TOOMANYCHANNELS "<client> <channel> :You have joined too many channels"
 #define ERR_BADCHANNELKEY "<client> <channel> :Cannot join channel (+k)"
-#define ERR_CHANNELISFULL "<client> <channel> :Cannot join channel (+l)"
+#define ERR_CHANNELISFULL(client, channel) client + " " + channel + " :Cannot join channel, channel full"
 #define ERR_CANNOTSENDTOCHAN "<client> <channel> :Cannot send to channel"
-#define ERR_INVITEONLYCHAN "<client> <channel> :Cannot join channel (+i)"
+#define ERR_INVITEONLYCHAN "<client> <channel> :Cannot join channel, invite-only channel"
 #define ERR_BADCHANMASK(channel) channel + " :Bad Channel Name"
 #define ERR_CANTJOINCHAN(client, channel, reason) client + " " + channel + " :Cannot join channel " + reason
+
+// for INVITE command
+#define ERR_NOSUCHNICK(client, user) client + " " + user + " :No such nick"
+#define ERR_CHANOPRIVSNEEDED(client, channel) client + " " + channel + " :Not a channel operator"
+#define ERR_USERONCHANNEL(client, nick, channel) client + " " + nick + " " + channel + " :Already on channel"
+#define ERR_CHANNELISFULLINV(client, channel) client + " " + channel + " :Cannot invite to channel, channel full"
+#define ERR_USERNOTONCHANNEL(client, channel) client + " " + channel + " :Not on that channel"
 
 #endif

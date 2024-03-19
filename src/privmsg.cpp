@@ -18,6 +18,7 @@ Channel* Server::isTargetAChannel(string& target) // returns a pointer to the ch
 		if ((*it)->getName() == target)
 			return (*it);
 	}
+	
 	return (NULL);
 }
 

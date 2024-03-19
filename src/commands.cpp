@@ -125,7 +125,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 	}
 	if (arg.size() == 1 && arg[0] == "0")
 	{
-		//TODO: user leaves all channels it's connected to
+		client->leaveAllChannels();
 		return (0);
 	}
 	if (arg.size() > 1)
@@ -145,7 +145,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 			std::string::iterator it = channels[i].begin();
 			channels[i].insert(it, '#');
 		}
-		Channel* toJoin = this->doesChannelExist(channels[i]);
+		Channel* toJoin = this->isTargetAChannel(channels[i]);
 		if (toJoin)
 		{
 			if (toJoin->canAddToChannel(client, NULL) == 0)
@@ -194,18 +194,61 @@ int Server::names(Client*client, std::vector<string>arg)
 	5. Send an invitation to the user to join the channel.
 	6. Send a message to the user that invited the other user to the channel.
 	7. Send a message to the channel that the user has been invited to the channel.
+	
+	they SHOULD reject it when the channel has invite-only mode set, and the user is not a channel operator.
 */
 //Errors: ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL, ERR_CHANOPRIVSNEEDED
 int Server::invite(Client*client, std::vector<string>arg)
 {
-	(void)client;
 	if (arg.size() < 2)
 		return (1);
 
-	string channel = arg[1], user = arg[0];
+	Client* toInvite = isTargetAUser(arg[0]);
+	Channel* toJoin = isTargetAChannel(arg[1]);
 
-	std::cout << "invite" << std::endl;
-	return 0;
+	if (!toInvite || !toJoin)
+	{
+		if (!toInvite)
+		{
+			sendMessage(client, _serverName, \
+			client->getNickname(), ERR_NOSUCHNICK(client->getNickname(), arg[0]));
+		}
+		if (!toJoin)
+		{
+			sendMessage(client, _serverName, \
+			client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[1]));
+		}
+		return (1);
+	}
+
+	if (toJoin->isUserInChannel(client) == 1)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_USERNOTONCHANNEL(client->getNickname(), arg[1]));
+		return (1);
+	}
+	else if (toJoin->isChannelFull() == 0)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_CHANNELISFULLINV(client->getNickname(), arg[1]));
+		return (1);
+	}
+	else if (toJoin->isInviteOnly() == 0 && toJoin->isUserAnOp(client) == 1)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_CHANOPRIVSNEEDED(client->getNickname(), arg[1]));
+		return (1);
+	}
+	else if (toJoin->isUserInChannel(toInvite) == 0)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_USERONCHANNEL(client->getNickname(), toInvite->getNickname(), arg[1]));
+		return (1);
+	}
+
+	toJoin->addUser(toInvite);
+
+	return (0);
 }
 
 int Server::kick(Client*client, std::vector<string>arg)

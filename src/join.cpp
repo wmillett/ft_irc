@@ -15,19 +15,6 @@ void Server::createChannel(Client* client, string& name, string *key) // cannot 
 	sendMessage(client, _serverName, client->getNickname(), "channel created");
 }
 
-Channel* Server::doesChannelExist(string& channel) //cannot fail, returns a pointer to the right channel or NULL if it doesn't exitst
-{
-	for (chIt it = _channels.begin(); it != _channels.end(); it++)
-	{
-		string channelName = (*it)->getName();
-		if (channelName == channel)
-		{
-			return (*it);
-		}
-	}
-	return (NULL);
-}
-
 int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command with keys
 {
 	//TODO: fill once Server::join() is done
@@ -45,7 +32,7 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 			std::string::iterator it = channels[i].begin();
 			channels[i].insert(it, '#');
 		}
-		Channel* toJoin = this->doesChannelExist(channels[i]);
+		Channel* toJoin = this->isTargetAChannel(channels[i]);
 		if (toJoin)
 		{
 			if (toJoin->canAddToChannel(client, ((i < keys.size()) ? &keys[i] : NULL)) == 0) // TODO: does this work?
