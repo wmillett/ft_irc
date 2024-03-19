@@ -46,6 +46,7 @@ class Server
 	int _port;
 	int _sockfd;
 	string _password;
+	string _startTime;
 	std::map<int, Client*> _clients;
 	std::vector<struct pollfd> _pollfd;
 	std::vector<Channel*> _channels;
@@ -57,6 +58,7 @@ class Server
 	bool digitsCheck(const std::string &arg) const;
 	bool nameCheck(const std::string &arg) const;
 	double getTime();
+	string convertTimeToDateString(double timestamp);
 
 	// void authenticate();
 	void authenticationMessage(Client*client) const;

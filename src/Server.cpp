@@ -9,6 +9,7 @@ Server::Server(const string& port_str,  const string& password) : _serverName(SE
     _port = std::atoi(port_str.c_str());
     if(_port > 65535 || _port < 0)
         throw CustomException::OutOfRangeException();
+	_startTime = convertTimeToDateString(getTime());
 }
 
 Server::~Server() 
@@ -233,6 +234,15 @@ double Server::getTime(void)
 	return tv.tv_sec + (tv.tv_usec / 1000000.0);
 }
 
+string Server::convertTimeToDateString(double timestamp) {
+    time_t time = static_cast<time_t>(timestamp);
+    struct tm* tm_info = localtime(&time);
+    char buffer[80];
+
+    strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", tm_info); 
+    return std::string(buffer);
+}
+
 void::Server::authenticationMessage(Client*client) const{
 
 	sendMessage(client, _serverName, client->getNickname(), AUTH_MESS);
@@ -247,11 +257,11 @@ void Server::identificationMessage(Client*client) const{
 }
 
 void Server::welcomeMessage(Client*client) const{
-	sendMessage(client, _serverName, client->getNickname(), "Limechat :Welcome to the Minou Network");
-	// send(sockfd, "Welcome to ", 11, 0);
-	// send(sockfd, &this->_serverName, this->_serverName.size() + 1, 0);
-	// send(sockfd, " !\r\n", 4, 0);
-	authenticationMessage(client);
+	sendMessage(client, _serverName, client->getNickname(), "Limechat :Welcome to the Minou Network, " + client->getNickname() + "@Localhost");
+	sendMessage(client, _serverName, client->getNickname(), "Limechat :Your host is Minou.IRC running version Beta 1.1");
+	sendMessage(client, _serverName, client->getNickname(), "Limechat :This server was created " + _startTime);
+	sendMessage(client, _serverName, client->getNickname(), ":Minou.IRC 005 " + client->getNickname() + "PREFIX=(itkol)@+ CHANTYPES=# CHANLIMIT=#:10 MAXCHANNELS=20 NICKLEN=30 TOPICLEN=255 MAXTARGETS=4 :are supported by this server");
+	//authenticationMessage(client);
 }
 
 void Server::sendMessage(Client*client, string source, string target, string message) const{
@@ -300,6 +310,7 @@ void Server::checkIdentified(Client*client){
 			client->setState(REGISTERED);
 			
 			sendMessage(client, SERVER_NAME, client->getUsername(), SUCCESS_REGISTER);
+			welcomeMessage(client);
 			// string ircMessage = ":" + _nickname +  PVM + _nickname + " :" + SUCCESS_REGISTER + "\r\n"; //<---- format
 			// send(client->getSocket(), ircMessage.c_str(), ircMessage.length(), 0); 
 		}
