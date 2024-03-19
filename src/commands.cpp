@@ -137,10 +137,6 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 	string name;
 	std::vector<string> channels;
 	channels = buildStrings(arg[0], delimiter, channels);
-	for (strIt it = channels.begin(); it < channels.end(); it++)
-	{
-		std::cout << "args: " << *it << std::endl;
-	}
 
 	for (size_t i = 0; i < channels.size(); i++)
 	{
@@ -272,6 +268,7 @@ int Server::privmsg(Client*client, std::vector<string>arg)
 	{
 		sendMessage(client, _serverName, \
 		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "PRIVMSG"));
+		return (1);
 	}
 	std::vector<string> targets;
 	targets = this->buildStrings(arg[0], ',', targets);

@@ -72,7 +72,6 @@ void Command::setArgs(string line, size_t startPos){
         if(!buffer.empty())
             this->_args.push_back(buffer);
         
-        dprint(DEBUG_MESS("Command arg buffer: ", buffer));
         buffer.clear();
     }
 }

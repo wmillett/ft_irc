@@ -102,7 +102,6 @@ int Server::Run()
 	serverfd.events = POLLIN; //monitor for data available for reading
 
 	fds.push_back(serverfd);
-	dprint(DEBUG_MESS(_serverName, " is ready"));
 	while(true)
 	{
 		if(poll(fds.data(), fds.size(), 0) == -1)
@@ -150,16 +149,11 @@ int Server::Run()
 				else if(bytesRead > 0)
 				{
 					string newInput = string(buffer, bytesRead);
-					dprint(DEBUG_MESS("New input: ", newInput));
 					// printf("%i %i %i %i read: %d\n", newInput[0],newInput[1],newInput[2],newInput[4], bytesRead); //
 				//	std::cout << std::endl; // 
 					string input = inputParsing(newInput, clientIt->second);
 					while(input.size())
 					{
-						dprint(DEBUG_MESS("input: ", input));
-						dprint(DEBUG_MESS("client buffer: ", clientIt->second->clientInput));
-						dprint(DEBUG_MESS("Message from client: ", input));
-
 						if(commandCalled.validCommand(input))
 						{
 							std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;

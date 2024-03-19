@@ -55,7 +55,6 @@ typedef std::vector<Client*>::iterator clIt;
 typedef std::vector<std::string>::iterator strIt;
 
 void print(string message);
-void dprint(string message);
 
 void sendArgs(Server* irc, Client* sender, Client* target, std::vector<std::string>& arg);
 

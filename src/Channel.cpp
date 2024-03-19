@@ -42,9 +42,28 @@ void Channel::addUser(Client* client)
 	client->addChannel(this);
 }
 
-void Channel::removeUser(Client* client) //TODO
+void Channel::removeUser(Client* client) //removes user from _operators and _clients if valid
 {
-	(void)client;
+	if (isUserAnOp(client) == 0)
+	{
+		for (clIt it = _operators.begin(); it != _operators.end(); it++)
+		{
+			if (*it == client)
+			{
+				_operators.erase(it);
+			}
+		}
+	}
+	if (isUserInChannel(client) == 0)
+	{
+		for (clIt it = _clients.begin(); it != _clients.end(); it++)
+		{
+			if (*it == client)
+			{
+				_clients.erase(it);
+			}
+		}
+	}
 }
 
 string Channel::getName(void)

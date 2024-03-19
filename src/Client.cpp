@@ -4,8 +4,9 @@ Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _in
 
 }
 
-Client::~Client() 
+Client::~Client()
 {
+	leaveAllChannels();
 	std::cout << "deleting " << _sockfd << std::endl;
 }
 
@@ -65,10 +66,20 @@ void Client::removeChannel(Channel* channel) // removes the channel from _channe
 {
 	for (chIt it = _channels.begin(); it < _channels.end(); it++)
 	{
-		if ((*it)->getName() == channel->getName())
+		if ((*it) == channel)
 		{
 			_channels.erase(it);
 			return ;
 		}
+	}
+}
+
+
+void Client::leaveAllChannels(void)
+{
+	for (chIt it = _channels.begin(); it != _channels.end(); it++)
+	{
+		(*it)->removeUser(this);
+		_channels.erase(it);
 	}
 }
