@@ -27,8 +27,8 @@ int Server::validOptions(const string mode) const{
         ;
     if(mode[i])
         return false;
-    // if(currentOption == 'o')
-
+    if(currentOption == 'o' || (currentOption == 'k' && plusMinus == '+') || (currentOption == 'l' && plusMinus == '+'))
+        return 2;//to take into account to check another parameter after
     return true;
 }
 
