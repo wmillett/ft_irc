@@ -67,120 +67,116 @@ string Server::inputParsing(string s, Client *client)
 	}
 }
 
-// string Server::containsAdditionnal(Client*client){
+void Server::newConnection(void)
+{
+	struct sockaddr_in clientSockInfo;
+	memset(&clientSockInfo, 0, sizeof(clientSockInfo)); //fill with 0s to avoid undefined behaviors
+	socklen_t len = sizeof(clientSockInfo);
 
-// 	size_t i = client->clientInput.find("\r\n");
-// 	if (i != string::npos)
-// 	{
-// 		string input = client->clientInput.substr(0,i);
-// 		client->clientInput.erase(0, i + 2);
-// 		return input;
-// 	}
-// 	else
-// 		return "";
-// }
+
+	//struct addrinfo hint, *result, *res;
+	int clientSocket = accept(_sockfd, (struct sockaddr *)&clientSockInfo, &len);
+	if(clientSocket == -1)
+		return ; //TODO: replace with error
+	else
+	{
+		print("New client connected !");
+
+		struct pollfd clientfd;
+		clientfd.fd = clientSocket; 
+		clientfd.events = POLLIN;
+
+		_pollfd.push_back(clientfd);
+		_clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
+		// welcomeMessage(clientSocket);
+	}
+}
+
+void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
+{
+	dprint(DEBUG_MESS("New input: ", newInput));
+
+	string input = inputParsing(newInput, clientIt->second);
+	while(input.size())
+	{
+		dprint(DEBUG_MESS("input: ", input));
+		dprint(DEBUG_MESS("client buffer: ", clientIt->second->clientInput));
+		dprint(DEBUG_MESS("Message from client: ", input));
+
+		if(commandCalled.validCommand(input))
+		{
+			std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
+			for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
+			{
+				if(commandCalled.getCommand() == it->first)
+				{
+					if(commandCalled.allowedCommand(clientIt->second->getState(), false)){//clientIt->second->isAdmin() TODO: change isAdmin to check if client is operator in the channel called
+						try{
+							commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
+						}
+						catch(const std::exception& e){
+							std::cerr << e.what() << std::endl;
+						
+						}
+					}
+					else
+						sendMessage(clientIt->second, _serverName, clientIt->second->getUsername(), NOT_ALLOWED);
+					commandCalled.commandReset();
+					break;
+				}	
+			}
+		}
+		else if(!commandCalled.validCommand(input))
+			send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
+		input.clear();
+		// input = containsAdditionnal(clientIt->second); //TODO: fix to implement if the client buffer contains multiple commands that can be called
+	}
+}
+
+void Server::IncomingData(int i)
+{
+	char buffer[MAX_BUFFER];
+	int bytesRead = recv(_pollfd[i].fd, buffer, sizeof(buffer), 0);
+	std::map<int,Client*>::iterator clientIt = _clients.find(_pollfd[i].fd);
+	if(bytesRead == 0)
+	{
+		disconnectUser(clientIt->second, _pollfd);
+		return ; // ?
+	}
+	else if(bytesRead > 0)
+	{
+		ReadData(clientIt,string(buffer, bytesRead));
+		
+	}
+}
 
 int Server::Run()
 {
-	// time_t startTime = getTime();
-	SetupServer();
 
-	std::vector<pollfd> fds;
-	init();
+	initCommandMap();
 	//Add server socket to the pollfd struct and push it in the vector container
 	struct pollfd serverfd;
 	memset(&serverfd, 0 , sizeof(serverfd)); // set memory to 0
 	serverfd.fd = _sockfd;
 	serverfd.events = POLLIN; //monitor for data available for reading
 
-	fds.push_back(serverfd);
+	_pollfd.push_back(serverfd);
 	dprint(DEBUG_MESS(_serverName, " is ready"));
 	while(true)
 	{
-		if(poll(fds.data(), fds.size(), 0) == -1)
+		if(poll(_pollfd.data(), _pollfd.size(), 0) == -1)
 			throw CustomException::PollFailed();
 			
 		//Check if the server socket has incoming connection requests
-		if(fds[0].revents & POLLIN)
+		if(_pollfd[0].revents & POLLIN)
 		{
-			struct sockaddr_in clientSockInfo;
-			memset(&clientSockInfo, 0, sizeof(clientSockInfo)); //fill with 0s to avoid undefined behaviors
-			socklen_t len = sizeof(clientSockInfo);
-
-
-			//struct addrinfo hint, *result, *res;
-			int clientSocket = accept(_sockfd, (struct sockaddr *)&clientSockInfo, &len);
-			if(clientSocket == -1)
-				break; //TODO: replace with error
-			else
-			{
-				print("New client connected !");
-
-				//std::cout << "Time elapsed " << getTime() - startTime  << std::endl; //to test
-
-				struct pollfd clientfd;
-				clientfd.fd = clientSocket;
-				clientfd.events = POLLIN;
-
-                fds.push_back(clientfd);
-                _clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
-				// welcomeMessage(clientSocket);
-            }
+			newConnection();
         }
-		for (size_t i = 1; i < fds.size(); i++)
+		for (size_t i = 1; i < _pollfd.size(); i++)
 		{
-			if(fds[i].revents & POLLIN)
+			if(_pollfd[i].revents & POLLIN)
 			{
-				char buffer[MAX_BUFFER];
-				int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer), 0);
-				std::map<int,Client*>::iterator clientIt = _clients.find(fds[i].fd);
-				if(bytesRead == 0)
-				{
-					disconnectUser(clientIt->second, fds);
-					break ; // ?
-				}
-				else if(bytesRead > 0)
-				{
-					string newInput = string(buffer, bytesRead);
-					dprint(DEBUG_MESS("New input: ", newInput));
-					// printf("%i %i %i %i read: %d\n", newInput[0],newInput[1],newInput[2],newInput[4], bytesRead); //
-				//	std::cout << std::endl; // 
-					string input = inputParsing(newInput, clientIt->second);
-					while(input.size())
-					{
-						dprint(DEBUG_MESS("input: ", input));
-						dprint(DEBUG_MESS("client buffer: ", clientIt->second->clientInput));
-						dprint(DEBUG_MESS("Message from client: ", input));
-
-						if(commandCalled.validCommand(input))
-						{
-							std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
-							for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
-							{
-								if(commandCalled.getCommand() == it->first)
-								{
-									if(commandCalled.allowedCommand(clientIt->second->getState(), false)){//clientIt->second->isAdmin() TODO: change isAdmin to check if client is operator in the channel called
-										try{
-											commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
-										}
-										catch(const std::exception& e){
-											std::cerr << e.what() << std::endl;
-										
-										}
-									}
-									else
-										sendMessage(clientIt->second, _serverName, clientIt->second->getUsername(), NOT_ALLOWED);
-									commandCalled.commandReset();
-									break;
-								}	
-							}
-						}
-						else if(!commandCalled.validCommand(input))
-							send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
-						input.clear();
-						// input = containsAdditionnal(clientIt->second); //TODO: fix to implement if the client buffer contains multiple commands that can be called
-					}
-				}
+				IncomingData(i);
 			}
 		}
 	}

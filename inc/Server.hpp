@@ -56,7 +56,6 @@ class Server
 
 	bool digitsCheck(const std::string &arg) const;
 	bool nameCheck(const std::string &arg) const;
-	void SetupServer();
 	double getTime();
 
 	// void authenticate();
@@ -97,8 +96,10 @@ class Server
 	//Utils commands
 	int validOptions(const string mode) const;
 
-	void init(void);
-
+	void initCommandMap(void);
+	void newConnection(void);
+	void IncomingData(int index); 
+	void ReadData(std::map<int,Client*>::iterator clientIt, string newInput);
 	//parsing
 	string inputParsing(string s, Client *client);
 	string containsAdditionnal(Client*client);
@@ -108,6 +109,7 @@ class Server
 	~Server();
 
 	int Run();
+	void SetupServer();
 };
 
 #endif 
