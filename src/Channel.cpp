@@ -1,4 +1,5 @@
 #include "Channel.hpp"
+#include "Server.hpp"
 #include "utils.h"
 
 Channel::Channel(Client* op, string name, string* key) : _name(name), _key(key), _userLimit(0), _inviteOnly(false)

@@ -105,7 +105,7 @@ class Server
 	~Server();
 
 	void sendMessage(Client*client, string source, string target, string message) const;
-	string& getName(void);
+	string getName(void);
 	void dprint(string message) const; //Only to use with make debug
 	int Run();
 };

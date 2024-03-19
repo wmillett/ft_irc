@@ -283,3 +283,8 @@ void Server::checkIdentified(Client*client){
 		}
 	}
 }
+
+string Server::getName(void)
+{
+	return (this->_serverName);
+}
