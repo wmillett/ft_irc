@@ -4,7 +4,6 @@
 # include <csignal>
 # include "utils.h"
 
-using std::string;
 
 class SignalHandler {
 	public:
