@@ -203,6 +203,10 @@ void Server::SetupServer()
 	if (_sockfd == - 1) 
 		throw CustomException::CouldNotCreatePort();
 
+	int reuse = 1;
+    if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) < 0) 
+    	throw std::runtime_error("Error with setsockopt");
+
 	//Sets the socket to non blocking mode
 	if (fcntl(_sockfd, F_SETFL, O_NONBLOCK) == -1) 
 		throw CustomException::ErrorFcntl();
