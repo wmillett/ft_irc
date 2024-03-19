@@ -6,8 +6,9 @@
 # define RPL_YOURHOST "<client> :Your host is <servername>, running version <version>"
 # define RPL_CREATED "<client> :This server was created <datetime>"
 # define RPL_MYINFO "<client> <servername> <version> <available user modes> <available channel modes> [<channel modes with a parameter>]"
-
 # define RPL_INVITING "<client> <nick> <channel>"
+# define RPL_LEFTCHANNEL(user, channel) user + " " + channel + " : User has left the channel"
+# define RPL_JOINCHANNEL(user, channel) user + " " + channel + " : User has joined the channel"
 
 // Errors
 # define NO_PORT "Error: no port provided"

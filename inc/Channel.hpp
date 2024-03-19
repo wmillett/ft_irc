@@ -20,7 +20,7 @@ class Channel
 	};
 
 	void sendTopic(Client* client);
-	void addUser(Client* client);
+	void addUser(Server* server, Client* client);
 	void removeUser(Client* client);
 	string getName(void);
 	string* getKey(void);
@@ -31,7 +31,7 @@ class Channel
 	int isChannelFull(void);
 	int canAddToChannel(Client* client, string* key); //does the checks to see if user can be added to the channel
 	void sendMessage(Server* irc, Client* sender, std::vector<string> arg); // sends the message to all user in the channel
-	void sendMessage(Server* irc, Client* sender, std::string& str); // same thing but a single string
+	void sendMessage(Server* irc, Client* sender, std::string str); // same thing but a single string
 
 	private:
 	string _name;

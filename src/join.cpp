@@ -2,7 +2,7 @@
 
 void Server::createChannel(Client* client, string& name, string *key) // cannot fail
 {
-	std::cout << "CREATINGCAHNNEL" <<std::endl;
+	//TODO: add message confirming channel has been created
 	if (key)
 	{
 		string* allocKey = new string(*key);
@@ -36,7 +36,7 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 		if (toJoin)
 		{
 			if (toJoin->canAddToChannel(client, ((i < keys.size()) ? &keys[i] : NULL)) == 0) // TODO: does this work?
-				toJoin->addUser(client);
+				toJoin->addUser(this, client);
 			else
 				sendMessage(client, _serverName, \
 				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i], "other")); //TODO: change error string (maybe)

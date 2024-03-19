@@ -149,7 +149,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 		if (toJoin)
 		{
 			if (toJoin->canAddToChannel(client, NULL) == 0)
-				toJoin->addUser(client);
+				toJoin->addUser(this, client);
 			else
 				sendMessage(client, _serverName, \
 				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i], "other")); //TODO: change error string (maybe)
@@ -246,7 +246,7 @@ int Server::invite(Client*client, std::vector<string>arg)
 		return (1);
 	}
 
-	toJoin->addUser(toInvite);
+	toJoin->addUser(this, toInvite);
 
 	return (0);
 }

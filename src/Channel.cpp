@@ -36,9 +36,9 @@ void Channel::sendTopic(Client* client) // TODO: sent to client fd if there is a
 	}
 }
 
-void Channel::addUser(Client* client) // sends a message to all users in channel that <client> joined
+void Channel::addUser(Server* irc, Client* client) // sends a message to all users in channel that <client> joined
 {
-	std::cout << "ADDINGUSER" <<std::endl;
+	this->sendMessage(irc, client, RPL_JOINCHANNEL(client->getNickname(), this->getName()));
 	this->_clients.push_back(client);
 	client->addChannel(this);
 }
@@ -148,7 +148,7 @@ void Channel::sendMessage(Server* irc, Client* sender, std::vector<string> arg)
 	}
 }
 
-void Channel::sendMessage(Server* irc, Client* sender, std::string& str)
+void Channel::sendMessage(Server* irc, Client* sender, std::string str)
 {
 	for (clIt it = _clients.begin(); it != _clients.end(); it++)
 	{
