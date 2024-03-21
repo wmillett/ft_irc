@@ -103,14 +103,14 @@ void Server::newConnection(void)
 
 void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 {
-	dprint(DEBUG_MESS("New input: ", newInput));
+	// dprint(DEBUG_MESS("New input: ", newInput));
 
 	string input = inputParsing(newInput, clientIt->second);
 	while(input.size())
 	{
-		dprint(DEBUG_MESS("input: ", input));
-		dprint(DEBUG_MESS("client buffer: ", clientIt->second->clientInput));
-		dprint(DEBUG_MESS("Message from client: ", input));
+		// dprint(DEBUG_MESS("input: ", input));
+		// dprint(DEBUG_MESS("client buffer: ", clientIt->second->clientInput));
+		// dprint(DEBUG_MESS("Message from client: ", input));
 
 		if(commandCalled.validCommand(input))
 		{
@@ -170,7 +170,7 @@ int Server::Run()
 	serverfd.events = POLLIN; //monitor for data available for reading
 
 	_pollfd.push_back(serverfd);
-	dprint(DEBUG_MESS(_serverName, " is ready"));
+	// dprint(DEBUG_MESS(_serverName, " is ready"));
 	while(true)
 	{
 		if(poll(_pollfd.data(), _pollfd.size(), 0) == -1)

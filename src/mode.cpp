@@ -39,8 +39,8 @@ int Server::mode(Client*client, std::vector<string>arg)
 		sendMessage(client, _serverName, client->getNickname(), MODE_USAGE);
 		return false;
 	}
-    if(doesChannelExist(arg[0]) == nullptr){
-        sendMessage(client, _serverName, client->getNickname(), ERR_NOSUCHCHANNEL);
+    if(isTargetAChannel(arg[0]) == nullptr){
+        sendMessage(client, _serverName, client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[0]));
         return false;
     }
     int argSize = arg.size();
