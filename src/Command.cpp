@@ -54,7 +54,7 @@ bool Command::allowedCommand(Registration access, bool isAdmin){
     }
     if (!isAdmin)
     {
-        if (_enumCommand == KICK || _enumCommand == TOPIC || _enumCommand == INVITE || _enumCommand == MODE)
+        if (_enumCommand == KICK || _enumCommand == INVITE || _enumCommand == MODE)
             return false;
     }
     return true;
@@ -72,7 +72,6 @@ void Command::setArgs(string line, size_t startPos){
         if(!buffer.empty())
             this->_args.push_back(buffer);
         
-        dprint(DEBUG_MESS("Command arg buffer: ", buffer));
         buffer.clear();
     }
 }

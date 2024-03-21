@@ -44,8 +44,8 @@ If a full set of parameters is presented, then each MUST be checked
 
 //Defines for the commands
 # define CMD_LIST {"KICK", "INVITE", "TOPIC", "MODE", "NICK", "USER", "PASS", "QUIT", "JOIN", "NAMES", "PRIVMSG"}
-# define ECMD_LIST {KICK,INVITE,TOPIC,MODE,NICK,USER,PASS,QUIT,JOIN,NAMES,INVALID,PRIVMSG}
-# define NB_CMD 10
+# define ECMD_LIST {KICK,INVITE,TOPIC,MODE,NICK,USER,PASS,QUIT,JOIN,NAMES,PRIVMSG,INVALID}
+# define NB_CMD 11
 # define MAX_ARG_SIZE 15
 
 //Defines for the options in the MODE command
@@ -64,8 +64,8 @@ enum e_cmd{
    QUIT,
    JOIN,
    NAMES,
-	INVALID,
-	PRIVMSG
+	PRIVMSG,
+	INVALID
 };
 
 class Command

@@ -1,9 +1,8 @@
 #include "Server.hpp"
-#include "utils.h"
 
 void Server::createChannel(Client* client, string& name, string *key) // cannot fail
 {
-	std::cout << "CREATINGCAHNNEL" <<std::endl;
+	//TODO: add message confirming channel has been created
 	if (key)
 	{
 		string* allocKey = new string(*key);
@@ -14,19 +13,6 @@ void Server::createChannel(Client* client, string& name, string *key) // cannot 
 		_channels.push_back(new Channel(client, name, key));
 	}
 	sendMessage(client, _serverName, client->getNickname(), "channel created");
-}
-
-Channel* Server::doesChannelExist(string& channel) //cannot fail, returns a pointer to the right channel or NULL if it doesn't exitst
-{
-	for (chIt it = _channels.begin(); it != _channels.end(); it++)
-	{
-		string channelName = (*it)->getName();
-		if (channelName == channel)
-		{
-			return (*it);
-		}
-	}
-	return (NULL);
 }
 
 int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command with keys
@@ -46,11 +32,11 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 			std::string::iterator it = channels[i].begin();
 			channels[i].insert(it, '#');
 		}
-		Channel* toJoin = this->doesChannelExist(channels[i]);
+		Channel* toJoin = this->isTargetAChannel(channels[i]);
 		if (toJoin)
 		{
 			if (toJoin->canAddToChannel(client, ((i < keys.size()) ? &keys[i] : NULL)) == 0) // TODO: does this work?
-				toJoin->addUser(client);
+				toJoin->addUser(this, client);
 			else
 				sendMessage(client, _serverName, \
 				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i], "other")); //TODO: change error string (maybe)

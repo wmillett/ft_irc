@@ -13,8 +13,8 @@
 # include <vector>
 # include <string>
 # include <map>
-
 # include "replies.h"
+
 //Defines
 # define CHARACTER_LIMIT 512
 # define RESET_TERM "\033[2J\033[H"
@@ -48,12 +48,14 @@ using std::cout;
 
 class Channel;
 class Client;
+class Server;
 
 typedef std::vector<Channel*>::iterator chIt;
 typedef std::vector<Client*>::iterator clIt;
 typedef std::vector<std::string>::iterator strIt;
 
 void print(string message);
-void dprint(string message);
+
+void sendArgs(Server* irc, Client* sender, Client* target, std::vector<std::string>& arg);
 
 #endif
