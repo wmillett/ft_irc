@@ -169,11 +169,47 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 
 int Server::topic(Client*client, std::vector<string>arg)
 {
-	(void)client;
-	(void)arg;
+	if (arg.size() < 1)
+	{
+		return (1);
+	}
 
-	std::cout << "topic" << std::endl;
-	return 0;
+	if (arg[0][0] != '#') // ADD '#' to the start if not present
+	{
+		std::string::iterator it = arg[0].begin();
+		arg[0].insert(it, '#');
+	}
+
+	Channel* channel = isTargetAChannel(arg[0]);
+	if (channel == NULL)
+	{
+		sendMessage(client, this->_serverName, \
+		client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[0]));
+		return (1);
+	}
+
+	if (arg.size() < 2)
+	{
+		string* topic = channel->getTopic();
+		if (channel->getTopic())
+			sendMessage(client, this->_serverName, \
+			client->getNickname(), RPL_TOPIC(client->getNickname(), channel->getName(), *topic));
+		else
+			sendMessage(client, this->_serverName, \
+			client->getNickname(), RPL_TOPIC(client->getNickname(), channel->getName(), "No topic."));
+		return (0);
+	}
+
+	if (channel->isUserAnOp(client) == 1)
+	{
+		sendMessage(client, this->_serverName, \
+		client->getNickname(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName()));
+		return (1);
+	}
+	
+	channel->setTopic(arg[1]);
+
+	return (0);
 }
 
 int Server::names(Client*client, std::vector<string>arg)

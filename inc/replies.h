@@ -76,7 +76,7 @@
 # define ERR_NOTEXTTOSEND "<client> :No text to send"
 
 // for JOIN command
-#define RPL_TOPIC(client, channel) client + " " + channel + " :<topic>"
+#define RPL_TOPIC(client, channel, topic) client + " " + channel + " : " + topic
 #define ERR_NEEDMOREPARAMS(client, command) client + " " + command + " :Not enough parameters"
 #define ERR_NOSUCHCHANNEL(client, channel) client + " " + channel + " :No such channel"
 #define ERR_TOOMANYCHANNELS "<client> <channel> :You have joined too many channels"

@@ -27,13 +27,23 @@ Channel::~Channel(void)
 	}
 }
 
-void Channel::sendTopic(Client* client) // TODO: sent to client fd if there is a topic
+string* Channel::getTopic(void) // TODO: sent to client fd if there is a topic
 {
-	(void)client;
 	if (_topic)
 	{
-
+		return (_topic);
 	}
+	return (NULL);
+}
+
+void Channel::setTopic(string topic)
+{
+	if (_topic)
+	{
+		delete _topic;
+		_topic = NULL;
+	}
+	_topic = new string(topic);
 }
 
 void Channel::addUser(Server* irc, Client* client) // sends a message to all users in channel that <client> joined

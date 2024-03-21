@@ -19,7 +19,8 @@ class Channel
 		CHANNELISFULL
 	};
 
-	void sendTopic(Client* client);
+	string* getTopic(void);
+	void setTopic(string topic);
 	void addUser(Server* server, Client* client);
 	void removeUser(Client* client);
 	string getName(void);
