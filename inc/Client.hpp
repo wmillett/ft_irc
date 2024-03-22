@@ -96,5 +96,5 @@ class Client
 		Registration getState(void) const;
 		void setState(Registration newState);
 
-		void leaveAllChannels(void);
+		void leaveAllChannels(Server* server);
 };

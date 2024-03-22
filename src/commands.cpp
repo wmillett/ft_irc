@@ -125,7 +125,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 	}
 	if (arg.size() == 1 && arg[0] == "0")
 	{
-		client->leaveAllChannels();
+		client->leaveAllChannels(this);
 		return (0);
 	}
 	if (arg.size() > 1)
@@ -206,8 +206,10 @@ int Server::topic(Client*client, std::vector<string>arg)
 		client->getNickname(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName()));
 		return (1);
 	}
-	
-	channel->setTopic(arg[1]);
+
+	strIt it = arg.begin();
+	arg.erase(it);
+	channel->setTopic(this, client, arg);
 
 	return (0);
 }
@@ -240,6 +242,11 @@ int Server::invite(Client*client, std::vector<string>arg)
 		return (1);
 
 	Client* toInvite = isTargetAUser(arg[0]);
+	if (arg[1][0] != '#')
+	{
+		std::string::iterator it = arg[1].begin();
+		arg[1].insert(it, '#');
+	}
 	Channel* toJoin = isTargetAChannel(arg[1]);
 
 	if (!toInvite || !toJoin)
@@ -289,10 +296,50 @@ int Server::invite(Client*client, std::vector<string>arg)
 
 int Server::kick(Client*client, std::vector<string>arg)
 {
-	(void)client;
-	(void)arg;
+	/*
+		arg[0] = channel
+		arg[1] = user(,user,...)
+		arg[2] = [reason]
+	*/
+	string reason;
 
-	std::cout << "kick" << std::endl;
+	if (arg[0][0] != '#')
+	{
+		std::string::iterator it = arg[0].begin();
+		arg[0].insert(it, '#');
+	}
+	Channel* channel = isTargetAChannel(arg[0]);
+
+	if (arg.size() < 2)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "KICK"));
+		return (1);
+	}
+	else if (!channel)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[0]));
+		return (1);
+	}
+
+	if (arg.size() > 2)
+	{
+		reason = arg[2];
+	}
+	else
+	{
+		reason = "well-deserved, annoying brat";
+	}
+
+	std::vector<string> users; //TODO: go through users and kick them IF they exist
+	users = buildStrings(arg[1], ',', users);
+
+	for (size_t i = 0; i < users.size(); i++)
+	{
+
+	}
+
 	return 0;
 }
 
