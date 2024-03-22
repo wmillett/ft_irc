@@ -34,7 +34,11 @@ int Server::validOptions(const string mode) const{
 
 int Server::mode(Client*client, std::vector<string>arg)
 {
-	if (arg[0].empty() || arg[1].empty())
+	if(arg.size() == 0)
+	{
+		return false;
+	}
+	if (arg.size() > 1  && (arg[0].empty() || arg[1].empty()))
 	{
 		sendMessage(client, _serverName, client->getNickname(), MODE_USAGE);
 		return false;
