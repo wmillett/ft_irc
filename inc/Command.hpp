@@ -77,7 +77,7 @@ class Command
       int _commandReturn;
       std::vector<string> _args;
 		void setArgs(string line, size_t startPos);
-		bool validOptions(void);
+		// bool validOptions(void);
 
 	public:
       Command();
