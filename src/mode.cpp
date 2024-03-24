@@ -110,6 +110,88 @@ int Server::mode(Client*client, std::vector<string>arg)
 }
 
 
+void Server::mode_i(Client *client, Channel &channel, bool orientation, string *arg)
+{
+	(void)arg;
+	(void)client;
+	channel.setInviteOnly(orientation);
+	//send message to notify 
+}
+
+void Server::mode_t(Client *client, Channel &channel, bool orientation, string *arg)
+{
+	(void)arg;
+	(void)client;
+	channel.setTopicChange(orientation);
+	//send message to notify
+}
+
+void Server::mode_k(Client *client, Channel &channel, bool orientation, string *arg)
+{
+	(void)client;
+
+	if(orientation == false)
+	{
+	    channel.setKey(NULL);
+	}
+	else
+	{
+		if(arg->empty())
+			return ;//send error message
+		else
+		{
+			channel.setKey(arg);
+		}
+	}
+	//send message to notify
+}
+
+void Server::mode_o(Client *client, Channel &channel, bool orientation, string *arg)
+{
+
+	if(arg->empty())
+		return ;//error message
+
+	if(client->getNickname() == *arg)
+		return ;//error message 
+
+	Client * client = channel.getUserByString(*arg);
+	if(!client)
+		return ;//error message
+
+	if(orientation == true)
+	{
+		channel.addUserOp(client);
+	}
+	else
+	{
+		channel.removeUserOp(client);
+	}
+
+	//send message to notify
+}
+
+void Server::mode_l(Client *client, Channel &channel, bool orientation, string *arg)
+{
+	(void)client;
+
+	if(orientation == false)
+	{
+		channel.setUserLimit(0);
+	}
+	else
+	{
+		if(arg->empty() || !digitsCheck(*arg))
+		{
+			//send error message
+			return;
+		}
+		channel.setUserLimit(atoi(arg->c_str()));
+	}
+	
+	//send message to notify
+}
+
 
 
 

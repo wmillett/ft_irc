@@ -83,32 +83,38 @@ class Server
 		Client* isTargetAUser(string& target);
 		Channel* isTargetAChannel(string& target);
 
-		//Commands
-		int nick(Client*client, std::vector<string>);
-		int user(Client*client, std::vector<string>);
-		int pass(Client*client, std::vector<string>);
-		int quit(Client*client, std::vector<string>);
-		int join(Client*client, std::vector<string>);
-		int topic(Client*client, std::vector<string>);
-		int names(Client*client, std::vector<string>);
-		int invite(Client*client, std::vector<string>);
-		int kick(Client*client, std::vector<string>);
-		int mode(Client*client, std::vector<string>);
-		int privmsg(Client*client, std::vector<string>);
+	//Commands
+	int nick(Client*client, std::vector<string>);
+	int user(Client*client, std::vector<string>);
+	int pass(Client*client, std::vector<string>);
+	int quit(Client*client, std::vector<string>);
+	int join(Client*client, std::vector<string>);
+	int topic(Client*client, std::vector<string>);
+	int names(Client*client, std::vector<string>);
+	int invite(Client*client, std::vector<string>);
+	int kick(Client*client, std::vector<string>);
+	int mode(Client*client, std::vector<string>);
+	int privmsg(Client*client, std::vector<string>);
 
-		//Utils commands
-		// int validOptions(const string mode) const;
-		bool validOptions(Client*client, std::vector<string>arg) const;
-		// bool executeOption(Client *client, Channel &channel, bool orientation, string *arg);
+	//Mode commands
+	void mode_i(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_t(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_k(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_o(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_l(Client *client, Channel &channel, bool orientation, string *arg);
 
-		void initCommandMap(void);
-		void newConnection(void);
-		void IncomingData(int index); 
-		void ReadData(std::map<int,Client*>::iterator clientIt, string newInput);
-		//parsing
-		string inputParsing(string s, Client *client);
-		string containsAdditionnal(Client*client);
-		void checkIdentified(Client*client);
+	//Utils commands
+	// int validOptions(const string mode) const;
+	bool validOptions(std::vector<string>arg) const;
+
+	void initCommandMap(void);
+	void newConnection(void);
+	void IncomingData(int index); 
+	void ReadData(std::map<int,Client*>::iterator clientIt, string newInput);
+	//parsing
+	string inputParsing(string s, Client *client);
+	string containsAdditionnal(Client*client);
+	void checkIdentified(Client*client);
 	public:
 		Server(const string& port_str,  const string& password);
 		~Server();
