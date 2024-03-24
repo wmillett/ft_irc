@@ -34,6 +34,15 @@ class Channel
 	void sendMessage(Server* irc, Client* sender, std::vector<string> arg); // sends the message to all user in the channel
 	void sendMessage(Server* irc, Client* sender, std::string str); // same thing but a single string
 
+	//zone pour la commande mode de alex et will (pour faciliter le merge avec ta branche )
+	void setInviteOnly(bool inviteOnly);
+	void setKey(string *key);
+	void setUserLimit(int n);
+	void addUserOp(Client *client);
+	void removeUserOp(Client *client);
+	void setTopicChange(bool topicChange);
+	Client* getUserByString(string user);
+
 	private:
 	string _name;
 	string* _topic;
@@ -42,5 +51,8 @@ class Channel
 	std::vector<Client*> _operators;
 	size_t _userLimit; //if user limit is 0, there is no limit
 	bool _inviteOnly;
+
+	//mode zone
+	bool _topicChange;
 
 };

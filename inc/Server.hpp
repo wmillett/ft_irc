@@ -92,6 +92,13 @@ class Server
 	int mode(Client*client, std::vector<string>);
 	int privmsg(Client*client, std::vector<string>);
 
+	//Mode commands
+	void mode_i(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_t(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_k(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_o(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_l(Client *client, Channel &channel, bool orientation, string *arg);
+
 	//Utils commands
 	// int validOptions(const string mode) const;
 	bool validOptions(std::vector<string>arg) const;
