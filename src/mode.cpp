@@ -155,17 +155,17 @@ void Server::mode_o(Client *client, Channel &channel, bool orientation, string *
 	if(client->getNickname() == *arg)
 		return ;//error message 
 
-	Client * client = channel.getUserByString(*arg);
-	if(!client)
+	Client *target = channel.getUserByString(*arg);
+	if(!target)
 		return ;//error message
 
 	if(orientation == true)
 	{
-		channel.addUserOp(client);
+		channel.addUserOp(target);
 	}
 	else
 	{
-		channel.removeUserOp(client);
+		channel.removeUserOp(target);
 	}
 
 	//send message to notify

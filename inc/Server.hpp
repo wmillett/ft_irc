@@ -105,7 +105,7 @@ class Server
 
 	//Utils commands
 	// int validOptions(const string mode) const;
-	bool validOptions(std::vector<string>arg) const;
+	bool validOptions(Client*client, std::vector<string>arg) const;
 
 	void initCommandMap(void);
 	void newConnection(void);
