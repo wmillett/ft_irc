@@ -56,8 +56,14 @@
 # define ALREADY_NICK "Error: You already have this nickname"
 
 //For MODE command
-# define INVALID_MODE "Error: invalid mode: usage: MODE <channel> {[+ | -] | i | t | k | o | l}"
+# define INVALID_MODE "Error: invalid mode: usage: MODE <channel> [{[+ | -] | i | t | k | o | l} [<mode arguments>...]]"
+//# define INVALID_MODE "Error: invalid mode: usage: MODE <channel> {[+ | -] | i | t | k | o | l}"
 # define NO_CHANNEL "Error: channel does not exist"
+# define ERR_UMODEUNKNOWNFLAG(client) client + " :Unknown MODE flag"//official message
+# define ERR_UNKNOWNMODE(client, modechar) client + modechar + " :is unknown mode char to me"//official message
+
+# define MISSING_ORIENTATION(client, modechar) client + modechar + " :Missing orientation for modechar"
+# define MISSING_ARGUMENT(client, modechar) client + modechar + " :Missing argument for modechar"
 
 //For QUIT command
 # define QUIT_MESS(x, y) x + " has been disconnected from the server for: " + y

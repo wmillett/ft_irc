@@ -8,54 +8,80 @@ static bool checkNeedStr(char option, char orientation){
     return (option == 'o');
 };
 
+
+
+
+
+// bool Server::executeOption(Client *client, Channel &channel, bool orientation, string *arg){
+
+//     // void mode_i(Client *client, Channel &channel, bool orientation, string *arg);
+//     // void mode_t(Client *client, Channel &channel, bool orientation, string *arg);
+//     // void mode_k(Client *client, Channel &channel, bool orientation, string *arg);
+//     // void mode_o(Client *client, Channel &channel, bool orientation, string *arg);
+//     // void mode_l(Client *client, Channel &channel, bool orientation, string *arg);
+
+// };
+
+
+
+
+
+
+
+
 //Notes: will need to add a verification for every string argument encountered by validOptions
-bool Server::validOptions(std::vector<string>arg) const{
+bool Server::validOptions(Client*client, std::vector<string>arg) const{
     const char options[] = MODE_OPTIONS;
     const string modeStr = arg[1];
     const int sizeArg = arg.size();
     char currentOption = 0;
     char orientation = 0;
     int countArgs = 2;
-    bool done = 0;
-    size_t i = 0;
-
-    while(i < modeStr.size() && modeStr[i] == ' ')
-        i++;
-    if (modeStr[i] != '+' && modeStr[i] != '-')
-        return false;//
-    orientation = modeStr[i++];
+    bool validCommand = 0;
 
     //Goes through modeStr to verify if every input is valid
-    while(modeStr[i]){
+    for(size_t i = 0; modeStr[i]; i++){
+        while(isspace(modeStr[i])){
+            i++;
+        }
+        validCommand = false;
+        currentOption = modeStr[i];
         if(modeStr[i] == '+' || modeStr[i] == '-'){
             orientation = modeStr[i];
-            done = false;
             currentOption = 0;
         }
         else{
             for(int j = 0; j < NB_OPTIONS; j++){
                 if(modeStr[i] == options[j]){
-                    currentOption = modeStr[i];
-                    done = true;
+                    validCommand = true;
                     break;
                 }
-                if(j == NB_OPTIONS - 1)
-                    return false;//
             }
         }
-        if(currentOption){
-            if(checkNeedStr(currentOption, orientation)){
-                if(countArgs < sizeArg){
-                    countArgs++;
+        if(orientation){
+            if(currentOption){
+                if(validCommand){
+                    if(checkNeedStr(currentOption, orientation)){
+                        if(countArgs < sizeArg){
+                            //execute fct here
+                            countArgs++;
+                        }
+                        else
+                            sendMessage(client, _serverName, client->getNickname(), MISSING_ARGUMENT(client->getNickname(), currentOption));
+                    }
+                    else{
+                        //execute fct
+                    }
                 }
                 else
-                    return false;//could change return for char* with error message or something else
+                    sendMessage(client, _serverName, client->getNickname(), ERR_UNKNOWNMODE(client->getNickname(), currentOption));
             }
+            else
+                ;
         }
-        i++;
+        else
+            sendMessage(client, _serverName, client->getNickname(), MISSING_ORIENTATION(client->getNickname(), currentOption));
     }
-    if (done == true)
-        return true;//
     return false;//
 };
 
@@ -75,13 +101,15 @@ int Server::mode(Client*client, std::vector<string>arg)
         sendMessage(client, _serverName, client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[0]));
         return false;
     }
-	if(!validOptions(arg)){//TODO: see note above validOptions fct
+	if(!validOptions(client, arg)){//TODO: see note above validOptions fct
 	    sendMessage(client, _serverName, client->getNickname(), INVALID_MODE);
 	    return false;
     }
 	std::cout << "mode" << std::endl;
 	return 0;
 }
+
+
 
 
 

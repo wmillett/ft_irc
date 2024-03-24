@@ -13,8 +13,10 @@ Client* Server::isTargetAUser(string& target) //returns a pointer to the user if
 
 Channel* Server::isTargetAChannel(string& target) // returns a pointer to the channel if it exists
 {
+	std::cout << _channels.size() << std::endl;
 	for (chIt it = _channels.begin(); it < _channels.end(); it++)
 	{
+		std::cout << (*it)->getName() << std::endl;
 		if ((*it)->getName() == target)
 			return (*it);
 	}

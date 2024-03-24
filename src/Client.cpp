@@ -81,5 +81,6 @@ void Client::leaveAllChannels(void)
 	{
 		(*it)->removeUser(this);
 		_channels.erase(it);
+		it--;
 	}
 }
