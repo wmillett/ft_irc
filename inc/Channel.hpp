@@ -45,6 +45,8 @@ class Channel
 	void setTopicChange(bool topicChange);
 	Client* getUserByString(string user);
 
+	bool getTopicChange(void);
+
 	private:
 	string _name;
 	string* _topic;
