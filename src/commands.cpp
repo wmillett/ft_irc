@@ -426,7 +426,7 @@ int Server::privmsg(Client*client, std::vector<string>arg)
 	return (0);
 }
 
-void Server::init(void)
+void Server::initCommandMap(void)
 {
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("NICK", &Server::nick));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("USER", &Server::user));

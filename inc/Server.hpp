@@ -21,9 +21,13 @@
 # define SERVER_CSEND(x) x + "Minou.IRC: \033[0m"
 # define SERVER_SEND "\033[35;1mMinou.IRC: \033[0m"
 # define MAX_BUFFER 1024
+# define IRC_VERSION "1.1"
 
+//Limits
 # define USERLEN 31
 # define NICKLEN 10
+# define MAX_USERS 20
+# define MIN_USERS 1
 
 //Class dependencies
 class Command;
@@ -42,41 +46,42 @@ the server MUST keep track of the channel members, as
 class Server
 {
 	private:
-	const string _serverName;
-	int _port;
-	int _sockfd;
-	string _password;
-	std::map<int, Client*> _clients;
-	std::vector<struct pollfd> _pollfd;
-	std::vector<Channel*> _channels;
-	std::map<string, int (Server::*)(Client*, std::vector<string>)> _commandsMap;
-	Command commandCalled; //tmp, pourrait le mettre dans les objets clients
-	
-	// sockaddr_in serverAddr;
+		const string _serverName;
+		int _port;
+		int _sockfd;
+		string _password;
+		string _startTime;
+		std::map<int, Client*> _clients;
+		std::vector<struct pollfd> _pollfd;
+		std::vector<Channel*> _channels;
+		std::map<string, int (Server::*)(Client*, std::vector<string>)> _commandsMap;
+		Command commandCalled; //tmp, pourrait le mettre dans les objets clients
 
-	bool digitsCheck(const std::string &arg) const;
-	bool nameCheck(const std::string &arg) const;
-	void SetupServer();
-	double getTime();
+		// sockaddr_in serverAddr;
 
-	// void authenticate();
-	void authenticationMessage(Client*client) const;
-	void identificationMessage(Client*client) const;
-	void welcomeMessage(Client*client) const;
-	// void sendPrivateError(int sockfd, string message) const;
-	
-	//Error handling
-	void disconnectUser(Client*client, std::vector<pollfd> fds);
+		bool digitsCheck(const std::string &arg) const;
+		bool nameCheck(const std::string &arg) const;
+		double getTime();
+		string convertTimeToDateString(double timestamp);
 
-	// Join methods
-	void createChannel(Client* client, string& name, string *key); // never fails
-	int joinWithKeys(Client* client, std::vector<string> arg);
-	int isChannelNameValid(string& name);
-	std::vector<string> buildStrings(string arg, char delimiter, std::vector<string> vec);
+		// void authenticate();
+		void authenticationMessage(Client*client) const;
+		void identificationMessage(Client*client) const;
+		void welcomeMessage(Client*client) const;
+		// void sendPrivateError(int sockfd, string message) const;
 
-	// PRIVMSG methods
-	Client* isTargetAUser(string& target);
-	Channel* isTargetAChannel(string& target);
+		//Error handling
+		void disconnectUser(Client*client, std::vector<pollfd> fds);
+
+		// Join methods
+		void createChannel(Client* client, string& name, string *key); // never fails
+		int joinWithKeys(Client* client, std::vector<string> arg);
+		int isChannelNameValid(string& name);
+		std::vector<string> buildStrings(string arg, char delimiter, std::vector<string> vec);
+
+		// PRIVMSG methods
+		Client* isTargetAUser(string& target);
+		Channel* isTargetAChannel(string& target);
 
 	//Commands
 	int nick(Client*client, std::vector<string>);
@@ -91,23 +96,34 @@ class Server
 	int mode(Client*client, std::vector<string>);
 	int privmsg(Client*client, std::vector<string>);
 
+	//Mode commands
+	void mode_i(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_t(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_k(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_o(Client *client, Channel &channel, bool orientation, string *arg);
+	void mode_l(Client *client, Channel &channel, bool orientation, string *arg);
+
 	//Utils commands
-	bool validOptions(const string mode) const;
+	// int validOptions(const string mode) const;
+	bool validOptions(Client*client, std::vector<string>arg) const;
 
-	void init(void);
-
+	void initCommandMap(void);
+	void newConnection(void);
+	void IncomingData(int index); 
+	void ReadData(std::map<int,Client*>::iterator clientIt, string newInput);
 	//parsing
 	string inputParsing(string s, Client *client);
 	string containsAdditionnal(Client*client);
 	void checkIdentified(Client*client);
 	public:
-	Server(const string& port_str,  const string& password);
-	~Server();
+		Server(const string& port_str,  const string& password);
+		~Server();
 
-	void sendMessage(Client*client, string source, string target, string message) const;
-	string getName(void);
-	void dprint(string message) const; //Only to use with make debug
-	int Run();
+		void sendMessage(Client*client, string source, string target, string message) const;
+		string getName(void);
+		// void dprint(string message) const; //Only to use with make debug
+		int Run();
+		void SetupServer();
 };
 
 #endif 

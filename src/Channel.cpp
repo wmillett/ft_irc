@@ -2,7 +2,7 @@
 #include "Server.hpp"
 #include "utils.h"
 
-Channel::Channel(Client* op, string name, string* key) : _name(name), _key(key), _userLimit(0), _inviteOnly(false)
+Channel::Channel(Client* op, string name, string* key) : _name(name), _key(key), _userLimit(0), _inviteOnly(false), _topicChange(false)
 {
 	if (op)
 	{
@@ -207,3 +207,63 @@ void Channel::sendUsers(Server *irc, Client* sender) //lists all the user on the
 }
 
 //TODO: listUsers method
+
+//zone pour la commande mode de alex et will (pour faciliter le merge avec ta branche )
+
+void Channel::setInviteOnly(bool inviteOnly)
+{
+	_inviteOnly = inviteOnly;
+}
+
+void Channel::setKey(string *key)
+{
+	if(_key)
+		delete _key;
+	if(key)
+		_key = new string(*key);
+	else
+		_key = NULL;
+}
+
+void Channel::setUserLimit(int n)
+{
+	_userLimit = n;
+}
+
+Client* Channel::getUserByString(string user)
+{
+	for (clIt it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if ((*it)->getNickname() == user)
+		{
+			return *it;
+		}
+	}
+	return NULL;
+}
+
+void Channel::addUserOp(Client *client)
+{
+	if(isUserAnOp(client) == 0)
+		return ;
+	else
+	{
+		_operators.push_back(client);
+	}
+}
+
+void Channel::removeUserOp(Client *client)
+{
+	for (clIt it = _operators.begin(); it != _operators.end(); it++)
+	{
+		if (*it == client)
+		{
+			_operators.erase(it);
+		}
+	}
+}
+
+void Channel::setTopicChange(bool topicChange)
+{
+	_topicChange = topicChange;
+}

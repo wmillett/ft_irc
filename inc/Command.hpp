@@ -48,9 +48,14 @@ If a full set of parameters is presented, then each MUST be checked
 # define NB_CMD 11
 # define MAX_ARG_SIZE 15
 
+
 //Defines for the options in the MODE command
 # define MODE_OPTIONS {'i', 't', 'k', 'o', 'l'}
 # define NB_OPTIONS 5
+
+//For welcome message
+# define MODE_NO_PARAM "it"
+# define MODE_PARAM "klo"
 
 
 enum e_cmd{
@@ -77,7 +82,7 @@ class Command
       int _commandReturn;
       std::vector<string> _args;
 		void setArgs(string line, size_t startPos);
-		bool validOptions(void);
+		// bool validOptions(void);
 
 	public:
       Command();

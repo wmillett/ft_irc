@@ -54,7 +54,7 @@ bool Command::allowedCommand(Registration access, bool isAdmin){
     }
     if (!isAdmin)
     {
-        if (_enumCommand == KICK || _enumCommand == MODE)
+        if (_enumCommand == KICK)
             return false;
     }
     return true;
