@@ -269,3 +269,8 @@ void Channel::setTopicChange(bool topicChange)
 {
 	_topicChange = topicChange;
 }
+
+bool Channel::getTopicChange(void)
+{
+	return _topicChange;
+}

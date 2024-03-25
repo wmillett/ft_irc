@@ -200,7 +200,7 @@ int Server::topic(Client*client, std::vector<string>arg)
 		return (0);
 	}
 
-	if (channel->isUserAnOp(client) == 1)
+	if (channel->getTopicChange() == true && channel->isUserAnOp(client) == 1)
 	{
 		sendMessage(client, this->_serverName, \
 		client->getNickname(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName()));
