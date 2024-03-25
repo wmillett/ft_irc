@@ -113,7 +113,7 @@ int Server::mode(Client*client, std::vector<string>arg)
         return false;
     }
 	if(!validOptions(client, *channel, arg)){//TODO: see note above validOptions fct
-	    sendMessage(client, _serverName, client->getNickname(), INVALID_MODE);
+	    // sendMessage(client, _serverName, client->getNickname(), INVALID_MODE);
 	    return false;
     }
 	//maybe add message
