@@ -8,20 +8,6 @@ static bool checkNeedStr(char option, char orientation){
     return (option == 'o');
 };
 
-
-
-
-
-// bool Server::executeOption(Client *client, Channel &channel, char option, bool orientation, string *arg) const{
-// 	string optionStr(1, option);
-// 	for (std::map<std::string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>::const_iterator it = _optionsMap.begin(); it != _optionsMap.end(); ++it) {
-// 		if(it->first == optionStr){
-// 			(this->*(it->second))(client, channel, orientation, arg);
-//             return false;
-// 		}
-//     }
-// 	return true;
-// };
 bool Server::executeOption(Client *client, Channel &channel, char option, bool orientation, string *arg){
     string optionStr(1, option);
     for (std::map<std::string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>::const_iterator it = _optionsMap.begin(); it != _optionsMap.end(); ++it) {
@@ -32,9 +18,6 @@ bool Server::executeOption(Client *client, Channel &channel, char option, bool o
     }
     return true;
 }
-
-
-
 
 //Notes: will need to add a verification for every string argument encountered by validOptions
 bool Server::validOptions(Client*client, Channel &channel, std::vector<string>arg){
@@ -65,8 +48,6 @@ bool Server::validOptions(Client*client, Channel &channel, std::vector<string>ar
                 }
 				dprint(("i: " + std::to_string(i)));
 				dprint(DEBUG_VALUE("i: ", i));
-				// dprint(("modeStr[i]: " + modeStr[i]));
-				// dprint(("validCommand: " + validCommand));
             }
         }
         if(orientation){
@@ -94,39 +75,39 @@ bool Server::validOptions(Client*client, Channel &channel, std::vector<string>ar
     return false;//
 };
 
-
 int Server::mode(Client*client, std::vector<string>arg)
 {
 	if(arg.size() == 0)
 	{
 		sendMessage(client, _serverName, client->getNickname(), MODE_USAGE);//or nothing? not sure how this case is even supposed to happen
-		return false;
+		return true;
 	}
 	if (arg.size() > 1  && (arg[0].empty() || arg[1].empty()))
 	{
 		sendMessage(client, _serverName, client->getNickname(), MODE_USAGE);
-		return false;
+		return true;
 	}
 	Channel* channel = isTargetAChannel(arg[0]);
     if(channel == nullptr){
         sendMessage(client, _serverName, client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[0]));
-        return false;
+        return true;
     }
-	if(!validOptions(client, *channel, arg)){//TODO: see note above validOptions fct
-	    // sendMessage(client, _serverName, client->getNickname(), INVALID_MODE);
-	    return false;
-    }
-	//maybe add message
-	return 0;
+	validOptions(client, *channel, arg);
+	return false;
 }
-
 
 void Server::mode_i(Client *client, Channel &channel, bool orientation, string *arg)
 {
 	(void)arg;
-	(void)client;
+	if(channel.isInviteOnly() && orientation)
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to invite only")); return;
+	if(!channel.isInviteOnly() && !orientation)
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to not invite only")); return;
 	channel.setInviteOnly(orientation);
-	//send message to notify 
+	if(orientation)
+		channel.sendMessage(this, client, ADD_INVITE(client->getNickname()));
+	else
+		channel.sendMessage(this, client, RM_INVITE(client->getNickname()));
 }
 
 void Server::mode_t(Client *client, Channel &channel, bool orientation, string *arg)
@@ -134,7 +115,17 @@ void Server::mode_t(Client *client, Channel &channel, bool orientation, string *
 	(void)arg;
 	(void)client;
 	channel.setTopicChange(orientation);
-	//send message to notify
+	// (void)arg;
+	// if(channel.isInviteOnly() && orientation)
+	// 	sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to invite only")); return;
+	// if(!channel.isInviteOnly() && !orientation)
+	// 	sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to not invite only")); return;
+	// channel.setInviteOnly(orientation);
+	// if(orientation)
+	// 	channel.sendMessage(this, client, ADD_INVITE(client->getNickname()));
+	// else
+	// 	channel.sendMessage(this, client, RM_INVITE(client->getNickname()));
+	
 }
 
 void Server::mode_k(Client *client, Channel &channel, bool orientation, string *arg)
@@ -194,7 +185,7 @@ void Server::mode_l(Client *client, Channel &channel, bool orientation, string *
 	{
 		if(arg->empty() || !digitsCheck(*arg))
 		{
-			//send error message
+			// sendMessage(client, _serverName, );
 			return;
 		}
 		channel.setUserLimit(atoi(arg->c_str()));

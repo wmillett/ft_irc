@@ -63,6 +63,10 @@
 # define NO_CHANNEL "Error: channel does not exist"
 # define ERR_UMODEUNKNOWNFLAG(client) client + " :Unknown MODE flag"//official message
 # define ERR_UNKNOWNMODE(client, modechar) client + modechar + " :is unknown mode char to me"//official message
+//For MODE, successful option commands executed
+# define ADD_INVITE(client) (std::string(client) + " has set the channel to invite only")
+# define RM_INVITE(client) (std::string(client) + " has removed the invite only requirement for this channel")
+
 
 # define MISSING_ORIENTATION(client, modechar) client + modechar + " :Missing orientation for modechar"
 # define MISSING_ARGUMENT(client, modechar) client + modechar + " :Missing argument for modechar"
