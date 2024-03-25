@@ -7,8 +7,11 @@
 # define RPL_CREATED "<client> :This server was created <datetime>"
 # define RPL_MYINFO "<client> <servername> <version> <available user modes> <available channel modes> [<channel modes with a parameter>]"
 # define RPL_INVITING "<client> <nick> <channel>"
-# define RPL_LEFTCHANNEL(user, channel) user + " " + channel + " : User has left the channel"
-# define RPL_JOINCHANNEL(user, channel) user + " " + channel + " : User has joined the channel"
+# define RPL_LEFTCHANNEL(user, channel) user + " has left " + channel
+# define RPL_JOINCHANNEL(user, channel) user + " has joined " + channel
+# define RPL_TOPIC(client, channel, topic) client + " " + channel + " : " + topic
+# define RPL_NEWTOPIC(client, channel, topic) client + " " + channel + " : Topic has been changed to " + topic
+# define RPL_KICK(client, channel, reason) client + " " + channel + " : You have been kicked from channel for" + reason
 
 // Errors
 # define NO_PORT "Error: no port provided"
@@ -24,7 +27,6 @@
 # define ERROR_LISTEN "Error: Failed to listen for connections"
 # define ERROR_BLOCK "Error setting socket to non-blocking mode"
 # define ERROR_POLL "Error: poll() failed"
-
 
 # define ERROR_PASSWORD "Error: Invalid password"
 //Parsing errors
@@ -83,7 +85,6 @@
 # define ERR_NOTEXTTOSEND "<client> :No text to send"
 
 // for JOIN command
-#define RPL_TOPIC(client, channel, topic) client + " " + channel + " : " + topic
 #define ERR_NEEDMOREPARAMS(client, command) client + " " + command + " :Not enough parameters"
 #define ERR_NOSUCHCHANNEL(client, channel) client + " " + channel + " :No such channel"
 #define ERR_TOOMANYCHANNELS "<client> <channel> :You have joined too many channels"

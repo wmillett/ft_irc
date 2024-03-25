@@ -95,7 +95,7 @@ class Command
       std::vector<string> getArgs(void) const;
       void setReturn(int value);
 		bool validCommand(string line);
-      bool allowedCommand(Registration access, bool admin);
+      bool allowedCommand(Registration access);
 };
 
 #endif

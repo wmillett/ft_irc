@@ -9,6 +9,7 @@ void Server::disconnectUser(Client* client, std::vector<pollfd> fds) {
 					// 	_clients.erase(clientIt);
 					// }
     //std::cout << "Client disconnected: " << client->getUsername() << std::endl;
+	client->leaveAllChannels(this);
     _clients.erase(client->getSocket());
 	close(client->getSocket());
     std::vector<pollfd>::iterator it;

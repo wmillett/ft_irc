@@ -36,24 +36,43 @@ string* Channel::getTopic(void) // TODO: sent to client fd if there is a topic
 	return (NULL);
 }
 
-void Channel::setTopic(string topic)
+void Channel::setTopic(Server* server, Client* client, std::vector<string> topic)
 {
 	if (_topic)
 	{
 		delete _topic;
 		_topic = NULL;
 	}
-	_topic = new string(topic);
+	
+	string tempTopic;
+	for (strIt it = topic.begin(); it != topic.end(); it++) // puts the args together in a single string
+	{
+		if ((it + 1) != topic.end())
+			tempTopic += (*it + " ");
+		else
+			tempTopic += *it;
+	}
+
+	string* newTopic = new string(tempTopic);
+	_topic = newTopic;
+	
+	this->sendMessage(server, client, RPL_NEWTOPIC(client->getNickname(), this->getName(), *_topic));
 }
 
 void Channel::addUser(Server* irc, Client* client) // sends a message to all users in channel that <client> joined
 {
-	this->sendMessage(irc, client, RPL_JOINCHANNEL(client->getNickname(), this->getName()));
 	this->_clients.push_back(client);
 	client->addChannel(this);
+
+	this->sendMessage(irc, client, RPL_JOINCHANNEL(client->getNickname(), this->getName()));
+
+	if (this->_topic)
+		irc->sendMessage(client, irc->getName(), client->getNickname(), \
+		RPL_TOPIC(client->getNickname(), this->getName(), *this->getTopic()));
+	sendUsers(irc, client);
 }
 
-void Channel::removeUser(Client* client) //removes user from _operators and _clients if valid
+void Channel::removeUser(Server* irc, Client* client) //removes user from _operators and _clients if valid
 {
 	if (isUserAnOp(client) == 0)
 	{
@@ -62,6 +81,7 @@ void Channel::removeUser(Client* client) //removes user from _operators and _cli
 			if (*it == client)
 			{
 				_operators.erase(it);
+				break ;
 			}
 		}
 	}
@@ -72,14 +92,18 @@ void Channel::removeUser(Client* client) //removes user from _operators and _cli
 			if (*it == client)
 			{
 				_clients.erase(it);
+				break ;
 			}
 		}
+		this->sendMessage(irc, client, RPL_LEFTCHANNEL(client->getNickname(), this->getName()));
+		irc->sendMessage(client, irc->getName(), client->getNickname(), \
+		RPL_LEFTCHANNEL(client->getNickname(), this->getName()));
 	}
 }
 
 string Channel::getName(void)
 {
-	return (_name);
+	return (this->_name);
 }
 
 string* Channel::getKey(void)
@@ -141,7 +165,7 @@ int Channel::canAddToChannel(Client *client, string* key)
 
 int Channel::isChannelFull(void) // returns 0 if channel is full
 {
-	if (_clients.size() == _userLimit)
+	if (_userLimit > 0 && _clients.size() == _userLimit)
 	{
 		return (0);
 	}
@@ -150,10 +174,10 @@ int Channel::isChannelFull(void) // returns 0 if channel is full
 
 void Channel::sendMessage(Server* irc, Client* sender, std::vector<string> arg)
 {
+	strIt it = arg.begin();
+	arg.insert(it, this->getName());
 	for (clIt it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (*it == sender)
-			continue ;
 		sendArgs(irc, sender, *it, arg);
 	}
 }
@@ -162,9 +186,25 @@ void Channel::sendMessage(Server* irc, Client* sender, std::string str)
 {
 	for (clIt it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (*it == sender)
-			continue ;
-		irc->sendMessage(*it, irc->getName(), (*it)->getNickname(), str);
+		irc->sendMessage(*it, sender->getNickname(), (*it)->getNickname(), str);
+	}
+}
+
+void Channel::sendUsers(Server *irc, Client* sender) //lists all the user on the server
+{
+	irc->sendMessage(sender, irc->getName(), \
+	sender->getNickname(), "Sending list of users in " + this->getName() + ".");
+
+	for (clIt it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (isUserAnOp(*it) == 0)
+		{
+			irc->sendMessage(sender, irc->getName(), sender->getNickname(), "@" + (*it)->getNickname());
+		}
+		else
+		{
+			irc->sendMessage(sender, irc->getName(), sender->getNickname(), (*it)->getNickname());
+		}
 	}
 }
 

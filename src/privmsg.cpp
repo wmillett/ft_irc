@@ -37,7 +37,6 @@ void sendArgs(Server* irc, Client* sender, Client* target, std::vector<string>& 
 		else
 			message += *it;
 	}
-	std::cout << "message: " + message << std::endl;
 
 	irc->sendMessage(target, sender->getNickname(), target->getNickname(), message);
 }
