@@ -64,6 +64,15 @@ void Channel::addUser(Server* irc, Client* client) // sends a message to all use
 	this->_clients.push_back(client);
 	client->addChannel(this);
 
+	if(client->getLimeState()){
+		string limechatMessage = ":" + client->getNickname() +  " JOIN " + this->getName() + "\r\n";
+		send(client->getSocket(), limechatMessage.c_str(), limechatMessage.length(), 0);
+	}
+	else{
+		string ncMessage = irc->getName() + ": " + "Channel joined." + "\n";
+		send(client->getSocket(), ncMessage.c_str(), ncMessage.length(), 0);
+	}
+
 	this->sendMessage(irc, client, RPL_JOINCHANNEL(client->getNickname(), this->getName()));
 
 	if (this->_topic)
@@ -193,7 +202,7 @@ void Channel::sendMessage(Server* irc, Client* sender, std::string str)
 void Channel::sendUsers(Server *irc, Client* sender) //lists all the user on the server
 {
 	irc->sendMessage(sender, irc->getName(), \
-	sender->getNickname(), "Sending list of users in " + this->getName() + ".");
+	sender->getNickname(), "Sending list of users in " + this->getName() + ":");
 
 	for (clIt it = _clients.begin(); it != _clients.end(); it++)
 	{

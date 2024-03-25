@@ -12,6 +12,7 @@
 # define RPL_TOPIC(client, channel, topic) client + " " + channel + " : " + topic
 # define RPL_NEWTOPIC(client, channel, topic) client + " " + channel + " : Topic has been changed to " + topic
 # define RPL_KICK(client, channel, reason) client + " " + channel + " : You have been kicked from channel for" + reason
+# define RPL_CREATECHANNEL(user, channel) user + " " + channel + ": channel has been created"
 
 // Errors
 # define NO_PORT "Error: no port provided"
@@ -92,8 +93,8 @@
 #define ERR_CHANNELISFULL(client, channel) client + " " + channel + " :Cannot join channel, channel full"
 #define ERR_CANNOTSENDTOCHAN "<client> <channel> :Cannot send to channel"
 #define ERR_INVITEONLYCHAN "<client> <channel> :Cannot join channel, invite-only channel"
-#define ERR_BADCHANMASK(channel) channel + " :Bad Channel Name"
-#define ERR_CANTJOINCHAN(client, channel, reason) client + " " + channel + " :Cannot join channel " + reason
+#define ERR_BADCHANMASK(channel) " :Bad Channel Name: " + channel
+#define ERR_CANTJOINCHAN(client, channel, reason) client + " " + channel + " : Cannot join for" + reason
 
 // for INVITE command
 #define ERR_NOSUCHNICK(client, user) client + " " + user + " :No such nick"

@@ -55,6 +55,7 @@ class Server
 		std::vector<struct pollfd> _pollfd;
 		std::vector<Channel*> _channels;
 		std::map<string, int (Server::*)(Client*, std::vector<string>)> _commandsMap;
+		std::map<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)> _optionsMap;
 		Command commandCalled; //tmp, pourrait le mettre dans les objets clients
 
 		// sockaddr_in serverAddr;
@@ -97,17 +98,19 @@ class Server
 	int privmsg(Client*client, std::vector<string>);
 
 	//Mode commands
+	// typedef void (*ModeFunction)(Client*, Channel&, bool, std::string*);
 	void mode_i(Client *client, Channel &channel, bool orientation, string *arg);
 	void mode_t(Client *client, Channel &channel, bool orientation, string *arg);
 	void mode_k(Client *client, Channel &channel, bool orientation, string *arg);
 	void mode_o(Client *client, Channel &channel, bool orientation, string *arg);
 	void mode_l(Client *client, Channel &channel, bool orientation, string *arg);
 
+	bool executeOption(Client *client, Channel &channel, char option, bool orientation, string *arg);
+	bool validOptions(Client*client, Channel &channel, std::vector<string>arg);
+	
 	//Utils commands
-	// int validOptions(const string mode) const;
-	bool validOptions(Client*client, std::vector<string>arg) const;
-
 	void initCommandMap(void);
+	void initOptionMap(void);
 	void newConnection(void);
 	void IncomingData(int index); 
 	void ReadData(std::map<int,Client*>::iterator clientIt, string newInput);
@@ -122,7 +125,7 @@ class Server
 		void sendMessage(Client*client, string source, string target, string message) const;
 		void sendMessage(Client*client, string source, string target, std::vector<string>& arg) const;
 		string getName(void);
-		// void dprint(string message) const; //Only to use with make debug
+		void dprint(string message) const; //Only to use with make debug
 		int Run();
 		void SetupServer();
 };

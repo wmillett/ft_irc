@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include "CustomException.hpp"
 
+
 Server::Server(const string& port_str,  const string& password) : _serverName(SERVER_NAME), _password(password)
 {
     //Parsing for empty and invalid port/password
@@ -103,7 +104,8 @@ void Server::newConnection(void)
 
 void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 {
-	// dprint(DEBUG_MESS("New input: ", newInput));
+	#include <stdio.h> //TODO:remove this
+	printf("New input: %s", newInput.c_str());
 
 	string input = inputParsing(newInput, clientIt->second);
 	while(input.size())
@@ -114,7 +116,7 @@ void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 
 		if(commandCalled.validCommand(input))
 		{
-			std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;
+			std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;//Th
 			for(it = _commandsMap.begin(); it != _commandsMap.end(); it++)
 			{
 				if(commandCalled.getCommand() == it->first)
@@ -163,6 +165,7 @@ int Server::Run()
 {
 
 	initCommandMap();
+	initOptionMap();
 	//Add server socket to the pollfd struct and push it in the vector container
 	struct pollfd serverfd;
 	memset(&serverfd, 0 , sizeof(serverfd)); // set memory to 0
@@ -273,7 +276,7 @@ void Server::welcomeMessage(Client*client) const{
 	sendMessage(client, _serverName, client->getNickname(), "002 " + client->getNickname() + " :Your host is Minou.IRC running version Beta 1.1");
 	sendMessage(client, _serverName, client->getNickname(), "003 " + client->getNickname() + " :This server was created " + _startTime);
 	sendMessage(client, _serverName, client->getNickname(), "004 " + client->getNickname() + " :" + _serverName + " " + IRC_VERSION + " - " + MODE_NO_PARAM + " " + MODE_PARAM);
-	sendMessage(client, _serverName, client->getNickname(), "005 " + client->getNickname() + "PREFIX=(itkol)@+ CHANTYPES=# CHANLIMIT=#:10 MAXCHANNELS=20 NICKLEN=30 TOPICLEN=255 MAXTARGETS=4 :are supported by this server");
+	sendMessage(client, _serverName, client->getNickname(), "005 " + client->getNickname() + " :PREFIX=(itkol)@+ CHANTYPES=# CHANLIMIT=#:10 MAXCHANNELS=20 NICKLEN=30 TOPICLEN=255 MAXTARGETS=4 :are supported by this server");
 	//authenticationMessage(client);
 }
 

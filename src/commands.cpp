@@ -223,19 +223,6 @@ int Server::names(Client*client, std::vector<string>arg)
 	return 0;
 }
 
-/*
-	Steps of the INVITE command: 
-	1. Look for nickname to see if user exists.
-	2. Looks for the channel to see if it exists.
-	3. Check if the inviting user is in the channel.
-	4. Check if the inviting user can invite the new user to the channel.
-	5. Send an invitation to the user to join the channel.
-	6. Send a message to the user that invited the other user to the channel.
-	7. Send a message to the channel that the user has been invited to the channel.
-	
-	they SHOULD reject it when the channel has invite-only mode set, and the user is not a channel operator.
-*/
-//Errors: ERR_NOSUCHCHANNEL, ERR_NOTONCHANNEL, ERR_CHANOPRIVSNEEDED
 int Server::invite(Client*client, std::vector<string>arg)
 {
 	if (arg.size() < 2)
@@ -371,51 +358,6 @@ int Server::kick(Client*client, std::vector<string>arg)
 	return 0;
 }
 
-// bool Server::validOptions(const string mode) const{
-//     const char options[] = MODE_OPTIONS;
-//     //const string mode = _args[0];
-//     size_t i = 0;
-
-//     while(i < mode.size() && mode[i] == ' ')
-//         i++;
-//     if (mode[i] != '+' && mode[i] != '-')
-//         return false;
-//     i++;
-//     while(mode[i] && mode[i] != ' '){
-//         for(int j = 0; j < NB_OPTIONS; j++){
-//             if(mode[i] == options[j])
-//                 break;
-//             if(j == NB_OPTIONS - 1)
-//                 return false;
-//         }
-//         i++;
-//     }
-//     while(++i < mode.size() && mode[i] == ' ')
-//         ;
-//     if(mode[i])
-//         return false;
-//     return true;
-// }
-
-// int Server::mode(Client*client, std::vector<string>arg)
-// {
-// 	(void)client;
-// 	(void)arg;
-
-// 	if (arg[0].empty() || arg[1].empty())
-// 	{
-// 		sendMessage(client, _serverName, client->getNickname(), MODE_USAGE);
-// 		return false;
-// 	}
-// 	//TODO: check if channel exists (arg[0])
-// 	if (!validOptions(arg[1])){
-// 		sendMessage(client, _serverName, client->getNickname(), INVALID_MODE);
-// 		return false;
-// 	}
-// 	std::cout << "mode" << std::endl;
-// 	return 0;
-// }
-
 int Server::privmsg(Client*client, std::vector<string>arg)
 {
 	if (arg.size() < 2)
@@ -467,4 +409,14 @@ void Server::initCommandMap(void)
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("KICK", &Server::kick));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("MODE", &Server::mode));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("PRIVMSG", &Server::privmsg));
+}
+
+void Server::initOptionMap(void)
+{
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("i", &Server::mode_i));
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("t", &Server::mode_t));
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("k", &Server::mode_k));
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("o", &Server::mode_o));
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("l", &Server::mode_l));
+
 }

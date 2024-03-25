@@ -12,7 +12,14 @@ void Server::createChannel(Client* client, string& name, string *key) // cannot 
 	{
 		_channels.push_back(new Channel(client, name, key));
 	}
-	sendMessage(client, _serverName, client->getNickname(), "channel created");
+	if(client->getLimeState()){
+		string limechatMessage = ":" + client->getNickname() +  " JOIN " + name + "\r\n";
+		send(client->getSocket(), limechatMessage.c_str(), limechatMessage.length(), 0);
+	}
+	else{
+		string ncMessage = _serverName + ": " + "Channel has been created" + "\n";
+		send(client->getSocket(), ncMessage.c_str(), ncMessage.length(), 0);
+	}
 }
 
 int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command with keys

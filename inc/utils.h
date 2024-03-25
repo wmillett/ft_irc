@@ -21,7 +21,8 @@
 
 //Debug
 extern bool debug;
-# define DEBUG_MESS(x, y) x + y + "\n"
+# define DEBUG_STR(x, y) (std::string(x) + std::string(y) + "\n")
+# define DEBUG_VALUE(x, y) (std::string(x) + std::to_string(y) + "\n")
 
 //Using
 using std::string;
@@ -55,6 +56,7 @@ typedef std::vector<Client*>::iterator clIt;
 typedef std::vector<std::string>::iterator strIt;
 
 void print(string message);
+void dprint(string message);
 
 void sendArgs(Server* irc, Client* sender, Client* target, std::vector<std::string>& arg);
 
