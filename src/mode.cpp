@@ -12,25 +12,32 @@ static bool checkNeedStr(char option, char orientation){
 
 
 
-// bool Server::executeOption(Client *client, Channel &channel, bool orientation, string *arg){
-
-//     // void mode_i(Client *client, Channel &channel, bool orientation, string *arg);
-//     // void mode_t(Client *client, Channel &channel, bool orientation, string *arg);
-//     // void mode_k(Client *client, Channel &channel, bool orientation, string *arg);
-//     // void mode_o(Client *client, Channel &channel, bool orientation, string *arg);
-//     // void mode_l(Client *client, Channel &channel, bool orientation, string *arg);
-
+// bool Server::executeOption(Client *client, Channel &channel, char option, bool orientation, string *arg) const{
+// 	string optionStr(1, option);
+// 	for (std::map<std::string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>::const_iterator it = _optionsMap.begin(); it != _optionsMap.end(); ++it) {
+// 		if(it->first == optionStr){
+// 			(this->*(it->second))(client, channel, orientation, arg);
+//             return false;
+// 		}
+//     }
+// 	return true;
 // };
-
-
-
-
+bool Server::executeOption(Client *client, Channel &channel, char option, bool orientation, string *arg){
+    string optionStr(1, option);
+    for (std::map<std::string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>::const_iterator it = _optionsMap.begin(); it != _optionsMap.end(); ++it) {
+        if(it->first == optionStr){
+            (this->*it->second)(client, channel, orientation, arg);
+            return false;
+        }
+    }
+    return true;
+}
 
 
 
 
 //Notes: will need to add a verification for every string argument encountered by validOptions
-bool Server::validOptions(Client*client, std::vector<string>arg) const{
+bool Server::validOptions(Client*client, Channel &channel, std::vector<string>arg){
     const char options[] = MODE_OPTIONS;
     const string modeStr = arg[1];
     const int sizeArg = arg.size();
@@ -56,21 +63,23 @@ bool Server::validOptions(Client*client, std::vector<string>arg) const{
                     validCommand = true;
                     break;
                 }
+				dprint(("i: " + std::to_string(i)));
+				dprint(DEBUG_VALUE("i: ", i));
+				// dprint(("modeStr[i]: " + modeStr[i]));
+				// dprint(("validCommand: " + validCommand));
             }
         }
         if(orientation){
             if(currentOption){
                 if(validCommand){
                     if(checkNeedStr(currentOption, orientation)){
-                        if(countArgs < sizeArg){
-                            //execute fct here
-                            countArgs++;
-                        }
+                        if(countArgs < sizeArg)
+                            executeOption(client, channel, currentOption, orientation, &arg[countArgs++]);
                         else
                             sendMessage(client, _serverName, client->getNickname(), MISSING_ARGUMENT(client->getNickname(), currentOption));
                     }
                     else{
-                        //execute fct
+                        executeOption(client, channel, currentOption, orientation, nullptr);
                     }
                 }
                 else
@@ -90,6 +99,7 @@ int Server::mode(Client*client, std::vector<string>arg)
 {
 	if(arg.size() == 0)
 	{
+		sendMessage(client, _serverName, client->getNickname(), MODE_USAGE);//or nothing? not sure how this case is even supposed to happen
 		return false;
 	}
 	if (arg.size() > 1  && (arg[0].empty() || arg[1].empty()))
@@ -97,15 +107,16 @@ int Server::mode(Client*client, std::vector<string>arg)
 		sendMessage(client, _serverName, client->getNickname(), MODE_USAGE);
 		return false;
 	}
-    if(isTargetAChannel(arg[0]) == nullptr){
+	Channel* channel = isTargetAChannel(arg[0]);
+    if(channel == nullptr){
         sendMessage(client, _serverName, client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[0]));
         return false;
     }
-	if(!validOptions(client, arg)){//TODO: see note above validOptions fct
+	if(!validOptions(client, *channel, arg)){//TODO: see note above validOptions fct
 	    sendMessage(client, _serverName, client->getNickname(), INVALID_MODE);
 	    return false;
     }
-	std::cout << "mode" << std::endl;
+	//maybe add message
 	return 0;
 }
 

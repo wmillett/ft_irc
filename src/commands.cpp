@@ -393,3 +393,13 @@ void Server::initCommandMap(void)
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("MODE", &Server::mode));
 	_commandsMap.insert(std::make_pair<string, int (Server::*)(Client *, std::vector<string>)>("PRIVMSG", &Server::privmsg));
 }
+
+void Server::initOptionMap(void)
+{
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("i", &Server::mode_i));
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("t", &Server::mode_t));
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("k", &Server::mode_k));
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("o", &Server::mode_o));
+	_optionsMap.insert(std::make_pair<string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>("l", &Server::mode_l));
+
+}
