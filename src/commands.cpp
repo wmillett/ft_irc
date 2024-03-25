@@ -102,7 +102,7 @@ int Server::pass(Client*client, std::vector<string>arg)
 
 int Server::quit(Client*client, std::vector<string>arg)
 {
-	if(!arg[0].empty()){
+	if(!arg.empty()){
 		print(QUIT_MESS(client->getUsername(), arg[0]));
 		sendMessage(client, _serverName, client->getNickname(), QUIT_MESS(client->getUsername(), arg[0]));
 	}
@@ -301,7 +301,6 @@ int Server::kick(Client*client, std::vector<string>arg)
 		arg[1] = user(,user,...)
 		arg[2] = [reason]
 	*/
-	string reason;
 
 	if (arg[0][0] != '#')
 	{
@@ -323,21 +322,50 @@ int Server::kick(Client*client, std::vector<string>arg)
 		return (1);
 	}
 
+	std::vector<string> users; //TODO: go through users and kick them IF they exist
+	users = buildStrings(arg[1], ',', users);
+	std::vector<string> reason;
+
 	if (arg.size() > 2)
 	{
-		reason = arg[2];
+		for (int i = 0; i < 2; i++)
+		{
+			strIt it = arg.begin();
+			arg.erase(it);
+		}
+		reason = arg;
+		strIt it = reason.begin();
+		reason.insert(it, "You have been kicked for:");
 	}
 	else
 	{
-		reason = "well-deserved, annoying brat";
+		strIt it = reason.begin();
+		reason.insert(it, "You have been kicked for: being a nerd");
 	}
 
-	std::vector<string> users; //TODO: go through users and kick them IF they exist
-	users = buildStrings(arg[1], ',', users);
-
-	for (size_t i = 0; i < users.size(); i++)
+	if (channel->isUserAnOp(client) == 1)
 	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName()));
+		return (1);
+	}
 
+	for (strIt it = users.begin(); it < users.end(); it++)
+	{
+		Client* user = isTargetAUser((*it));
+		if (user)
+		{
+			if (channel->isUserInChannel(user) == 0 && user != client)
+			{
+				channel->removeUser(this, user);
+				user->removeChannel(channel);
+				sendMessage(user, _serverName, \
+				user->getNickname(), reason);
+			}
+		}
+		else
+			sendMessage(user, _serverName, \
+			user->getNickname(), ERR_NOSUCHNICK(client->getNickname(), (*it)));
 	}
 
 	return 0;

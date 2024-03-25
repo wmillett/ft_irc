@@ -41,7 +41,7 @@ void Command::commandReset(void){
     _args.clear();
 }
 
-bool Command::allowedCommand(Registration access, bool isAdmin){
+bool Command::allowedCommand(Registration access){
     if(access == AUTHENTICATION){
         if (_enumCommand != PASS)
             return false;
@@ -51,11 +51,6 @@ bool Command::allowedCommand(Registration access, bool isAdmin){
         if(_enumCommand != NICK && _enumCommand != USER)
             return false;
         return true;
-    }
-    if (!isAdmin)
-    {
-        if (_enumCommand == KICK)
-            return false;
     }
     return true;
 }

@@ -119,7 +119,7 @@ void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 			{
 				if(commandCalled.getCommand() == it->first)
 				{
-					if(commandCalled.allowedCommand(clientIt->second->getState(), false)){//clientIt->second->isAdmin() TODO: change isAdmin to check if client is operator in the channel called
+					if(commandCalled.allowedCommand(clientIt->second->getState())){//clientIt->second->isAdmin() TODO: change isAdmin to check if client is operator in the channel called
 						try{
 							commandCalled.setReturn((this->*it->second)(clientIt->second, commandCalled.getArgs()));
 						}
@@ -278,6 +278,28 @@ void Server::welcomeMessage(Client*client) const{
 }
 
 void Server::sendMessage(Client*client, string source, string target, string message) const{
+
+	if(client->getLimeState()){
+		string limechatMessage = ":" + source +  PVM + target + " :" + message + "\r\n"; //<---- format
+		send(client->getSocket(), limechatMessage.c_str(), limechatMessage.length(), 0);
+	}
+	else{
+		string ncMessage = source + ": " + message + "\n";
+		send(client->getSocket(), ncMessage.c_str(), ncMessage.length(), 0);
+	}
+}
+
+void Server::sendMessage(Client*client, string source, string target, std::vector<string>& arg) const{
+
+	string message;
+
+	for (size_t i = 0; i < arg.size(); i++)
+	{
+		if (i + 1 != arg.size())
+			message += arg[i] + " ";
+		else
+			message += arg[i];
+	}
 
 	if(client->getLimeState()){
 		string limechatMessage = ":" + source +  PVM + target + " :" + message + "\r\n"; //<---- format

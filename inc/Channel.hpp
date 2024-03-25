@@ -34,6 +34,7 @@ class Channel
 	void sendMessage(Server* irc, Client* sender, std::vector<string> arg); // sends the message to all user in the channel
 	void sendMessage(Server* irc, Client* sender, std::string str); // same thing but a single string
 	void sendUsers(Server *irc, Client* sender);
+	
 
 	//zone pour la commande mode de alex et will (pour faciliter le merge avec ta branche )
 	void setInviteOnly(bool inviteOnly);

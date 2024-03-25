@@ -120,6 +120,7 @@ class Server
 		~Server();
 
 		void sendMessage(Client*client, string source, string target, string message) const;
+		void sendMessage(Client*client, string source, string target, std::vector<string>& arg) const;
 		string getName(void);
 		// void dprint(string message) const; //Only to use with make debug
 		int Run();
