@@ -55,7 +55,7 @@
 //For NICK Command
 # define NICK_SUCCESS(x) "You have successfully set your nickname to: " + x
 # define NICK_CHANGE(x) "You have successfully changed your nickname to: " + x
-# define ALREADY_NICK "Error: You already have this nickname"
+# define ALREADY_NICK "Error: Nickname exists already!!!!"
 
 //For MODE command
 # define INVALID_MODE "Error: invalid mode: usage: MODE <channel> [{[+ | -] | i | t | k | o | l} [<mode arguments>...]]"

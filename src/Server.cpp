@@ -72,7 +72,7 @@ string Server::inputParsing(string s, Client *client)
 	}
 	else
 	{
-		client->clientInput += s.substr(0, s.size() - 1);
+		client->clientInput += s.substr(0, s.size());
 		return "";
 	}
 }
