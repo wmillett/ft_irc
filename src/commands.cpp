@@ -29,6 +29,7 @@ int Server::user(Client*client, std::vector<string>arg)
 		client->setLimeState(true);
 	// else
 	// 	client->setLimeState(false);
+
 	client->setUsername(username);
 	sendMessage(client, SERVER_NAME, client->getNickname(), USER_SUCCESS(client->getUsername()));
 	checkIdentified(client);
@@ -59,14 +60,16 @@ int Server::nick(Client*client, std::vector<string>arg)
 			return 0;
 		}
 	}
-	checkIdentified(client);
+
 	if(client->getNickname().empty()){
 		client->setNickname(arg[0]);
+		checkIdentified(client);
 		sendMessage(client, SERVER_NAME, client->getUsername(), NICK_SUCCESS(client->getNickname()));
 	}
 	else
 	{
 		client->setNickname(arg[0]);
+		checkIdentified(client);
 		sendMessage(client, SERVER_NAME, client->getUsername(), NICK_CHANGE(client->getNickname()));	
 		print(SERVER_SEND + client->getUsername() + " has changed his nickname to " + client->getNickname() + "\n");
 	}
