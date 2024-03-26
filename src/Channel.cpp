@@ -278,3 +278,12 @@ void Channel::setTopicChange(bool topicChange)
 {
 	_topicChange = topicChange;
 }
+
+bool Channel::getTopicChange(void)
+{
+	return _topicChange;
+}
+
+size_t Channel::getUserLimit(void){
+	return _userLimit;
+}

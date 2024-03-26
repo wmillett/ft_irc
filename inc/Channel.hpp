@@ -25,6 +25,7 @@ class Channel
 	void removeUser(Server* server, Client* client);
 	string getName(void);
 	string* getKey(void);
+	size_t getUserLimit(void);
 	int isKeyValid(string* key); // checks if the key is valid for joining channel
 	int isInviteOnly(void);
 	int isUserInChannel(Client* client);
@@ -41,6 +42,8 @@ class Channel
 	void removeUserOp(Client *client);
 	void setTopicChange(bool topicChange);
 	Client* getUserByString(string user);
+
+	bool getTopicChange(void);
 
 	private:
 	string _name;

@@ -24,6 +24,9 @@ extern bool debug;
 # define DEBUG_STR(x, y) (std::string(x) + std::string(y) + "\n")
 # define DEBUG_VALUE(x, y) (std::string(x) + std::to_string(y) + "\n")
 
+//General purpose
+# define CLIENT_MESS(client, message) (std::string(client) + std::string(message))
+
 //Using
 using std::string;
 using std::map;

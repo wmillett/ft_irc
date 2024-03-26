@@ -56,7 +56,7 @@
 //For NICK Command
 # define NICK_SUCCESS(x) "You have successfully set your nickname to: " + x
 # define NICK_CHANGE(x) "You have successfully changed your nickname to: " + x
-# define ALREADY_NICK "Error: You already have this nickname"
+# define ALREADY_NICK "Error: Nickname exists already!!!!"
 
 //For MODE command
 # define INVALID_MODE "Error: invalid mode: usage: MODE <channel> [{[+ | -] | i | t | k | o | l} [<mode arguments>...]]"
@@ -64,6 +64,15 @@
 # define NO_CHANNEL "Error: channel does not exist"
 # define ERR_UMODEUNKNOWNFLAG(client) client + " :Unknown MODE flag"//official message
 # define ERR_UNKNOWNMODE(client, modechar) client + modechar + " :is unknown mode char to me"//official message
+//For MODE, successful option commands executed (broadcast)
+# define ADD_INVITE(client) (std::string(client) + " has set the channel to invite only")
+# define RM_INVITE(client) (std::string(client) + " has removed the invite only requirement for this channel")
+# define ADD_TOPIC(client) (std::string(client) + " has restricted the topic to channel operators")
+# define RM_TOPIC(client) (std::string(client) + " has disabled the restriction on the channel topic")
+# define ADD_OP(client, target) (std::string(target) + " has been promoted to channel operator by " + std::string(client))
+# define RM_OP(client, target) (std::string(client) + " has removed channel operator privileges for: " + std::string(target))
+# define ADD_UL(client, limit) (std::string(client) + " has set the channel user limit to " + (std::string(limit)))
+# define RM_UL(client) (std::string(client) + " has removed the channel user limit")
 
 # define MISSING_ORIENTATION(client, modechar) client + modechar + " :Missing orientation for modechar"
 # define MISSING_ARGUMENT(client, modechar) client + modechar + " :Missing argument for modechar"
