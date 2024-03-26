@@ -276,6 +276,8 @@ int Server::invite(Client*client, std::vector<string>arg)
 		return (1);
 	}
 
+	//TODO: add the correct messages
+	this->sendMessage(client, _serverName, client->getNickname(), RPL_INVITING(client->getNickname(), toInvite->getNickname(), toJoin->getName()));
 	toJoin->addUser(this, toInvite);
 
 	return (0);

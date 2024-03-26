@@ -46,8 +46,8 @@ bool Server::validOptions(Client*client, Channel &channel, std::vector<string>ar
                     validCommand = true;
                     break;
                 }
-				print(("i: " + std::to_string(i)));
-				print(DEBUG_VALUE("i: ", i));
+				// print(("i: " + std::to_string(i)));
+				// print(DEBUG_VALUE("i: ", i));
             }
         }
         if(orientation){
@@ -99,7 +99,7 @@ int Server::mode(Client*client, std::vector<string>arg)
 void Server::mode_i(Client *client, Channel &channel, bool orientation, string *arg)
 {
 	(void)arg;
-	if(channel.isInviteOnly() && orientation)
+	if(channel.isInviteOnly() == 0 && orientation)
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to invite only")); return;
 	if(!channel.isInviteOnly() && !orientation)
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to not invite only")); return;

@@ -10,8 +10,9 @@ void Server::createChannel(Client* client, string& name, string *key) // cannot 
 	}
 	else
 	{
-		_channels.push_back(new Channel(client, name, key));
+		_channels.push_back(new Channel(client, name, NULL));
 	}
+
 	if(client->getLimeState()){
 		string limechatMessage = ":" + client->getNickname() +  " JOIN " + name + "\r\n";
 		send(client->getSocket(), limechatMessage.c_str(), limechatMessage.length(), 0);
@@ -52,7 +53,9 @@ int Server::joinWithKeys(Client* client, std::vector<string> arg) //join command
 			if (this->isChannelNameValid(channels[i]) == 0)
 			{
 				if (i < keys.size())
-				this->createChannel(client, channels[i], &keys[i]);
+					this->createChannel(client, channels[i], &keys[i]);
+				else
+					this->createChannel(client, channels[i], NULL);
 			}
 			else
 				sendMessage(client, _serverName, \

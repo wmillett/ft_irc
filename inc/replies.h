@@ -6,7 +6,7 @@
 # define RPL_YOURHOST "<client> :Your host is <servername>, running version <version>"
 # define RPL_CREATED "<client> :This server was created <datetime>"
 # define RPL_MYINFO "<client> <servername> <version> <available user modes> <available channel modes> [<channel modes with a parameter>]"
-# define RPL_INVITING "<client> <nick> <channel>"
+# define RPL_INVITING(sender, nick, channel) sender + " " + nick + " " + channel
 # define RPL_LEFTCHANNEL(user, channel) user + " has left " + channel
 # define RPL_JOINCHANNEL(user, channel) user + " has joined " + channel
 # define RPL_TOPIC(client, channel, topic) client + " " + channel + " : " + topic
