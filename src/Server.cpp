@@ -321,7 +321,7 @@ void Server::checkIdentified(Client*client){
 	if(client->getState() == IDENTIFICATION){
 		if(!client->getUsername().empty() && !client->getNickname().empty()){
 			client->setState(REGISTERED);
-			
+	
 			sendMessage(client, SERVER_NAME, client->getUsername(), SUCCESS_REGISTER);
 			welcomeMessage(client);
 			// string ircMessage = ":" + _nickname +  PVM + _nickname + " :" + SUCCESS_REGISTER + "\r\n"; //<---- format

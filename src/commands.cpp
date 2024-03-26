@@ -6,17 +6,17 @@ int Server::user(Client*client, std::vector<string>arg)
 
 	if(arg.size() == 0 || arg.empty())
 	{
-		sendMessage(client, this->_serverName, client->getUsername(), USER_USAGE);
+		sendMessage(client, SERVER_NAME, client->getUsername(), USER_USAGE);
 		return 0;
 	}
 	if(!client->getUsername().empty())
 	{
-		sendMessage(client, this->_serverName, client->getUsername(), ALREADY_USER);
+		sendMessage(client, SERVER_NAME, client->getUsername(), ALREADY_USER);
 		return 0;
 	}
 	if(!nameCheck(arg[0]))
 	{
-		sendMessage(client, this->_serverName, client->getUsername(), NOT_ALPHA);
+		sendMessage(client, SERVER_NAME, client->getUsername(), NOT_ALPHA);
 		return 0;
 	}
 
@@ -29,6 +29,7 @@ int Server::user(Client*client, std::vector<string>arg)
 		client->setLimeState(true);
 	// else
 	// 	client->setLimeState(false);
+
 	client->setUsername(username);
 	sendMessage(client, SERVER_NAME, client->getNickname(), USER_SUCCESS(client->getUsername()));
 	checkIdentified(client);
@@ -40,13 +41,13 @@ int Server::nick(Client*client, std::vector<string>arg)
 
 	if(arg.size() == 0)
 	{
-		sendMessage(client, _serverName, client->getUsername(), NICK_USAGE);
+		sendMessage(client, SERVER_NAME, client->getUsername(), NICK_USAGE);
 		return 0;
 	}
 	
 	if(!nameCheck(arg[0]) || arg[0].size() > NICKLEN)
 	{
-		sendMessage(client, _serverName, client->getUsername(), NOT_ALPHA);
+		sendMessage(client, SERVER_NAME, client->getUsername(), NOT_ALPHA);
 		return 0;
 	}
 
@@ -55,18 +56,21 @@ int Server::nick(Client*client, std::vector<string>arg)
 	{
 		if(it->second->getNickname() == arg[0])
 		{
-			sendMessage(client, _serverName, client->getNickname(), ALREADY_NICK);
+			sendMessage(client, SERVER_NAME, client->getNickname(), ALREADY_NICK);
 			return 0;
 		}
 	}
-	client->setNickname(arg[0]);
-	checkIdentified(client);
-	if(!client->getNickname().empty()){
-		sendMessage(client, _serverName, client->getUsername(), NICK_SUCCESS(client->getNickname()));
+
+	if(client->getNickname().empty()){
+		client->setNickname(arg[0]);
+		checkIdentified(client);
+		sendMessage(client, SERVER_NAME, client->getUsername(), NICK_SUCCESS(client->getNickname()));
 	}
 	else
 	{
-		sendMessage(client, _serverName, client->getUsername(), NICK_CHANGE(client->getNickname()));	
+		client->setNickname(arg[0]);
+		checkIdentified(client);
+		sendMessage(client, SERVER_NAME, client->getUsername(), NICK_CHANGE(client->getNickname()));	
 		print(SERVER_SEND + client->getUsername() + " has changed his nickname to " + client->getNickname() + "\n");
 	}
 
