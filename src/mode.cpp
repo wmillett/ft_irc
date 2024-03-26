@@ -19,7 +19,6 @@ bool Server::executeOption(Client *client, Channel &channel, char option, bool o
     return true;
 }
 
-//Notes: will need to add a verification for every string argument encountered by validOptions
 bool Server::validOptions(Client*client, Channel &channel, std::vector<string>arg){
     const char options[] = MODE_OPTIONS;
     const string modeStr = arg[1];
@@ -48,6 +47,7 @@ bool Server::validOptions(Client*client, Channel &channel, std::vector<string>ar
                 }
 				dprint(("i: " + std::to_string(i)));
 				dprint(DEBUG_VALUE("i: ", i));
+				dprint(DEBUG_VALUE("modestr[i]: ", modeStr[i]));
             }
         }
         if(orientation){
@@ -99,9 +99,9 @@ int Server::mode(Client*client, std::vector<string>arg)
 void Server::mode_i(Client *client, Channel &channel, bool orientation, string *arg)
 {
 	(void)arg;
-	if(channel.isInviteOnly() && orientation)
+	if(!channel.isInviteOnly() && orientation)
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to invite only")); return;
-	if(!channel.isInviteOnly() && !orientation)
+	if(channel.isInviteOnly() && !orientation)
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to not invite only")); return;
 	channel.setInviteOnly(orientation);
 	if(orientation)

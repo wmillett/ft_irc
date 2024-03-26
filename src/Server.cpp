@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include "CustomException.hpp"
 
+//debug
 
 Server::Server(const string& port_str,  const string& password) : _serverName(SERVER_NAME), _password(password)
 {
@@ -98,7 +99,6 @@ void Server::newConnection(void)
 
 		_pollfd.push_back(clientfd);
 		_clients.insert(std::make_pair(clientSocket, new Client(clientSocket)));
-		// welcomeMessage(clientSocket);
 	}
 }
 
@@ -109,10 +109,14 @@ void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 	string input = inputParsing(newInput, clientIt->second);
 	while(input.size())
 	{
-		// dprint(DEBUG_MESS("input: ", input));
-		// dprint(DEBUG_MESS("client buffer: ", clientIt->second->clientInput));
-		// dprint(DEBUG_MESS("Message from client: ", input));
-
+		// if(skipPass){
+		// 	skipPassDebug(clientIt->second);
+		// 	skipPass = false;
+		// 	break ;
+		// }
+		dprint(DEBUG_STR("input: ", input));
+		dprint(DEBUG_STR("client buffer: ", clientIt->second->clientInput));
+		dprint(DEBUG_STR("Message from client: ", input));
 		if(commandCalled.validCommand(input))
 		{
 			std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;//Th
@@ -266,7 +270,7 @@ void::Server::authenticationMessage(Client*client) const{
 void Server::identificationMessage(Client*client) const{
 	sendMessage(client, _serverName, client->getNickname(), IDENT_MESS);
 
-	// send(sockfd, "Password verified\n", 18, 0);
+	// send(sockfd, "password verified\n", 18, 0);
 	// send(sockfd, "Please provide a username and a nickname using the USER and NICK command\n", 73, 0);
 }
 
@@ -330,3 +334,18 @@ string Server::getName(void)
 {
 	return (this->_serverName);
 }
+
+
+
+void Server::skipPassDebug(Client* client){
+	if(debug){
+		std::vector<string> tmp;
+		tmp.push_back(DEBUG_PASSWORD);
+		pass(client, tmp);
+		tmp.clear();
+		tmp.push_back("tester");
+		user(client, tmp);
+		nick(client, tmp);
+	}
+}
+

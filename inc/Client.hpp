@@ -38,7 +38,7 @@ class Channel;
 */
 
 //Message for successful registration
-#define SUCCESS_REGISTER "You are now registered\n"
+#define SUCCESS_REGISTER "You are now registered"
 
 enum Registration
 {

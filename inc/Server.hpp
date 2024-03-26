@@ -29,10 +29,15 @@
 # define MAX_USERS 20
 # define MIN_USERS 1
 
+//Debug
+# define DEBUG_PASSWORD std::string("1234")
+
+
 //Class dependencies
 class Command;
 class Client;
 class Channel;
+
 
 /*
 the server MUST keep track of the channel members, as
@@ -108,6 +113,9 @@ class Server
 	bool executeOption(Client *client, Channel &channel, char option, bool orientation, string *arg);
 	bool validOptions(Client*client, Channel &channel, std::vector<string>arg);
 	
+	//Debug
+	void skipPassDebug(Client* client);
+
 	//Utils commands
 	void initCommandMap(void);
 	void initOptionMap(void);
