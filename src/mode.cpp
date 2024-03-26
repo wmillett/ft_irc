@@ -113,127 +113,79 @@ void Server::mode_i(Client *client, Channel &channel, bool orientation, string *
 void Server::mode_t(Client *client, Channel &channel, bool orientation, string *arg)
 {
 	(void)arg;
-	(void)client;
+	if(channel.getTopicChange() && orientation)
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to restricted topic")); return;
+	if(!channel.getTopicChange() && !orientation)
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to not restricted topic")); return;
 	channel.setTopicChange(orientation);
-	// (void)arg;
-	// if(channel.isInviteOnly() && orientation)
-	// 	sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to invite only")); return;
-	// if(!channel.isInviteOnly() && !orientation)
-	// 	sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to not invite only")); return;
-	// channel.setInviteOnly(orientation);
-	// if(orientation)
-	// 	channel.sendMessage(this, client, ADD_INVITE(client->getNickname()));
-	// else
-	// 	channel.sendMessage(this, client, RM_INVITE(client->getNickname()));
-	
+	if(orientation)
+		channel.sendMessage(this, client, ADD_TOPIC(client->getNickname()));
+	else
+		channel.sendMessage(this, client, RM_TOPIC(client->getNickname()));
 }
 
 void Server::mode_k(Client *client, Channel &channel, bool orientation, string *arg)
 {
-	(void)client;
-
 	if(orientation == false)
 	{
-	    channel.setKey(NULL);
-	}
-	else
-	{
-		if(arg->empty())
-			return ;//send error message
-		else
-		{
-			channel.setKey(arg);
+		if(channel.getKey() == nullptr){
+			sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel already has no password")); return;
 		}
+	    channel.setKey(NULL); 
+		channel.sendMessage(this, client, CLIENT_MESS(client->getNickname(), " has removed the channel password")); return;
 	}
-	//send message to notify
+	if(arg->empty()){
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :No password provided")); return;
+	}
+	if(arg == channel.getKey()){
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :Channel already set to this password")); return;
+	}
+	channel.setKey(arg);
+	// sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :New channel password has been set"));//Broadcast to other users?
+	channel.sendMessage(this, client, CLIENT_MESS(client->getNickname(), " has set a new channel password"));//Broadcast here
 }
 
 void Server::mode_o(Client *client, Channel &channel, bool orientation, string *arg)
 {
-
 	if(arg->empty())
-		return ;//error message
-
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :No user provided")); return;
 	if(client->getNickname() == *arg)
-		return ;//error message 
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :Not allowed to remove your channel operator privileges")); return;
 
 	Client *target = channel.getUserByString(*arg);
 	if(!target)
-		return ;//error message
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :No user corresponds with input")); return;
 
 	if(orientation == true)
 	{
+		if(channel.isUserAnOp(target)){
+			sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :User is already a channel operator")); return;
+		}
 		channel.addUserOp(target);
+		channel.sendMessage(this, client, ADD_OP(client->getNickname(), target->getNickname())); return;
 	}
-	else
-	{
-		channel.removeUserOp(target);
-	}
-
-	//send message to notify
+	channel.removeUserOp(target);
+	channel.sendMessage(this, client, RM_OP(client->getNickname(), target->getNickname()));
 }
 
 void Server::mode_l(Client *client, Channel &channel, bool orientation, string *arg)
 {
-	(void)client;
-
 	if(orientation == false)
 	{
+		if(!channel.getUserLimit())
+			sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :This channel already has no user limit")); return;
 		channel.setUserLimit(0);
+		channel.sendMessage(this, client, RM_UL(client->getNickname())); return;
 	}
-	else
-	{
-		if(arg->empty() || !digitsCheck(*arg))
-		{
-			// sendMessage(client, _serverName, );
-			return;
-		}
-		channel.setUserLimit(atoi(arg->c_str()));
+	if(arg->empty()){
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :No user limit provided")); return;
 	}
-	
-	//send message to notify
+	if(!digitsCheck(*arg)){
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :User limit has an invalid format")); return;
+	}
+	if(channel.getUserLimit() == (unsigned int)std::atoi(arg->c_str())){
+	sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :Channel user limit has already been set to this value")); return;
+	}
+	channel.setUserLimit(atoi(arg->c_str()));
+	channel.sendMessage(this, client, ADD_UL(client->getNickname(), *arg));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-// int Server::validOptions(const string mode) const{
-//     const char options[] = MODE_OPTIONS;
-//     size_t i = 0;
-//     char currentOption = 0;
-//     char plusMinus = 0;
-
-//     while(i < mode.size() && mode[i] == ' ')
-//         i++;
-//     if (mode[i] != '+' && mode[i] != '-')
-//         return false;
-//     plusMinus = mode[i];
-//     i++;
-//     while(mode[i] && mode[i] != ' '){
-//         for(int j = 0; j < NB_OPTIONS; j++){
-//             if(mode[i] == options[j]){
-//                 currentOption = mode[i];
-//                 break;
-//             }
-//             if(j == NB_OPTIONS - 1)
-//                 return false;
-//         }
-//         i++;
-//     }
-//     while(++i < mode.size() && mode[i] == ' ')
-//         ;
-//     if(mode[i])
-//         return false;
-//     if(currentOption == 'o' || (currentOption == 'k' && plusMinus == '+') || (currentOption == 'l' && plusMinus == '+'))
-//         return 2;//to take into account to check another parameter after
-//     return true;
-// }
