@@ -63,8 +63,8 @@ bool Server::validOptions(Client*client, Channel &channel, std::vector<string>ar
                     validCommand = true;
                     break;
                 }
-				dprint(("i: " + std::to_string(i)));
-				dprint(DEBUG_VALUE("i: ", i));
+				// dprint(("i: " + std::to_string(i)));
+				// dprint(DEBUG_VALUE("i: ", i));
 				// dprint(("modeStr[i]: " + modeStr[i]));
 				// dprint(("validCommand: " + validCommand));
             }
