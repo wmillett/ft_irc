@@ -91,6 +91,10 @@ void Server::newConnection(void)
 		return ; //TODO: replace with error
 	else
 	{
+		//TODO: parse for max users allowed
+		if(getNbClients() >= MAX_USERS)
+			return ; //TODO: add error message
+
 		print("New client connected !");
 
 		struct pollfd clientfd;
@@ -111,6 +115,7 @@ void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 		if(skipPass){
 			skipPassDebug(clientIt->second);
 			skipPass = false;
+			clientIt->second->setLimeState(false);
 			return ;
 		}
 		//Check input with debug
@@ -336,7 +341,13 @@ string Server::getName(void)
 	return (this->_serverName);
 }
 
-
+size_t Server::getNbClients(void){
+	std::map<int,Client*>::iterator it;
+	size_t i = 0;
+	for(it = _clients.begin(); it != _clients.end(); it++)
+		i++;
+	return i;
+}
 
 void Server::skipPassDebug(Client* client){
 	if(debug){
@@ -349,4 +360,3 @@ void Server::skipPassDebug(Client* client){
 		nick(client, tmp);
 	}
 }
-

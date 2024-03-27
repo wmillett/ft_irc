@@ -1,12 +1,12 @@
 #include "Client.hpp"
 
-Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _inLimechat(false), clientInput("") {
+Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _inLimechat(true), clientInput("") {
 
 }
 
 Client::~Client()
 {
-	std::cout << "deleting " << _sockfd << std::endl;
+	dprint(DEBUG_VALUE("deleting ", _sockfd));
 }
 
 int Client::getSocket(void) const
@@ -17,10 +17,6 @@ int Client::getSocket(void) const
 Registration Client::getState(void) const{
 	return _registration;
 }
-
-// bool Client::isAdmin(void) const{
-// 	return _admin;
-// }
 
 bool Client::getLimeState(void) const
 {

@@ -52,7 +52,7 @@ bool Server::validOptions(Client*client, Channel &channel, std::vector<string>ar
                 }
 				dprint(DEBUG_VALUE("i: ", i));
 				dprint(DEBUG_VALUE("modestr[i]: ", modeStr[i]));
-				std::cout << modeStr[i] << std::endl;
+				//std::cout << modeStr[i] << std::endl;
             }
         }
         if(orientation){

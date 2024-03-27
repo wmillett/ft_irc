@@ -24,11 +24,9 @@ int Server::user(Client*client, std::vector<string>arg)
 		username = arg[0].substr(0,USERLEN);
 	else
 		username = arg[0];
-	
-	if(arg.size() == 4 && arg[0] == arg[3] && arg[1] == "0" && arg[2] == "*")
-		client->setLimeState(true);
-	// else
-	// 	client->setLimeState(false);
+
+	// if(arg.size() == 4 && arg[0] == arg[3] && arg[1] == "0" && arg[2] == "*")
+	// 	client->setLimeState(true);
 
 	client->setUsername(username);
 	sendMessage(client, SERVER_NAME, client->getNickname(), USER_SUCCESS(client->getUsername()));

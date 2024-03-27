@@ -96,7 +96,7 @@ re: fclean all
 
 test: all
 	@echo "$(YELLOW)Running tests...$(RESET)"
-	@bash test.py
+	@./test.py
 
 leaks: all
 	@echo "$(YELLOW)Running leaks...$(RESET)"
