@@ -6,7 +6,7 @@ Client::Client(int sockfd) : _sockfd(sockfd), _registration(AUTHENTICATION), _in
 
 Client::~Client()
 {
-	dprint(DEBUG_VALUE("deleting ", _sockfd));
+	// print(DEBUG_VALUE("deleting ", _sockfd));
 }
 
 int Client::getSocket(void) const

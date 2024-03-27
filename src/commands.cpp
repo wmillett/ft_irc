@@ -123,7 +123,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 	{
 		sendMessage(client, _serverName, \
 		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "JOIN"));
-		return (1); //TODO: change error string (maybe)
+		return (1);
 	}
 	if (arg.size() == 1 && arg[0] == "0")
 	{
@@ -154,7 +154,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 				toJoin->addUser(this, client);
 			else
 				sendMessage(client, _serverName, \
-				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i], "other")); //TODO: change error string (maybe)
+				client->getNickname(), ERR_CANTJOINCHAN(client->getNickname(), channels[i]));
 		}
 		else
 		{
@@ -279,7 +279,20 @@ int Server::invite(Client*client, std::vector<string>arg)
 	}
 
 	//TODO: add the correct messages
-	this->sendMessage(client, _serverName, client->getNickname(), RPL_INVITING(client->getNickname(), toInvite->getNickname(), toJoin->getName()));
+	if(client->getLimeState())
+	{
+		string limechatMessage = ":" + client->getNickname() +  " INVITE " + toInvite->getNickname() + " " + toJoin->getName() + "\r\n";
+		send(toInvite->getSocket(), limechatMessage.c_str(), limechatMessage.length(), 0);
+	}
+	else
+	{
+		string ncMessage = _serverName + ": " + "Channel has been joined" + "\n";
+		send(toInvite->getSocket(), ncMessage.c_str(), ncMessage.length(), 0);
+	}
+
+	this->sendMessage(client, _serverName, \
+	client->getNickname(), RPL_INVITING(client->getNickname(), toInvite->getNickname(), toJoin->getName()));
+
 	toJoin->addUser(this, toInvite);
 
 	return (0);

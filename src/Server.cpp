@@ -109,6 +109,7 @@ void Server::newConnection(void)
 void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 {
 	string input = inputParsing(newInput, clientIt->second);
+	std::cout << input << std::endl;
 	while(input.size())
 	{
 		//For skipping password, user and nick entry in debug mode
@@ -119,8 +120,8 @@ void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 			return ;
 		}
 		//Check input with debug
-		dprint(DEBUG_STR("input: ", input));
-		dprint(DEBUG_STR("client buffer: ", clientIt->second->clientInput));
+		// dprint(DEBUG_STR("input: ", input));
+		// dprint(DEBUG_STR("client buffer: ", clientIt->second->clientInput));
 
 		//parse input for commands
 		if(commandCalled.validCommand(input))
@@ -147,7 +148,8 @@ void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 			}
 		}
 		else if(!commandCalled.validCommand(input))
-			send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
+			sendMessage(clientIt->second, _serverName, clientIt->second->getUsername(), INVALID_CMD);
+		// send(clientIt->second->getSocket(), INVALID_CMD, strlen(INVALID_CMD), 0);
 		input.clear();
 		// input = containsAdditionnal(clientIt->second); //TODO: fix to implement if the client buffer contains multiple commands that can be called
 	}
@@ -161,7 +163,7 @@ void Server::IncomingData(int i)
 	if(bytesRead == 0)
 	{
 		disconnectUser(clientIt->second, _pollfd);
-		return ; // ?
+		return ;
 	}
 	else if(bytesRead > 0)
 	{
@@ -203,19 +205,6 @@ int Server::Run()
 	}
 	return 0;
 }
-/*
-	TODO:
-	Order of operations for connecting a host: https://modern.ircdocs.horse/#irc-concepts
-
-	The recommended order of commands during registration is as follows:
-	2. PASS
-	3. NICK and USER
-
-	Structure of a message:
-	2. Command name
-	3. Parameters (maximum of 15 parameters) separated by one space character each
-	4. /r/n (CR_LF)
-*/
 
 void Server::SetupServer()
 {

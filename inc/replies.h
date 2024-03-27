@@ -103,7 +103,7 @@
 #define ERR_CANNOTSENDTOCHAN "<client> <channel> :Cannot send to channel"
 #define ERR_INVITEONLYCHAN "<client> <channel> :Cannot join channel, invite-only channel"
 #define ERR_BADCHANMASK(channel) " :Bad Channel Name: " + channel
-#define ERR_CANTJOINCHAN(client, channel, reason) client + " " + channel + " : Cannot join for" + reason
+#define ERR_CANTJOINCHAN(client, channel) client + " " + channel + " : Cannot join channel"
 
 // for INVITE command
 #define ERR_NOSUCHNICK(client, user) client + " " + user + " :No such nick"

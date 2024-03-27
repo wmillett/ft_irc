@@ -27,7 +27,7 @@ Channel::~Channel(void)
 	}
 }
 
-string* Channel::getTopic(void) // TODO: sent to client fd if there is a topic
+string* Channel::getTopic(void)
 {
 	if (_topic)
 	{
@@ -216,10 +216,6 @@ void Channel::sendUsers(Server *irc, Client* sender) //lists all the user on the
 		}
 	}
 }
-
-//TODO: listUsers method
-
-//zone pour la commande mode de alex et will (pour faciliter le merge avec ta branche )
 
 void Channel::setInviteOnly(bool inviteOnly)
 {
