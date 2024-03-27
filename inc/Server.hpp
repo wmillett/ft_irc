@@ -26,13 +26,18 @@
 //Limits
 # define USERLEN 31
 # define NICKLEN 10
-# define MAX_USERS 20
+# define MAX_USERS 200
 # define MIN_USERS 1
+
+//Debug
+# define DEBUG_PASSWORD std::string("1234")
+
 
 //Class dependencies
 class Command;
 class Client;
 class Channel;
+
 
 /*
 the server MUST keep track of the channel members, as
@@ -84,40 +89,47 @@ class Server
 		Client* isTargetAUser(string& target);
 		Channel* isTargetAChannel(string& target);
 
-	//Commands
-	int nick(Client*client, std::vector<string>);
-	int user(Client*client, std::vector<string>);
-	int pass(Client*client, std::vector<string>);
-	int quit(Client*client, std::vector<string>);
-	int join(Client*client, std::vector<string>);
-	int topic(Client*client, std::vector<string>);
-	int names(Client*client, std::vector<string>);
-	int invite(Client*client, std::vector<string>);
-	int kick(Client*client, std::vector<string>);
-	int mode(Client*client, std::vector<string>);
-	int privmsg(Client*client, std::vector<string>);
+		//Commands
+		int nick(Client*client, std::vector<string>);
+		int user(Client*client, std::vector<string>);
+		int pass(Client*client, std::vector<string>);
+		int quit(Client*client, std::vector<string>);
+		int join(Client*client, std::vector<string>);
+		int topic(Client*client, std::vector<string>);
+		int names(Client*client, std::vector<string>);
+		int invite(Client*client, std::vector<string>);
+		int kick(Client*client, std::vector<string>);
+		int mode(Client*client, std::vector<string>);
+		int privmsg(Client*client, std::vector<string>);
 
-	//Mode commands
-	// typedef void (*ModeFunction)(Client*, Channel&, bool, std::string*);
-	void mode_i(Client *client, Channel &channel, bool orientation, string *arg);
-	void mode_t(Client *client, Channel &channel, bool orientation, string *arg);
-	void mode_k(Client *client, Channel &channel, bool orientation, string *arg);
-	void mode_o(Client *client, Channel &channel, bool orientation, string *arg);
-	void mode_l(Client *client, Channel &channel, bool orientation, string *arg);
+		//Mode commands
+		void mode_i(Client *client, Channel &channel, bool orientation, string *arg);
+		void mode_t(Client *client, Channel &channel, bool orientation, string *arg);
+		void mode_k(Client *client, Channel &channel, bool orientation, string *arg);
+		void mode_o(Client *client, Channel &channel, bool orientation, string *arg);
+		void mode_l(Client *client, Channel &channel, bool orientation, string *arg);
 
-	bool executeOption(Client *client, Channel &channel, char option, bool orientation, string *arg);
-	bool validOptions(Client*client, Channel &channel, std::vector<string>arg);
-	
-	//Utils commands
-	void initCommandMap(void);
-	void initOptionMap(void);
-	void newConnection(void);
-	void IncomingData(int index); 
-	void ReadData(std::map<int,Client*>::iterator clientIt, string newInput);
-	//parsing
-	string inputParsing(string s, Client *client);
-	string containsAdditionnal(Client*client);
-	void checkIdentified(Client*client);
+		bool executeOption(Client *client, Channel &channel, char option, char orientation, string *arg);
+		bool validOptions(Client*client, Channel &channel, std::vector<string>arg);
+
+		//Debug
+		void skipPassDebug(Client* client);
+
+		//Utils commands
+		void initCommandMap(void);
+		void initOptionMap(void);
+		void newConnection(void);
+		void IncomingData(int index); 
+		void ReadData(std::map<int,Client*>::iterator clientIt, string newInput);
+
+		//parsing
+		string inputParsing(string s, Client *client);
+		string containsAdditionnal(Client*client);
+		void checkIdentified(Client*client);
+		
+		//Utils
+		size_t getNbClients(void);
+
 	public:
 		Server(const string& port_str,  const string& password);
 		~Server();
@@ -125,7 +137,6 @@ class Server
 		void sendMessage(Client*client, string source, string target, string message) const;
 		void sendMessage(Client*client, string source, string target, std::vector<string>& arg) const;
 		string getName(void);
-		// void dprint(string message) const; //Only to use with make debug
 		int Run();
 		void SetupServer();
 };

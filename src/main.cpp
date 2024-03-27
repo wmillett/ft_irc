@@ -13,16 +13,24 @@
 
 #include "../inc/Command.hpp"
 
+#ifndef DEBUG
+# define DEBUG 0
+#endif
+
 bool debug = false;
+bool skipPass = false;
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3 && argc != 4){
+    if (argc != 3){
         std::cerr << USAGE_MESS << std::endl;
         return 1;
     }
-    if (argc == 4)
+    if(DEBUG == 1){
         debug = true;
+        skipPass = true;
+        print("\033[32;1mNow in debug mode\033[0m");
+    }
     try
     {
         Server irc(argv[1],argv[2]);

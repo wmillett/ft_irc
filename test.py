@@ -4,9 +4,9 @@ import time
 from multiprocessing import Value
 
 HOST = "localhost"
-PORT = 1025
+PORT = 1026
 PASSWORD = "1234"
-DELAY_BETWEEN_CLIENTS = 0.1  # Adjust the delay as needed
+DELAY_BETWEEN_CLIENTS = 1.0  # Adjust the delay as needed
 
 def check_registration_confirmation(response):
     return "001" in response
