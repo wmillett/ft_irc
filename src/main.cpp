@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     if(DEBUG == 1){
         debug = true;
         skipPass = true;
-        print("Now in debug mode");
+        print("\033[32;1mNow in debug mode\033[0m");
     }
     try
     {

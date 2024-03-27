@@ -1,7 +1,7 @@
 
 # Project Name
 NAME = ircserv
-
+DNAME = irc_debug
 # Compiler and Flags
 CXX = c++
 CXXFLAGS =  -std=c++98 -Wall -Wextra -Werror
@@ -53,7 +53,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo "$(YELLOW)Compiling $(BLUE)$< $(YELLOW)to $(CYAN)$@$(RESET)"
 	@$(CXX) $(CXXFLAGS) -I $(INC_DIR) -c $< -o $@
 
-$(NAME): fclean $(OBJS)
+$(NAME):
+	@if [ -f "$(DNAME)"]; then \
+		@$(MAKE) fclean; \
+	fi
+	@$(MAKE) $(OBJS)
 	@echo "$(YELLOW)Linking objects to create binary $(GREEN)$(NAME)$(RESET)"
 	@$(CXX) $(CXXFLAGS) -DDEBUG=0 $(OBJS) -o $(NAME)
 	@echo "$(GREEN)Compilation successful!$(RESET)"
@@ -69,7 +73,10 @@ fclean: clean
 		echo "$(YELLOW)Removing binary $(RED)$(NAME)$(RESET)"; \
 		rm -rf $(NAME); \
 	fi
-
+	@if [ -f "$(DNAME)" ]; then \
+		echo "$(YELLOW)Removing debug binary $(RED)$(NAME)$(RESET)"; \
+		rm -rf $(DNAME); \
+	fi
 re: fclean all
 
 test: all
@@ -80,7 +87,11 @@ leaks: all
 	@echo "$(YELLOW)Running leaks...$(RESET)"
 	@leaks --atExit -- ./$(NAME)
 
-run:	all
+run:
+	@if [ -f "$(DNAME)" ]; then \
+		@$(MAKE) fclean; \
+	fi
+	@$(MAKE) all
 	@UNUSED_PORT=1024; \
     while [ $$(netstat -t -a -n -l | awk '{print substr($$4, index($$4, ":")+1)}' | sort -n | grep -c $$UNUSED_PORT) -ne 0 ] && [ $$UNUSED_PORT -le 65534 ] ; do \
         ((UNUSED_PORT++)); \
@@ -91,17 +102,20 @@ run:	all
 	else \
 		echo "No available port found."; \
 	fi;
-debug:	fclean
+debug:
+	@if [ -f "$(NAME)"]; then \
+		@$(MAKE) fclean; \
+	fi
 	@echo "$(YELLOW)Compiling for debug $(RESET)"
 	@$(MAKE) $(OBJS) CXXFLAGS="$(CXXFLAGS) $(DEBUGFLAGS)"
-	@$(CXX) $(CXXFLAGS)$(DEBUGFLAGS)$(OBJS) -o $(NAME)
+	@$(CXX) $(CXXFLAGS)$(DEBUGFLAGS)$(OBJS) -o $(DNAME)
 	@UNUSED_PORT=1024; \
     while [ $$(netstat -t -a -n -l | awk '{print substr($$4, index($$4, ":")+1)}' | sort -n | grep -c $$UNUSED_PORT) -ne 0 ] && [ $$UNUSED_PORT -le 65534 ] ; do \
         ((UNUSED_PORT++)); \
     done; \
 	if [ $$UNUSED_PORT -le 65534 ]; then \
     echo "Unused port found: $$UNUSED_PORT"; \
-    ./$(NAME) $$UNUSED_PORT "$(PASSWORD)";	\
+    ./$(DNAME) $$UNUSED_PORT "$(PASSWORD)";	\
 	else \
 		echo "No available port found."; \
 	fi;

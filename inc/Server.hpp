@@ -110,7 +110,7 @@ class Server
 	void mode_o(Client *client, Channel &channel, bool orientation, string *arg);
 	void mode_l(Client *client, Channel &channel, bool orientation, string *arg);
 
-	bool executeOption(Client *client, Channel &channel, char option, bool orientation, string *arg);
+	bool executeOption(Client *client, Channel &channel, char option, char orientation, string *arg);
 	bool validOptions(Client*client, Channel &channel, std::vector<string>arg);
 	
 	//Debug

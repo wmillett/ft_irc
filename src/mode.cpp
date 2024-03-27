@@ -8,11 +8,16 @@ static bool checkNeedStr(char option, char orientation){
     return (option == 'o');
 };
 
-bool Server::executeOption(Client *client, Channel &channel, char option, bool orientation, string *arg){
+bool Server::executeOption(Client *client, Channel &channel, char option, char orientation, string *arg){
     string optionStr(1, option);
+	bool convertOrientation;
+	if(orientation == '+')
+		convertOrientation = 1;
+	else
+		convertOrientation = 0;
     for (std::map<std::string, void(Server::*)(Client *client, Channel &channel, bool orientation, string *arg)>::const_iterator it = _optionsMap.begin(); it != _optionsMap.end(); ++it) {
         if(it->first == optionStr){
-            (this->*it->second)(client, channel, orientation, arg);
+            (this->*it->second)(client, channel, convertOrientation, arg);
             return false;
         }
     }
@@ -45,9 +50,9 @@ bool Server::validOptions(Client*client, Channel &channel, std::vector<string>ar
                     validCommand = true;
                     break;
                 }
-				dprint(("i: " + std::to_string(i)));
 				dprint(DEBUG_VALUE("i: ", i));
 				dprint(DEBUG_VALUE("modestr[i]: ", modeStr[i]));
+				std::cout << modeStr[i] << std::endl;
             }
         }
         if(orientation){
@@ -98,11 +103,14 @@ int Server::mode(Client*client, std::vector<string>arg)
 
 void Server::mode_i(Client *client, Channel &channel, bool orientation, string *arg)
 {
+	dprint(std::to_string(orientation));
 	(void)arg;
-	if(!channel.isInviteOnly() && orientation)
+	if(!channel.isInviteOnly() && orientation){
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to invite only")); return;
-	if(channel.isInviteOnly() && !orientation)
+	}
+	if(channel.isInviteOnly() && !orientation){
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to not invite only")); return;
+	}
 	channel.setInviteOnly(orientation);
 	if(orientation)
 		channel.sendMessage(this, client, ADD_INVITE(client->getNickname()));
@@ -113,10 +121,12 @@ void Server::mode_i(Client *client, Channel &channel, bool orientation, string *
 void Server::mode_t(Client *client, Channel &channel, bool orientation, string *arg)
 {
 	(void)arg;
-	if(channel.getTopicChange() && orientation)
+	if(channel.getTopicChange() && orientation){
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to restricted topic")); return;
-	if(!channel.getTopicChange() && !orientation)
+	}
+	if(!channel.getTopicChange() && !orientation){
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :channel is already set to not restricted topic")); return;
+	}
 	channel.setTopicChange(orientation);
 	if(orientation)
 		channel.sendMessage(this, client, ADD_TOPIC(client->getNickname()));
@@ -147,11 +157,12 @@ void Server::mode_k(Client *client, Channel &channel, bool orientation, string *
 
 void Server::mode_o(Client *client, Channel &channel, bool orientation, string *arg)
 {
-	if(arg->empty())
+	if(arg->empty()){
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :No user provided")); return;
-	if(client->getNickname() == *arg)
+	}
+	if(client->getNickname() == *arg){
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :Not allowed to remove your channel operator privileges")); return;
-
+	}
 	Client *target = channel.getUserByString(*arg);
 	if(!target)
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :No user corresponds with input")); return;
@@ -172,8 +183,9 @@ void Server::mode_l(Client *client, Channel &channel, bool orientation, string *
 {
 	if(orientation == false)
 	{
-		if(!channel.getUserLimit())
+		if(!channel.getUserLimit()){
 			sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :This channel already has no user limit")); return;
+		}
 		channel.setUserLimit(0);
 		channel.sendMessage(this, client, RM_UL(client->getNickname())); return;
 	}

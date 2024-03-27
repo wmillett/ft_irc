@@ -104,19 +104,20 @@ void Server::newConnection(void)
 
 void Server::ReadData(std::map<int,Client*>::iterator clientIt, string newInput)
 {
-	// dprint(DEBUG_MESS("New input: ", newInput));
-
 	string input = inputParsing(newInput, clientIt->second);
 	while(input.size())
 	{
-		// if(skipPass){
-		// 	skipPassDebug(clientIt->second);
-		// 	skipPass = false;
-		// 	break ;
-		// }
+		//For skipping password, user and nick entry in debug mode
+		if(skipPass){
+			skipPassDebug(clientIt->second);
+			skipPass = false;
+			return ;
+		}
+		//Check input with debug
 		dprint(DEBUG_STR("input: ", input));
 		dprint(DEBUG_STR("client buffer: ", clientIt->second->clientInput));
-		dprint(DEBUG_STR("Message from client: ", input));
+
+		//parse input for commands
 		if(commandCalled.validCommand(input))
 		{
 			std::map<string, int(Server::*)(Client*, std::vector<string>)>::iterator it;//Th
