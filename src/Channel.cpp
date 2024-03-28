@@ -53,6 +53,12 @@ void Channel::setTopic(Server* server, Client* client, std::vector<string> topic
 			tempTopic += *it;
 	}
 
+	if (tempTopic.length() > TOPICLEN)
+	{
+		server->sendMessage(client, SERVER_NAME, \
+		client->getNickname(), ERR_TOPICTOOLONG(client->getNickname()));
+	}
+
 	string* newTopic = new string(tempTopic);
 	_topic = newTopic;
 	

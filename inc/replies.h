@@ -93,6 +93,7 @@
 # define ERR_CANNOTSENDTOCHAN "<client> <channel> :Cannot send to channel" //PRIVMSG unknown channel
 # define ERR_NORECIPIENT "<client> :No recipient given (<command>)"
 # define ERR_NOTEXTTOSEND "<client> :No text to send"
+# define ERR_TOPICTOOLONG(client) client + " :Topic too long"
 
 // for JOIN command
 #define ERR_NEEDMOREPARAMS(client, command) client + " " + command + " :Not enough parameters"

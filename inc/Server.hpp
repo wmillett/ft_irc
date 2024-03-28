@@ -24,6 +24,7 @@
 # define IRC_VERSION "1.1"
 
 //Limits
+# define TOPICLEN 512
 # define USERLEN 31
 # define NICKLEN 10
 # define MAX_USERS 200
