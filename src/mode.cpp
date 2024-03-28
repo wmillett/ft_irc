@@ -97,6 +97,13 @@ int Server::mode(Client*client, std::vector<string>arg)
         sendMessage(client, _serverName, client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[0]));
         return true;
     }
+	if (channel->isUserAnOp(client) == 1)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[0]));
+		return (true);
+	}
+
 	validOptions(client, *channel, arg);
 	return false;
 }
