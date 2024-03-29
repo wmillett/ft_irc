@@ -74,8 +74,8 @@
 # define ADD_UL(client, limit) (std::string(client) + " has set the channel user limit to " + (std::string(limit)))
 # define RM_UL(client) (std::string(client) + " has removed the channel user limit")
 
-# define MISSING_ORIENTATION(client, modechar) client + modechar + " :Missing orientation for modechar"
-# define MISSING_ARGUMENT(client, modechar) client + modechar + " :Missing argument for modechar"
+# define MISSING_ORIENTATION(client, modechar) client + " :" + modechar + " :Missing orientation for modechar"
+# define MISSING_ARGUMENT(client, modechar) client + " :" + modechar + " :Missing argument for modechar"
 
 //For QUIT command
 # define QUIT_MESS(x, y) x + " has been disconnected from the server for: " + y

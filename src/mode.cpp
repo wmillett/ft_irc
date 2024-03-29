@@ -52,7 +52,6 @@ bool Server::validOptions(Client*client, Channel &channel, std::vector<string>ar
                 }
 				dprint(DEBUG_VALUE("i: ", i));
 				dprint(DEBUG_VALUE("modestr[i]: ", modeStr[i]));
-				//std::cout << modeStr[i] << std::endl;
             }
         }
         if(orientation){
@@ -195,6 +194,9 @@ void Server::mode_o(Client *client, Channel &channel, bool orientation, string *
 	}
 	else
 	{
+		if(channel.isUserAnOp(target)){
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :User already has no operator privileges")); return;
+		}
 		channel.removeUserOp(target);
 		channel.sendMessage(this, client, RM_OP(client->getNickname(), target->getNickname()));
 	}
