@@ -194,8 +194,6 @@ int Channel::getChannelSize(void)
 
 void Channel::sendMessage(Server* irc, Client* sender, std::vector<string> arg)
 {
-	// strIt it = arg.begin();
-	// arg.insert(it, this->getName());
 	for (clIt it = _clients.begin(); it != _clients.end(); it++)
 	{
 		sendArgs(irc, sender, *it, arg);
@@ -254,7 +252,7 @@ Client* Channel::getUserByString(string user)
 	{
 		if ((*it)->getNickname() == user)
 		{
-			return *it;
+			return (*it);
 		}
 	}
 	return NULL;
@@ -272,11 +270,15 @@ void Channel::addUserOp(Client *client)
 
 void Channel::removeUserOp(Client *client)
 {
+	if (isUserAnOp(client) == 1)
+		return ;
+	
 	for (clIt it = _operators.begin(); it != _operators.end(); it++)
 	{
 		if (*it == client)
 		{
 			_operators.erase(it);
+			return ;
 		}
 	}
 }

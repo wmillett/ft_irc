@@ -125,11 +125,7 @@ int Server::join(Client* client, std::vector<string> arg) // standard command to
 		client->getNickname(), ERR_NEEDMOREPARAMS(client->getNickname(), "JOIN"));
 		return (1);
 	}
-	if (arg.size() == 1 && arg[0] == "0")
-	{
-		client->leaveAllChannels(this);
-		return (0);
-	}
+
 	if (arg.size() > 1)
 	{
 		return (this->joinWithKeys(client, arg));
