@@ -100,7 +100,7 @@ int Server::mode(Client*client, std::vector<string>arg)
 	if (channel->isUserAnOp(client) == 1)
 	{
 		sendMessage(client, _serverName, \
-		client->getNickname(), ERR_NOSUCHCHANNEL(client->getNickname(), arg[0]));
+		client->getNickname(), ERR_CHANOPRIVSNEEDED(client->getNickname(), arg[0]));
 		return (true);
 	}
 
@@ -176,7 +176,7 @@ void Server::mode_o(Client *client, Channel &channel, bool orientation, string *
 
 	if(orientation == true)
 	{
-		if(channel.isUserAnOp(target)){
+		if(channel.isUserAnOp(target) == 0){
 			sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :User is already a channel operator")); return;
 		}
 		channel.addUserOp(target);
