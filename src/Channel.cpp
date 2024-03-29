@@ -189,7 +189,7 @@ int Channel::isChannelFull(void) // returns 0 if channel is full
 
 void Channel::sendMessage(Server* irc, Client* sender, std::vector<string> arg)
 {
-	strIt it = arg.begin();
+	// strIt it = arg.begin();
 	// arg.insert(it, this->getName());
 	for (clIt it = _clients.begin(); it != _clients.end(); it++)
 	{
