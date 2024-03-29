@@ -98,7 +98,7 @@
 // for JOIN command
 #define ERR_NEEDMOREPARAMS(client, command) client + " " + command + " :Not enough parameters"
 #define ERR_NOSUCHCHANNEL(client, channel) client + " " + channel + " :No such channel"
-#define ERR_TOOMANYCHANNELS "<client> <channel> :You have joined too many channels"
+#define ERR_TOOMANYCHANNELS(client) client+ " :Channel limit reached"
 #define ERR_BADCHANNELKEY "<client> <channel> :Cannot join channel (+k)"
 #define ERR_CHANNELISFULL(client, channel) client + " " + channel + " :Cannot join channel, channel full"
 #define ERR_CANNOTSENDTOCHAN "<client> <channel> :Cannot send to channel"
