@@ -99,9 +99,14 @@ int Server::mode(Client*client, std::vector<string>arg)
     }
 	if (channel->isUserAnOp(client) == 1)
 	{
-		sendMessage(client, _serverName, \
-		client->getNickname(), ERR_CHANOPRIVSNEEDED(client->getNickname(), arg[0]));
+		sendMessage(client, _serverName, client->getNickname(), ERR_CHANOPRIVSNEEDED(client->getNickname(), arg[0]));
 		return (true);
+	}
+
+	if (arg[0][0] != '#')
+	{
+		std::string::iterator it = arg[0].begin();
+		arg[0].insert(it, '#');
 	}
 
 	validOptions(client, *channel, arg);
@@ -164,7 +169,7 @@ void Server::mode_k(Client *client, Channel &channel, bool orientation, string *
 
 void Server::mode_o(Client *client, Channel &channel, bool orientation, string *arg)
 {
-	if(arg->empty()){
+	if(arg->empty() == 1){
 		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :No user provided")); return;
 	}
 	if(client->getNickname() == *arg){
@@ -172,7 +177,12 @@ void Server::mode_o(Client *client, Channel &channel, bool orientation, string *
 	}
 	Client *target = channel.getUserByString(*arg);
 	if(!target)
-		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :No user corresponds with input")); return;
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :No user corresponds with input"));
+		return;
+
+	}
 
 	if(orientation == true)
 	{
@@ -180,10 +190,14 @@ void Server::mode_o(Client *client, Channel &channel, bool orientation, string *
 			sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :User is already a channel operator")); return;
 		}
 		channel.addUserOp(target);
-		channel.sendMessage(this, client, ADD_OP(client->getNickname(), target->getNickname())); return;
+		channel.sendMessage(this, client, ADD_OP(client->getNickname(), target->getNickname()));
+		return;
 	}
-	channel.removeUserOp(target);
-	channel.sendMessage(this, client, RM_OP(client->getNickname(), target->getNickname()));
+	else
+	{
+		channel.removeUserOp(target);
+		channel.sendMessage(this, client, RM_OP(client->getNickname(), target->getNickname()));
+	}
 }
 
 void Server::mode_l(Client *client, Channel &channel, bool orientation, string *arg)
@@ -205,9 +219,15 @@ void Server::mode_l(Client *client, Channel &channel, bool orientation, string *
 	if(channel.getUserLimit() == (unsigned int)std::atoi(arg->c_str())){
 	sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :Channel user limit has already been set to this value")); return;
 	}
-	if (!(atoi(arg->c_str()) < channel.getChannelSize()))
+	int limit = atoi(arg->c_str());
+	if (limit >= channel.getChannelSize() && limit < MAX_USERS)
 	{
 		channel.setUserLimit(atoi(arg->c_str()));
 		channel.sendMessage(this, client, ADD_UL(client->getNickname(), *arg));
+	}
+	else
+	{
+		sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :Error :Invalid user limit"));
+		return ;
 	}
 }
