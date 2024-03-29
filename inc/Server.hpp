@@ -28,6 +28,7 @@
 # define USERLEN 31
 # define NICKLEN 10
 # define MAX_USERS 200
+# define MAX_CHANNELS 200
 # define MIN_USERS 1
 
 //Debug

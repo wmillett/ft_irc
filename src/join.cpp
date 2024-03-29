@@ -2,7 +2,13 @@
 
 void Server::createChannel(Client* client, string& name, string *key) // cannot fail
 {
-	//TODO: add message confirming channel has been created
+	if (this->_channels.size() == MAX_CHANNELS)
+	{
+		sendMessage(client, _serverName, \
+		client->getNickname(), ERR_TOOMANYCHANNELS(client->getNickname()));
+		return ;
+	}
+
 	if (key)
 	{
 		string* allocKey = new string(*key);

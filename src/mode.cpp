@@ -160,7 +160,6 @@ void Server::mode_k(Client *client, Channel &channel, bool orientation, string *
 	channel.setKey(arg);
 	// sendMessage(client, _serverName, client->getNickname(), CLIENT_MESS(client->getNickname(), " :New channel password has been set"));//Broadcast to other users?
 	channel.sendMessage(this, client, CLIENT_MESS(client->getNickname(), " has set a new channel password"));//Broadcast here
-	std::cout << "channel key: " << *channel.getKey() << std::endl;
 }
 
 void Server::mode_o(Client *client, Channel &channel, bool orientation, string *arg)
