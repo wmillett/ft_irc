@@ -187,6 +187,11 @@ int Channel::isChannelFull(void) // returns 0 if channel is full
 	return (1);
 }
 
+int Channel::getChannelSize(void)
+{
+	return (_clients.size());
+}
+
 void Channel::sendMessage(Server* irc, Client* sender, std::vector<string> arg)
 {
 	// strIt it = arg.begin();

@@ -31,6 +31,7 @@ class Channel
 	int isUserInChannel(Client* client);
 	int isUserAnOp(Client* client);
 	int isChannelFull(void);
+	int getChannelSize(void);
 	int canAddToChannel(Client* client, string* key); //does the checks to see if user can be added to the channel
 	void sendMessage(Server* irc, Client* sender, std::vector<string> arg); // sends the message to all user in the channel
 	void sendMessage(Server* irc, Client* sender, std::string str); // same thing but a single string

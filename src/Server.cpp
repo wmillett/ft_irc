@@ -281,11 +281,11 @@ void Server::welcomeMessage(Client*client) const{
 void Server::sendMessage(Client*client, string source, string target, string message) const{
 
 	if(client->getLimeState()){
-		string limechatMessage = ":" + source +  PVM + target + " " + message + "\r\n"; //<---- format
+		string limechatMessage = ":" + source +  PVM + target + " :" + message + "\r\n"; //<---- format
 		send(client->getSocket(), limechatMessage.c_str(), limechatMessage.length(), 0);
 	}
 	else{
-		string ncMessage = source + " " + message + "\n";
+		string ncMessage = source + ": " + message + "\n";
 		send(client->getSocket(), ncMessage.c_str(), ncMessage.length(), 0);
 	}
 }
