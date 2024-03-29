@@ -10,6 +10,8 @@
 # include <fcntl.h>
 # include <sys/time.h>
 # include <time.h>
+# include <sstream>
+
 
 //Own dependencies
 # include "Client.hpp"

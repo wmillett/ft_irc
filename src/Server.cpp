@@ -270,11 +270,17 @@ void Server::identificationMessage(Client*client) const{
 }
 
 void Server::welcomeMessage(Client*client) const{
+	std::stringstream ss;
+
+	ss << _clients.size();
+	std::string str;
+	ss >> str;
 	sendMessage(client, _serverName, client->getNickname(), "001 " + client->getNickname() + " :Welcome to the Minou Network, " + client->getNickname() + " " + client->getUsername() + "@Localhost");
 	sendMessage(client, _serverName, client->getNickname(), "002 " + client->getNickname() + " :Your host is Minou.IRC running version Beta 1.1");
 	sendMessage(client, _serverName, client->getNickname(), "003 " + client->getNickname() + " :This server was created " + _startTime);
 	sendMessage(client, _serverName, client->getNickname(), "004 " + client->getNickname() + " :" + _serverName + " " + IRC_VERSION + " - " + MODE_NO_PARAM + " " + MODE_PARAM);
 	sendMessage(client, _serverName, client->getNickname(), "005 " + client->getNickname() + " :PREFIX=(itkol)@+ CHANTYPES=# CHANLIMIT=#:0 MAXCHANNELS=200 NICKLEN=10 TOPICLEN=512 MAXTARGETS=200 :are supported by this server");
+	sendMessage(client, _serverName, client->getNickname(), "251 " + client->getNickname() + " :There are " + str.c_str() + " users and 0 services on 1 server\r\n");
 	//authenticationMessage(client);
 }
 
